@@ -1,7 +1,6 @@
 package com.prasannjeet.vaxjobostader.jpa;
 
 import com.prasannjeet.vaxjobostader.jpa.converters.ListLobConverter;
-import com.prasannjeet.vaxjobostader.jpa.converters.StringLobConverter;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;

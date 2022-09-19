@@ -63,7 +63,8 @@ public final class ResponseRoot {
       if (r.getStatusDescriptionClient() != null || r.getStatusDescriptionClient().length() > 0) {
         r.setStatusDescriptionClient(translate(r.getStatusDescriptionClient()));
       }
-      if (r.getSyndicateMarketPlaceImageAlt() != null || r.getSyndicateMarketPlaceImageAlt().length() > 0) {
+      if (r.getSyndicateMarketPlaceImageAlt() != null
+          || r.getSyndicateMarketPlaceImageAlt().length() > 0) {
         r.setSyndicateMarketPlaceImageAlt(translate(r.getSyndicateMarketPlaceImageAlt()));
       }
       if (r.getStatusDescription() != null || r.getStatusDescription().length() > 0) {

@@ -32,7 +32,7 @@ public class VaxjobostaderClient {
 
     this.httpClient = new HttpClient();
     PostMethod mPost = new PostMethod(this.hostUri.toString());
-    this.httpClient.executeMethod( mPost );
+    this.httpClient.executeMethod(mPost);
     LOG.info("VaxjobostaderClient initialized");
   }
 

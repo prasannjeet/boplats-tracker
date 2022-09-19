@@ -3,7 +3,6 @@ package com.prasannjeet.vaxjobostader.service;
 import static com.prasannjeet.vaxjobostader.client.dto.request.RequestRoot.getDefaultRequest;
 import static com.prasannjeet.vaxjobostader.client.dto.request.RequestRoot.getDefaultStudentRequest;
 import static com.prasannjeet.vaxjobostader.util.HomeResultConverter.convertResultsToHomes;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
@@ -20,11 +19,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.Modifying;
 
+@Transactional
 @RequiredArgsConstructor
 public class HomeServiceImpl implements HomeService {
 

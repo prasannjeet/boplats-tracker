@@ -19,18 +19,19 @@ public class SlackClient {
   private final String slackUrl;
 
   public void sendSlackMessage(String message) throws IOException {
-      HttpClient client = new HttpClient();
-      PostMethod post = new PostMethod(slackUrl);
-      post.addRequestHeader(getHeader());
-      post.setRequestBody(getBody(message));
-      client.executeMethod(post);
-      post.getResponseBodyAsString();
+    HttpClient client = new HttpClient();
+    PostMethod post = new PostMethod(slackUrl);
+    post.addRequestHeader(getHeader());
+    post.setRequestBody(getBody(message));
+    client.executeMethod(post);
+    post.getResponseBodyAsString();
 
-      LOG.info("Slack Message Sent. Response: {}", post.getResponseBodyAsString());
+    LOG.info("Slack Message Sent. Response: {}", post.getResponseBodyAsString());
 
-      if (!post.getResponseBodyAsString().contains("ok")) {
-        throw new RuntimeException("Failed response received from slack. Response: " + post.getResponseBodyAsString());
-      }
+    if (!post.getResponseBodyAsString().contains("ok")) {
+      throw new RuntimeException(
+          "Failed response received from slack. Response: " + post.getResponseBodyAsString());
+    }
   }
 
   Header getHeader() {

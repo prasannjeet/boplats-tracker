@@ -48,6 +48,14 @@ public class LastUpdatedServiceImpl implements LastUpdatedService {
   private final LastUpdatedRepository lastUpdatedRepository;
   private final AppConfig appConfig;
 
+  private static LocalDate getPointsDate() {
+    int year = Q_POINTS_DATE / 10000;
+    int month = (Q_POINTS_DATE % 10000) / 100;
+    int day = Q_POINTS_DATE % 100;
+
+    return LocalDate.of(year, month, day);
+  }
+
   @SneakyThrows
   @Override
   public void syncPreferredHomes() {
@@ -70,7 +78,8 @@ public class LastUpdatedServiceImpl implements LastUpdatedService {
   @Override
   public Map<String, List<Homes>> getNewHomes() {
     List<Homes> preferredHomes = getNewPreferredHomes();
-    Set<String> preferredHomesObjectNo = preferredHomes.stream().map(Homes::getObjectNo).collect(toSet());
+    Set<String> preferredHomesObjectNo = preferredHomes.stream().map(Homes::getObjectNo)
+        .collect(toSet());
     SetView<String> newObjects = difference(preferredHomesObjectNo, getLastObjects());
     SetView<String> deletedObjects = difference(getLastObjects(), preferredHomesObjectNo);
 
@@ -90,15 +99,14 @@ public class LastUpdatedServiceImpl implements LastUpdatedService {
 
   }
 
-
   private Set<String> getLastObjects() {
     LastUpdated referenceById = lastUpdatedRepository.getReferenceById(1);
-    if (referenceById.getPreferredObjects() == null || referenceById.getPreferredObjects().isEmpty()) {
+    if (referenceById.getPreferredObjects() == null || referenceById.getPreferredObjects()
+        .isEmpty()) {
       return new HashSet<>();
     }
     return new HashSet<>(referenceById.getPreferredObjects());
   }
-
 
   private List<Homes> getNewPreferredHomes() {
     Date date = new Date();
@@ -113,14 +121,6 @@ public class LastUpdatedServiceImpl implements LastUpdatedService {
     LocalDate qPointsDate = getPointsDate();
     int days = (int) (today.toEpochDay() - qPointsDate.toEpochDay());
     return Q_POINTS + days;
-  }
-
-  private static LocalDate getPointsDate() {
-    int year = Q_POINTS_DATE / 10000;
-    int month = (Q_POINTS_DATE % 10000) / 100;
-    int day = Q_POINTS_DATE % 100;
-
-    return LocalDate.of(year, month, day);
   }
 
   private String getHomeMessage(Homes h) {
