@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: vaxjobostader
+  datasource:
+    url: jdbc:mariadb://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}
+#    url: jdbc:mysql://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+
+    username: ${DATABASE_USERNAME:vaxjo}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      max-lifetime: 600000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+
+server:
+  port: ${SERVER_PORT:8080}
+
+log:
+  project: ${LOG_LEVEL:INFO}
+  spring: ${SPRING_LOG_LEVEL:INFO}
+
+appconfig:
+  vbUrl: ${VB_URL:https://bpvx.vaxjo.se/API/Service/SearchServiceHandler.ashx}
+  slackUrl: ${SLACK_URL}
+  databaseUpdateCron: ${DATABASE_UPDATE_CRON}
+  slackCron: ${SLACK_CRON}

@@ -1,0 +1,10 @@
+version: "2.0"
+services:
+  @project.artifactId@:
+     container_name: my-@project.artifactId@
+     image: prasannjeet/@project.artifactId@:@project.version@
+     ports:
+       - "8080:8080"
+       - "5005:5005"
+     env_file:
+       - template.env
