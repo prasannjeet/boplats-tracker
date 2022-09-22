@@ -28,9 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Transactional
-public class LastUpdatedServiceImpl implements LastUpdatedService {
+public class SlackServiceImpl implements SlackService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(LastUpdatedServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SlackServiceImpl.class);
   private static final String LINK = "https://bpvx.vaxjo.se/pgObjectInformation.aspx?company=1&obj=";
 
   private static final int MIN_RENT = 0;
@@ -124,11 +124,10 @@ public class LastUpdatedServiceImpl implements LastUpdatedService {
   }
 
   private String getHomeMessage(Homes h) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(h.getStreet());
-    sb.append(" | ");
-    sb.append(LINK).append(h.getObjectNo());
-    return sb.toString();
+    String sb = h.getStreet()
+        + " | "
+        + LINK + h.getObjectNo();
+    return sb;
   }
 
 }

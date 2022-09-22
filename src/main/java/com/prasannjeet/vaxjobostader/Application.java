@@ -4,7 +4,7 @@ import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.response.ResponseRoot;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.service.HomeService;
-import com.prasannjeet.vaxjobostader.service.LastUpdatedService;
+import com.prasannjeet.vaxjobostader.service.SlackService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class Application {
 
   final VaxjobostaderClient client;
   final HomeService homeService;
-  final LastUpdatedService lastUpdatedService;
+  final SlackService slackService;
   final AppConfig appConfig;
 
   public static void main(String[] args) {
@@ -52,7 +52,7 @@ public class Application {
   public void runOnStartup() {
     try {
       LOG.info("Running one-time startup logic.");
-      lastUpdatedService.syncPreferredHomes();
+      slackService.syncPreferredHomes();
     } catch (Exception e) {
       LOG.error("An error occurred while running startup method.", e);
     }
@@ -75,7 +75,7 @@ public class Application {
   @Scheduled(cron = "${appconfig.slackCron}")
   public void checkForNewItems() {
     try {
-      lastUpdatedService.syncPreferredHomes();
+      slackService.syncPreferredHomes();
     } catch (Exception e) {
       LOG.error("An error occurred while comparing new and deleted items", e);
     }

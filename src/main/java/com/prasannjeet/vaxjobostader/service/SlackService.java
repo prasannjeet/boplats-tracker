@@ -4,7 +4,7 @@ import com.prasannjeet.vaxjobostader.jpa.Homes;
 import java.util.List;
 import java.util.Map;
 
-public interface LastUpdatedService {
+public interface SlackService {
 
   void syncPreferredHomes();
 

@@ -7,7 +7,7 @@ import com.prasannjeet.vaxjobostader.client.dto.response.Result;
 import com.prasannjeet.vaxjobostader.exception.ClientException;
 import com.prasannjeet.vaxjobostader.jpa.Homes;
 import com.prasannjeet.vaxjobostader.service.HomeService;
-import com.prasannjeet.vaxjobostader.service.LastUpdatedService;
+import com.prasannjeet.vaxjobostader.service.SlackService;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class Listing {
   private static final Logger LOG = LoggerFactory.getLogger(Listing.class);
 
   private final HomeService homeService;
-  private final LastUpdatedService lastUpdatedService;
+  private final SlackService slackService;
 
 
   @GetMapping(value = "/update")
@@ -53,7 +53,7 @@ public class Listing {
   public ResponseEntity<String> check() {
     try {
       LOG.info("Checking new homes via API");
-      lastUpdatedService.syncPreferredHomes();
+      slackService.syncPreferredHomes();
       return ResponseEntity.ok("Done. Please check your slack.");
     } catch (Exception e) {
       throw new ServerErrorException("Error occurred while checking for new homes", e);
