@@ -11,7 +11,7 @@
   </parent>
   <groupId>com.prasannjeet</groupId>
   <artifactId>vaxjobostader</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <name>Vaxjobostader-Enhanced-Search</name>
   <description>Enhanced Search for Vaxjobostader</description>
   <properties>

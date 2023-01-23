@@ -81,7 +81,7 @@ public class SlackServiceImpl implements SlackService {
     Set<String> preferredHomesObjectNo = preferredHomes.stream().map(Homes::getObjectNo)
         .collect(toSet());
     SetView<String> newObjects = difference(preferredHomesObjectNo, getLastObjects());
-    SetView<String> deletedObjects = difference(getLastObjects(), preferredHomesObjectNo);
+    Set<String> deletedObjects = getDeletedObjects(preferredHomes);
 
     LastUpdated referenceById = lastUpdatedRepository.getReferenceById(1);
     referenceById.setPreferredObjects(new ArrayList<>(preferredHomesObjectNo));
@@ -99,6 +99,11 @@ public class SlackServiceImpl implements SlackService {
 
   }
 
+  private Set<String> getDeletedObjects(List<Homes> preferredHomes) {
+    return preferredHomes.stream().filter(home -> home.getEndPeriodMP().before(new Date()))
+        .map(Homes::getObjectNo).collect(toSet());
+  }
+
   private Set<String> getLastObjects() {
     LastUpdated referenceById = lastUpdatedRepository.getReferenceById(1);
     if (referenceById.getPreferredObjects() == null || referenceById.getPreferredObjects()
@@ -111,9 +116,11 @@ public class SlackServiceImpl implements SlackService {
   private List<Homes> getNewPreferredHomes() {
     Date date = new Date();
     int queuePoints = getQueuePoints();
-    return homesRepository.findAllByRentPerMonthSortBetweenAndObjectAreaSortBetweenAndQueuePointsLessThanAndObjectSubGroupNoBetweenAndMarketPlaceNoIsNotAndCompanyNoIsAndEndPeriodMPAfter(
+    List<Homes> preferredHomes =  homesRepository.findAllByRentPerMonthSortBetweenAndObjectAreaSortBetweenAndQueuePointsLessThanAndObjectSubGroupNoBetweenAndMarketPlaceNoIsNotAndCompanyNoIsAndEndPeriodMPAfter(
         MIN_RENT, MAX_RENT, MIN_AREA, MAX_AREA, queuePoints, MIN_ROOMS, MAX_ROOMS,
         MARKETPLACE, COMPANY, date);
+    preferredHomes = preferredHomes.stream().filter(h -> h.getPlaceName().equalsIgnoreCase("Växjö") || h.getPlaceName().equalsIgnoreCase("Vxj")).collect(toList());
+    return preferredHomes;
   }
 
   private int getQueuePoints() {
@@ -124,10 +131,9 @@ public class SlackServiceImpl implements SlackService {
   }
 
   private String getHomeMessage(Homes h) {
-    String sb = h.getStreet()
+    return h.getStreet()
         + " | "
         + LINK + h.getObjectNo();
-    return sb;
   }
 
 }
