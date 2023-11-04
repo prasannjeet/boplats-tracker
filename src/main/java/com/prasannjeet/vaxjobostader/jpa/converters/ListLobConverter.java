@@ -5,7 +5,8 @@ import static java.util.Collections.emptyList;
 
 import java.util.Arrays;
 import java.util.List;
-import javax.persistence.AttributeConverter;
+
+import jakarta.persistence.AttributeConverter;
 
 public class ListLobConverter implements AttributeConverter<List<String>, byte[]> {
 

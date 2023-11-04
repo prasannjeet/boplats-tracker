@@ -6,20 +6,21 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.3</version>
+    <version>3.1.5</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.prasannjeet</groupId>
-  <artifactId>vaxjobostader</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <artifactId>vb-back</artifactId>
+  <version>1.3</version>
   <name>Vaxjobostader-Enhanced-Search</name>
   <description>Enhanced Search for Vaxjobostader</description>
   <properties>
-    <java.version>8</java.version>
-    <jdk>1.8</jdk>
-    <springboot.version>2.7.3</springboot.version>
-    <lombok.version>1.18.24</lombok.version>
+    <java.version>17</java.version>
+    <jdk>17</jdk>
+    <springboot.version>3.1.5</springboot.version>
+    <lombok.version>1.18.30</lombok.version>
     <ftp.location>/home/pi/Documents/DockerProjects/Vaxjobostader</ftp.location>
+    <liquibase.version>4.24.0</liquibase.version>
   </properties>
   <dependencies>
     <dependency>
@@ -55,7 +56,6 @@
       <version>4.4</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -76,13 +76,14 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-translate</artifactId>
+      <version>2.29.0</version>
     </dependency>
+
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>3.1</version>
     </dependency>
-
 
     <!--Tests-->
     <dependency>
@@ -105,6 +106,11 @@
       <groupId>com.mks.api</groupId>
       <artifactId>mksapi-jar</artifactId>
       <version>4.16.2671</version>
+    </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+      <version>${liquibase.version}</version>
     </dependency>
 
   </dependencies>
@@ -180,52 +186,52 @@
       </plugin>
 
       <!-- Send file over FTP. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>upload.to.ftp</id>
-            <phase>package</phase>
-            <configuration>
-              <target>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-antrun-plugin</artifactId>-->
+<!--        <version>3.1.0</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>upload.to.ftp</id>-->
+<!--            <phase>package</phase>-->
+<!--            <configuration>-->
+<!--              <target>-->
 
-                <ftp action="send" server="pi.hole" port="21" remotedir="${ftp.location}"
-                  userid="pi" password="REDACTED" depends="yes" verbose="yes">
-                  <fileset dir="${project.build.directory}">
-                    <include name="*.jar"/>
-                    <include name="*.yml"/>
-                  </fileset>
-                </ftp>
+<!--                <ftp action="send" server="pi.hole" port="21" remotedir="${ftp.location}"-->
+<!--                  userid="pi" password="REDACTED" depends="yes" verbose="yes">-->
+<!--                  <fileset dir="${project.build.directory}">-->
+<!--                    <include name="*.jar"/>-->
+<!--                    <include name="*.yml"/>-->
+<!--                  </fileset>-->
+<!--                </ftp>-->
 
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-        <dependencies>
-          <!-- ANT Plugin -->
-          <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-            <version>3.8.0</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-commons-net</artifactId>
-            <version>1.10.12</version>
-          </dependency>
-        </dependencies>
-      </plugin>
+<!--              </target>-->
+<!--            </configuration>-->
+<!--            <goals>-->
+<!--              <goal>run</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--        <dependencies>-->
+<!--          &lt;!&ndash; ANT Plugin &ndash;&gt;-->
+<!--          <dependency>-->
+<!--            <groupId>commons-net</groupId>-->
+<!--            <artifactId>commons-net</artifactId>-->
+<!--            <version>3.8.0</version>-->
+<!--          </dependency>-->
+<!--          <dependency>-->
+<!--            <groupId>org.apache.ant</groupId>-->
+<!--            <artifactId>ant-commons-net</artifactId>-->
+<!--            <version>1.10.12</version>-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
+<!--      </plugin>-->
 
       <!-- Create the docker image. -->
       <plugin>
         <groupId>com.spotify</groupId>
         <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>1.4.13</version>
+        <version>1.4.6</version>
         <executions>
           <execution>
             <id>tag-version</id>
@@ -237,12 +243,34 @@
               <tag>${project.version}</tag>
               <username>prasannjeet</username>
               <repository>prasannjeet/${project.artifactId}</repository>
-              <dockerfile>target/Dockerfile</dockerfile>
               <contextDirectory>target</contextDirectory>
               <testOutputDirectory>target/dockerbuild</testOutputDirectory>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.github.jnr</groupId>
+            <artifactId>jnr-unixsocket</artifactId>
+            <version>0.38.14</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <version>${liquibase.version}</version>
+        <configuration>
+          <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.0.6</version>
+          </dependency>
+          <!-- Use the command mvn liquibase:generateChangeLog -->
+        </dependencies>
       </plugin>
     </plugins>
   </build>

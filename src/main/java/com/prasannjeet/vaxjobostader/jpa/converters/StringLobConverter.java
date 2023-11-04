@@ -2,7 +2,8 @@ package com.prasannjeet.vaxjobostader.jpa.converters;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
+
 
 public class StringLobConverter implements AttributeConverter<String, byte[]> {
 

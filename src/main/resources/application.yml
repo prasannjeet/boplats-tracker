@@ -1,8 +1,11 @@
 spring:
+  liquibase:
+    change-log: classpath:/db.changelog-master.xml
+    enabled: true
   application:
     name: vaxjobostader
   datasource:
-    url: jdbc:mariadb://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}
+    url: jdbc:mariadb://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}?allowPublicKeyRetrieval=true
 #    url: jdbc:mysql://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 
     username: ${DATABASE_USERNAME:vaxjo}
@@ -11,9 +14,9 @@ spring:
       max-lifetime: 600000
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     database: MYSQL
-    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
 
 server:
   port: ${SERVER_PORT:8080}
@@ -24,6 +27,6 @@ log:
 
 appconfig:
   vbUrl: ${VB_URL:https://bpvx.vaxjo.se/API/Service/SearchServiceHandler.ashx}
-  slackUrl: ${SLACK_URL}
   databaseUpdateCron: ${DATABASE_UPDATE_CRON}
   slackCron: ${SLACK_CRON}
+  vxPrefixLink: ${VX_PREFIX_LINK}

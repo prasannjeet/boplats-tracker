@@ -1,0 +1,103 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="PRASI" id="1">
+        <createTable tableName="homes">
+            <column name="object_no" type="TINYTEXT"/>
+            <column name="area_no" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="arrive_market_place" type="datetime"/>
+            <column name="arrive_market_place_date_string" type="TINYTEXT"/>
+            <column name="board_no" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="company_no" type="INT"/>
+            <column defaultValueComputed="NULL" name="count_interest" type="INT"/>
+            <column name="description" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="desired_free_from" type="datetime"/>
+            <column name="desired_free_from_string" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="end_periodmp" type="datetime"/>
+            <column name="end_periodmpdate_string" type="TINYTEXT"/>
+            <column name="entrance_no" type="TINYTEXT"/>
+            <column name="estate_no" type="TINYTEXT"/>
+            <column name="first_estate_image_url" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="first_info_text" type="LONGBLOB"/>
+            <column defaultValueComputed="NULL" name="first_info_text_short" type="LONGBLOB"/>
+            <column name="free_from" type="TINYTEXT"/>
+            <column name="ground_rent" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="house_form_no" type="INT"/>
+            <column name="house_forms" type="TINYTEXT"/>
+            <column name="house_no" type="TINYTEXT"/>
+            <column name="interest_opens_date_string" type="TINYTEXT"/>
+            <column name="is_trading_advertisement" type="BIT"/>
+            <column name="latitude" type="TINYTEXT"/>
+            <column name="longitude" type="TINYTEXT"/>
+            <column name="map_url" type="TINYTEXT"/>
+            <column name="market_place_description" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="market_place_no" type="INT"/>
+            <column name="object_area" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="object_area_sort" type="DOUBLE"/>
+            <column name="object_floor" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="object_main_group_no" type="INT"/>
+            <column name="object_sub_description" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="object_sub_group_no" type="INT"/>
+            <column name="object_type_description" type="TINYTEXT"/>
+            <column name="place_name" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="post_code" type="INT"/>
+            <column name="project_no" type="TINYTEXT"/>
+            <column name="properties" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="property_no" type="INT"/>
+            <column defaultValueComputed="NULL" name="publishing_date" type="datetime"/>
+            <column name="publishing_date_string" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="queue_cut_show" type="INT"/>
+            <column defaultValueComputed="NULL" name="queue_date" type="datetime"/>
+            <column name="queue_date_string" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="queue_points" type="DOUBLE"/>
+            <column defaultValueComputed="NULL" name="queue_position_cut" type="INT"/>
+            <column name="rank_up_in_search_result" type="BIT"/>
+            <column name="rent_per_month" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="rent_per_month_sort" type="INT"/>
+            <column name="row_id" type="TINYTEXT"/>
+            <column name="seek_area_description" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="seek_area_no" type="INT"/>
+            <column name="seek_area_url" type="TINYTEXT"/>
+            <column name="seller_note" type="TINYTEXT"/>
+            <column name="status_code" type="TINYTEXT"/>
+            <column name="status_description" type="TINYTEXT"/>
+            <column name="status_description_client" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="status_no" type="INT"/>
+            <column name="street" type="TINYTEXT"/>
+            <column name="street_char" type="TINYTEXT"/>
+            <column name="street_name" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="street_no" type="INT"/>
+            <column name="syndicate_house_form_description_grouped" type="TINYTEXT"/>
+            <column name="syndicate_market_place_image_alt" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="syndicate_no" type="INT"/>
+            <column name="syndicate_property_description_grouped" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="use_filter" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PRASI" id="2">
+        <createTable tableName="last_updated">
+            <column defaultValueComputed="NULL" name="id" type="INT"/>
+            <column defaultValueComputed="NULL" name="last_updated" type="datetime"/>
+            <column defaultValueComputed="NULL" name="preferred_objects" type="LONGBLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="PRASI" id="3">
+        <createTable tableName="preferences">
+            <column name="id" type="TINYTEXT"/>
+            <column name="include_external_companies" type="BIT"/>
+            <column name="include_senior" type="BIT"/>
+            <column name="include_student" type="BIT"/>
+            <column defaultValueComputed="NULL" name="max_area" type="INT"/>
+            <column defaultValueComputed="NULL" name="max_rent" type="INT"/>
+            <column defaultValueComputed="NULL" name="max_rooms" type="INT"/>
+            <column defaultValueComputed="NULL" name="min_area" type="INT"/>
+            <column defaultValueComputed="NULL" name="min_rent" type="INT"/>
+            <column defaultValueComputed="NULL" name="min_rooms" type="INT"/>
+            <column name="name" type="TINYTEXT"/>
+            <column defaultValueComputed="NULL" name="q_points_main" type="INT"/>
+            <column defaultValueComputed="NULL" name="q_points_main_date" type="INT"/>
+            <column defaultValueComputed="NULL" name="q_points_student" type="INT"/>
+            <column defaultValueComputed="NULL" name="q_points_student_date" type="INT"/>
+            <column name="webhook_url" type="TINYTEXT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

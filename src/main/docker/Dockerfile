@@ -1,4 +1,4 @@
-FROM docker.io/amazoncorretto:18.0.2
+FROM docker.io/amazoncorretto:17.0.6
 
 ENV JAVA_MAX_MEM=1024m \
     JAVA_MAX_PERM_MEM=128m \

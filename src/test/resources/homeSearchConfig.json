@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Prasannjeet",
+    "webHook": "https://hooks.slack.com/services/REDACTED",
+    "minRent": 4000,
+    "maxRent": 7000,
+    "minArea": 30,
+    "maxArea": 155,
+    "queuePoints": 1923,
+    "queuePointsDate": 20220918,
+    "minRooms": 0,
+    "maxRooms": 6,
+    "marketplace": 9,
+    "company": 1
+  }
+]

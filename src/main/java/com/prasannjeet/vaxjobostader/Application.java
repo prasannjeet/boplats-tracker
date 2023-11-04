@@ -1,13 +1,15 @@
 package com.prasannjeet.vaxjobostader;
 
+import java.util.List;
+
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.response.ResponseRoot;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.service.HomeService;
 import com.prasannjeet.vaxjobostader.service.SlackService;
+import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -20,29 +22,29 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 @EnableCaching
 @RequiredArgsConstructor
+@Slf4j
 public class Application {
-
-  private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
   final VaxjobostaderClient client;
   final HomeService homeService;
   final SlackService slackService;
   final AppConfig appConfig;
+  final List<HomeSearchConfig> homeSearchConfigList;
 
   public static void main(String[] args) {
     while (true) {
       try {
         SpringApplication.run(Application.class, args);
-        LOG.info("Application started");
+        log.info("Application started");
         break;
       } catch (Exception e) {
-        LOG.error("Startup Exception: {}", e.getMessage());
-        LOG.error("Retrying in 5 seconds...");
+        log.error("Startup Exception: {}", e.getMessage());
+        log.error("Retrying in 5 seconds...");
         try {
           Thread.sleep(5000);
         } catch (InterruptedException e1) {
           Thread.currentThread().interrupt();
-          e1.printStackTrace();
+          log.error("Thread interrupted while sleeping.", e1);
         }
       }
     }
@@ -51,10 +53,15 @@ public class Application {
   @EventListener(ApplicationReadyEvent.class)
   public void runOnStartup() {
     try {
-      LOG.info("Running one-time startup logic.");
-      slackService.syncPreferredHomes();
+      log.info("Running one-time startup logic.");
+
+      if (!homeSearchConfigList.isEmpty()) {
+        var firstConfig = homeSearchConfigList.get(0);
+        slackService.syncPreferredHomes(firstConfig);
+      }
+
     } catch (Exception e) {
-      LOG.error("An error occurred while running startup method.", e);
+      log.error("An error occurred while running startup method.", e);
     }
   }
 
@@ -62,22 +69,30 @@ public class Application {
   public void updateDatabase() {
     int size = 0;
     try {
-      LOG.info("Running scheduled task");
+      log.info("Running scheduled task");
       ResponseRoot response = homeService.getAllItemsFromApi();
       homeService.updateDatabase(response.getResult());
       size = response.getResult().size();
     } catch (Exception e) {
-      LOG.error("Error updating homes: {}", e.getMessage(), e);
+      log.error("Error updating homes: {}", e.getMessage(), e);
     }
-    LOG.info("Scheduled task completed. Homes updated: {}", size);
+    log.info("Scheduled task completed. Homes updated: {}", size);
   }
 
   @Scheduled(cron = "${appconfig.slackCron}")
   public void checkForNewItems() {
     try {
-      slackService.syncPreferredHomes();
+
+      if (homeSearchConfigList.isEmpty()) {
+        log.info("No search configs found. Skipping slack notification.");
+      } else {
+        log.info("Found {} search configs. Running slack notification.", homeSearchConfigList.size());
+        for (var homeSearchConfig : homeSearchConfigList) {
+          slackService.syncPreferredHomes(homeSearchConfig);
+        }
+      }
     } catch (Exception e) {
-      LOG.error("An error occurred while comparing new and deleted items", e);
+      log.error("An error occurred while comparing new and deleted items", e);
     }
   }
 
