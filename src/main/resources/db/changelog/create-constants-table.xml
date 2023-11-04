@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-constants-table" author="PRASI">
+        <createTable tableName="constants">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="last_database_updated" type="timestamp">
+                <!-- Assuming you want to use the current timestamp as the default value -->
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insert-initial-constants-row" author="PRASI">
+        <insert tableName="constants">
+            <column name="id" valueNumeric="1"/>
+            <!-- No need to set last_database_updated if you want it to be null initially -->
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

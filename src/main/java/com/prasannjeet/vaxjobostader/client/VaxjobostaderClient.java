@@ -2,26 +2,26 @@ package com.prasannjeet.vaxjobostader.client;
 
 import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prasannjeet.vaxjobostader.client.dto.request.RequestRoot;
 import com.prasannjeet.vaxjobostader.client.dto.response.ResponseRoot;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class VaxjobostaderClient {
 
-  private static final Logger LOG = LoggerFactory.getLogger(VaxjobostaderClient.class);
   private final ObjectMapper mapper;
   private final URI hostUri;
   private final HttpClient httpClient;
@@ -33,7 +33,7 @@ public class VaxjobostaderClient {
     this.httpClient = new HttpClient();
     PostMethod mPost = new PostMethod(this.hostUri.toString());
     this.httpClient.executeMethod(mPost);
-    LOG.info("VaxjobostaderClient initialized");
+    log.info("VaxjobostaderClient initialized");
   }
 
   Header getHeader() {

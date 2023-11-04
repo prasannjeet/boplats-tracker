@@ -5,26 +5,26 @@ import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.prasannjeet.vaxjobostader.exception.ClientException;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Slf4j
 public final class RequestRoot {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RequestRoot.class);
   private static final String DEFAULT_ORDER = "PublishingDate desc,SeekAreaDescription desc, StreetName desc";
   @JsonProperty("CompanyNo")
   private int companyNo;
@@ -109,7 +109,7 @@ public final class RequestRoot {
     try {
       return getMapper().writeValueAsString(this);
     } catch (JsonProcessingException e) {
-      logException(e, "Error while serializing RequestRoot Object to String", LOG);
+      logException(e, "Error while serializing RequestRoot Object to String", log);
       throw new ClientException(e);
     }
   }

@@ -9,6 +9,7 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,14 +21,12 @@ import lombok.Setter;
 @Setter
 
 @Entity
-public class LastUpdated {
+@Table(name = "user_selected_items")
+public class UserSelectedHomes {
 
   @Id
   @Column(name = "id", nullable = false)
-  private int id;
-
-  @Column(name = "last_updated")
-  private LocalDateTime lastUpdated;
+  private String id; // Changed from int to String
 
   @Lob
   @Convert(converter = ListLobConverter.class)

@@ -27,7 +27,7 @@ public class Application {
 
   final VaxjobostaderClient client;
   final HomeService homeService;
-  final SlackService slackService;
+  final SlackService lastUpdatedService;
   final AppConfig appConfig;
   final List<HomeSearchConfig> homeSearchConfigList;
 
@@ -57,7 +57,7 @@ public class Application {
 
       if (!homeSearchConfigList.isEmpty()) {
         var firstConfig = homeSearchConfigList.get(0);
-        slackService.syncPreferredHomes(firstConfig);
+        lastUpdatedService.syncPreferredHomes(firstConfig);
       }
 
     } catch (Exception e) {
@@ -88,7 +88,7 @@ public class Application {
       } else {
         log.info("Found {} search configs. Running slack notification.", homeSearchConfigList.size());
         for (var homeSearchConfig : homeSearchConfigList) {
-          slackService.syncPreferredHomes(homeSearchConfig);
+          lastUpdatedService.syncPreferredHomes(homeSearchConfig);
         }
       }
     } catch (Exception e) {

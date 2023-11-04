@@ -3,27 +3,27 @@ package com.prasannjeet.vaxjobostader.client.dto.response;
 import static com.prasannjeet.vaxjobostader.util.LoggingUtils.logException;
 import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import com.prasannjeet.vaxjobostader.exception.ClientException;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@Slf4j
 public final class ResponseRoot {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ResponseRoot.class);
   private static final Translate TRANSLATE = TranslateOptions.getDefaultInstance().getService();
   @JsonProperty("Result")
   private List<Result> result;
@@ -39,7 +39,7 @@ public final class ResponseRoot {
     try {
       return getMapper().writeValueAsString(this);
     } catch (JsonProcessingException e) {
-      logException(e, "Error while serializing RequestRoot Object to String", LOG);
+      logException(e, "Error while serializing RequestRoot Object to String", log);
       throw new ClientException(e);
     }
   }

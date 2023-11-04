@@ -8,6 +8,9 @@
 
     <!-- Include your initial schema -->
     <include file="db/changelog/db.changelog-init.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/add-string-id.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/create-constants-table.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/rename-last-updated.xml" relativeToChangelogFile="true"/>
 
     <!-- You can include more change logs here as your project evolves -->
     <!-- <include file="path/to/your/next/changelog.xml" relativeToChangelogFile="true"/> -->

@@ -1,7 +1,7 @@
 [
   {
-    "name": "Prasannjeet",
-    "webHook": "https://hooks.slack.com/services/REDACTED",
+    "name": "UniqueName",
+    "webHook": "https://hooks.slack.com/services/...",
     "minRent": 4000,
     "maxRent": 7000,
     "minArea": 30,
@@ -11,6 +11,60 @@
     "minRooms": 0,
     "maxRooms": 6,
     "marketplace": 9,
-    "company": 1
+    "company": 1,
+    "marketPlaceDescription": "TORG,SENIOR_TORG",
+    "placeNames": "VAXJO,VEDERSLOV",
+    "needLastDateNotification": true
+  },
+  {
+    "name": "UniqueName", // Duplicate name to test uniqueness
+    "webHook": "https://hooks.another.com/services/...",
+    "minRent": 5000,
+    "maxRent": 8000,
+    "minArea": 40,
+    "maxArea": 160,
+    "queuePoints": 2000,
+    "queuePointsDate": 20220920,
+    "minRooms": 1,
+    "maxRooms": 5,
+    "marketplace": 10,
+    "company": 2,
+    "marketPlaceDescription": "DIREKT,NYBYGGN_TORG",
+    "placeNames": "STOCKHOLM,GOTHENBURG",
+    "needLastDateNotification": true
+  },
+  {
+    "name": "InvalidEnumName",
+    "webHook": "https://hooks.slack.com/services/...",
+    "minRent": 3000,
+    "maxRent": 6000,
+    "minArea": 25,
+    "maxArea": 100,
+    "queuePoints": 1500,
+    "queuePointsDate": 20220919,
+    "minRooms": 1,
+    "maxRooms": 5,
+    "marketplace": 8,
+    "company": 2,
+    "marketPlaceDescription": "INVALID_ENUM,SENIOR_TORG",
+    "placeNames": "INVALID_PLACE,VAXJO",
+    "needLastDateNotification": true
+  },
+  {
+    "name": "EmptyProperties",
+    "webHook": "",
+    "minRent": 0,
+    "maxRent": 0,
+    "minArea": 0,
+    "maxArea": 0,
+    "queuePoints": 0,
+    "queuePointsDate": 0,
+    "minRooms": 0,
+    "maxRooms": 0,
+    "marketplace": 0,
+    "company": 0,
+    "marketPlaceDescription": "",
+    "placeNames": "",
+    "needLastDateNotification": true
   }
 ]

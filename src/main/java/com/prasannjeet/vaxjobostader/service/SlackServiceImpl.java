@@ -13,13 +13,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.prasannjeet.vaxjobostader.client.SlackClient;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
+import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
+import com.prasannjeet.vaxjobostader.enums.PlaceName;
 import com.prasannjeet.vaxjobostader.jpa.Homes;
 import com.prasannjeet.vaxjobostader.jpa.HomesRepository;
-import com.prasannjeet.vaxjobostader.jpa.LastUpdated;
-import com.prasannjeet.vaxjobostader.jpa.LastUpdatedRepository;
+import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomes;
+import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomesRepository;
 import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -33,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SlackServiceImpl implements SlackService {
 
   private final HomesRepository homesRepository;
-  private final LastUpdatedRepository lastUpdatedRepository;
+  private final UserSelectedHomesRepository userSelectedHomesRepository;
   private final AppConfig appConfig;
 
   private static LocalDate getPointsDate(int queuePointsDate) {
@@ -69,21 +72,24 @@ public class SlackServiceImpl implements SlackService {
     Set<String> preferredHomesObjectNo = preferredHomes.stream().map(Homes::getObjectNo)
         .collect(toSet());
 
-    // Retrieve the last objects only once
-    Set<String> lastObjects = getLastObjects();
+    // Retrieve the last updated record or create it if it doesn't exist
+    UserSelectedHomes userSelectedHomes = userSelectedHomesRepository.findById(config.name()).orElseGet(() -> {
+      UserSelectedHomes newUserSelectedHomes = new UserSelectedHomes();
+      newUserSelectedHomes.setId(config.name()); // Set the ID to the config name
+      newUserSelectedHomes.setPreferredObjects(new ArrayList<>()); // Initialize with an empty list
+      return newUserSelectedHomes;
+    });
+
+    // Use the retrieved last updated object numbers, ensuring it's not null
+    Set<String> lastObjects = userSelectedHomes.getPreferredObjects() != null ?
+        new HashSet<>(userSelectedHomes.getPreferredObjects()) : new HashSet<>();
 
     SetView<String> newObjects = difference(preferredHomesObjectNo, lastObjects);
     Set<String> deletedObjects = getDeletedObjects(preferredHomes);
 
-    // Update the last updated record or create it if it doesn't exist
-    LastUpdated referenceById = lastUpdatedRepository.findById(1).orElseGet(() -> {
-      LastUpdated newLastUpdated = new LastUpdated();
-      newLastUpdated.setId(1);
-      // Initialize other properties as needed
-      return newLastUpdated;
-    });
-    referenceById.setPreferredObjects(new ArrayList<>(preferredHomesObjectNo));
-    lastUpdatedRepository.save(referenceById);
+    // Update the last updated record with the new set of preferred objects
+    userSelectedHomes.setPreferredObjects(new ArrayList<>(preferredHomesObjectNo));
+    userSelectedHomesRepository.save(userSelectedHomes);
 
     List<Homes> newHomes = preferredHomes.stream()
         .filter(homes -> newObjects.contains(homes.getObjectNo())).toList();
@@ -102,21 +108,37 @@ public class SlackServiceImpl implements SlackService {
         .map(Homes::getObjectNo).collect(toSet());
   }
 
-  private Set<String> getLastObjects() {
-    return lastUpdatedRepository.findById(1)
-        .map(LastUpdated::getPreferredObjects) // This is expected to be a List<String>
-        .map(HashSet::new) // Convert List<String> to HashSet<String>
-        .orElseGet(HashSet::new); // Return an empty HashSet if not found
-  }
-
   private List<Homes> getNewPreferredHomes(HomeSearchConfig config) {
     Date date = new Date();
     int queuePoints = getQueuePoints(config.queuePoints(), config.queuePointsDate());
     List<Homes> preferredHomes = homesRepository.findAllByRentPerMonthSortBetweenAndObjectAreaSortBetweenAndQueuePointsLessThanAndObjectSubGroupNoBetweenAndMarketPlaceNoIsNotAndCompanyNoIsAndEndPeriodMPAfter(
         config.minRent(), config.maxRent(), config.minArea(), config.maxArea(), queuePoints, config.minRooms(), config.maxRooms(),
         config.marketplace(), config.company(), date);
-    preferredHomes = preferredHomes.stream().filter(h -> h.getPlaceName().equalsIgnoreCase("Växjö") || h.getPlaceName().equalsIgnoreCase("Vxj")).toList();
+
+    // Filter homes based on the place names and marketplace descriptions from the config
+    preferredHomes = filterHomesByPlaceNames(preferredHomes, config.placeNames());
+    preferredHomes = filterHomesByMarketPlaceDescriptions(preferredHomes, config.marketPlaceDescriptions());
     return preferredHomes;
+  }
+
+  private List<Homes> filterHomesByPlaceNames(List<Homes> homes, Set<PlaceName> placeNames) {
+    Set<String> placeNameDisplayNames = placeNames.stream()
+        .map(PlaceName::getDisplayName)
+        .collect(Collectors.toSet());
+
+    return homes.stream()
+        .filter(home -> placeNameDisplayNames.contains(home.getPlaceName()))
+        .collect(toList());
+  }
+
+  private List<Homes> filterHomesByMarketPlaceDescriptions(List<Homes> homes, Set<MarketPlaceDescription> marketPlaceDescriptions) {
+    Set<String> marketPlaceDescriptionNames = marketPlaceDescriptions.stream()
+        .map(MarketPlaceDescription::getDescription)
+        .collect(toSet());
+
+    return homes.stream()
+        .filter(home -> marketPlaceDescriptionNames.contains(home.getMarketPlaceDescription()))
+        .collect(toList());
   }
 
   private int getQueuePoints(int baseQueuePoints, int queuePointsDate) {

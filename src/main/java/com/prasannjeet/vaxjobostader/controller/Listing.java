@@ -61,6 +61,7 @@ public class Listing {
       slackService.syncPreferredHomes(config);
       return ResponseEntity.ok("Done. Please check your slack.");
     } catch (Exception e) {
+      log.error("Error occurred while checking for new homes for the user {}", name, e);
       throw new ServerErrorException("Error occurred while checking for new homes", e);
     }
   }

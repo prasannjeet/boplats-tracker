@@ -6,34 +6,33 @@ import static com.prasannjeet.vaxjobostader.util.HomeResultConverter.convertResu
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.request.RequestRoot;
 import com.prasannjeet.vaxjobostader.client.dto.response.ResponseRoot;
 import com.prasannjeet.vaxjobostader.client.dto.response.Result;
 import com.prasannjeet.vaxjobostader.exception.ClientException;
+import com.prasannjeet.vaxjobostader.jpa.Constants;
+import com.prasannjeet.vaxjobostader.jpa.ConstantsRepository;
 import com.prasannjeet.vaxjobostader.jpa.Homes;
 import com.prasannjeet.vaxjobostader.jpa.HomesRepository;
-import com.prasannjeet.vaxjobostader.jpa.LastUpdated;
-import com.prasannjeet.vaxjobostader.jpa.LastUpdatedRepository;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class HomeServiceImpl implements HomeService {
-
-  private static final Logger LOG = LoggerFactory.getLogger(HomeServiceImpl.class);
 
   private final VaxjobostaderClient client;
   private final HomesRepository homesRepository;
-  private final LastUpdatedRepository lastUpdatedRepository;
+  private final ConstantsRepository constantsRepository;
 
   @Override
   public ResponseRoot getAllItemsFromApi() {
@@ -55,7 +54,7 @@ public class HomeServiceImpl implements HomeService {
 
       return response;
     } catch (IOException e) {
-      LOG.error("Some error occurred while fetching all items from API.", e);
+      log.error("Some error occurred while fetching all items from API.", e);
       throw new ClientException(e);
     }
   }
@@ -66,9 +65,13 @@ public class HomeServiceImpl implements HomeService {
     List<Homes> homes = convertResultsToHomes(results);
     homesRepository.saveAll(homes);
     LocalDateTime todayTime = LocalDateTime.now();
-    LastUpdated referenceById = lastUpdatedRepository.getReferenceById(1);
-    referenceById.setLastUpdated(todayTime);
-    lastUpdatedRepository.save(referenceById);
+
+    // Fetch the Constants entity with id 1, or create a new one if it doesn't exist
+    Constants constants = constantsRepository.findById(1)
+        .orElseGet(() -> new Constants(1, null)); // If not found, create a new instance with id 1
+
+    constants.setLastUpdated(todayTime); // Set the last updated time
+    constantsRepository.save(constants); // Save the Constants entity
   }
 
   @Override
