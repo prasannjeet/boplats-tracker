@@ -1,9 +1,8 @@
 package com.prasannjeet.vaxjobostader.jpa;
 
-import com.prasannjeet.vaxjobostader.jpa.converters.ListLobConverter;
-import java.time.LocalDateTime;
 import java.util.List;
 
+import com.prasannjeet.vaxjobostader.jpa.converters.ListLobConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

@@ -5,6 +5,7 @@ import java.util.List;
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.response.ResponseRoot;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
+import com.prasannjeet.vaxjobostader.jpa.Homes;
 import com.prasannjeet.vaxjobostader.service.HomeService;
 import com.prasannjeet.vaxjobostader.service.SlackService;
 import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
@@ -63,6 +64,25 @@ public class Application {
     } catch (Exception e) {
       log.error("An error occurred while running startup method.", e);
     }
+  }
+
+  @Scheduled(cron = "${appconfig.lastDateCron}")
+  public void notifyUsersOfHomesWithLastDateToday() {
+    log.info("Notifying users of homes that have last date today");
+    try {
+      if (homeSearchConfigList.isEmpty()) {
+        log.info("No search configs found. Skipping slack notification.");
+      } else {
+        log.info("Found {} search configs. Running slack notification.", homeSearchConfigList.size());
+        homeSearchConfigList.stream().filter(HomeSearchConfig::needLastDateNotification).forEach(config -> {
+          List<Homes> homes = homeService.getHomesWithLastDateToday(config);
+          lastUpdatedService.sendNotificationOfLastDayToApplyForHomes(homes, config, false);
+        });
+      }
+    } catch (Exception e) {
+      log.error("Error notifying users of homes with last date today: {}", e.getMessage(), e);
+    }
+    log.info("Scheduled task completed.");
   }
 
   @Scheduled(cron = "${appconfig.databaseUpdateCron}")

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
   private String vbUrl;
+  private String lastDateCron;
   private String databaseUpdateCron;
   private String slackCron;
   private String vxPrefixLink;

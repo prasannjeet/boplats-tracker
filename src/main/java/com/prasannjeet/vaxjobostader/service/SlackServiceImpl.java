@@ -1,24 +1,20 @@
 package com.prasannjeet.vaxjobostader.service;
 
+import static com.prasannjeet.vaxjobostader.service.HomeUtil.filterHomes;
 import static java.time.LocalDateTime.now;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.collections4.SetUtils.difference;
 
-import java.time.LocalDate;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.prasannjeet.vaxjobostader.client.SlackClient;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
-import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
-import com.prasannjeet.vaxjobostader.enums.PlaceName;
 import com.prasannjeet.vaxjobostader.jpa.Homes;
 import com.prasannjeet.vaxjobostader.jpa.HomesRepository;
 import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomes;
@@ -27,7 +23,6 @@ import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.SetUtils.SetView;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -39,118 +34,107 @@ public class SlackServiceImpl implements SlackService {
   private final UserSelectedHomesRepository userSelectedHomesRepository;
   private final AppConfig appConfig;
 
-  private static LocalDate getPointsDate(int queuePointsDate) {
-    int year = queuePointsDate / 10000;
-    int month = (queuePointsDate % 10000) / 100;
-    int day = queuePointsDate % 100;
-
-    return LocalDate.of(year, month, day);
-  }
-
-  @SneakyThrows
   @Override
+  @SneakyThrows
   public void syncPreferredHomes(HomeSearchConfig config) {
     log.info("Checking for new Homes for Slack Notification at: {}", now());
-    Map<String, List<Homes>> items = getNewHomes(config);
+    Map<String, List<Homes>> homesUpdates = getHomesUpdates(config);
 
-    List<Homes> newHomes = items.get("new");
-    List<Homes> deletedHomes = items.get("deleted");
-    StringBuilder sb = new StringBuilder();
-    sb.append("New Homes: ").append(newHomes.size()).append("\n");
-    newHomes.forEach(n -> sb.append(getHomeMessage(n)).append("\n"));
-    sb.append("Deleted Homes: ").append(deletedHomes.size()).append("\n");
-    deletedHomes.forEach(d -> sb.append(getHomeMessage(d)).append("\n"));
-
-    SlackClient slackClient = new SlackClient(config.webHook());
-    slackClient.sendSlackMessage(sb.toString());
-    log.info("Slack message sent. Message: {}", sb);
+    String message = buildSlackMessage(homesUpdates);
+    sendSlackNotification(config.webHook(), message);
   }
 
   @Override
-  public Map<String, List<Homes>> getNewHomes(HomeSearchConfig config) {
-    List<Homes> preferredHomes = getNewPreferredHomes(config);
-    Set<String> preferredHomesObjectNo = preferredHomes.stream().map(Homes::getObjectNo)
-        .collect(toSet());
+  @SneakyThrows
+  public void sendNotificationOfLastDayToApplyForHomes(List<Homes> homes, HomeSearchConfig config, boolean forceSend) {
+    String message = "Today is the last day to apply for the following homes. Total";
+    StringBuilder sb = new StringBuilder();
+    appendHomesUpdateMessage(sb, message, homes);
+    if (forceSend || !homes.isEmpty()) {
+      sendSlackNotification(config.webHook(), sb.toString());
+    }
+  }
 
-    // Retrieve the last updated record or create it if it doesn't exist
-    UserSelectedHomes userSelectedHomes = userSelectedHomesRepository.findById(config.name()).orElseGet(() -> {
-      UserSelectedHomes newUserSelectedHomes = new UserSelectedHomes();
-      newUserSelectedHomes.setId(config.name()); // Set the ID to the config name
-      newUserSelectedHomes.setPreferredObjects(new ArrayList<>()); // Initialize with an empty list
-      return newUserSelectedHomes;
-    });
+  private List<Homes> getCurrentPreferredHomes(HomeSearchConfig config) {
+    List<Homes> preferredHomes = homesRepository.findPreferredHomes(config);
+    return filterHomes(preferredHomes, config);
+  }
 
-    // Use the retrieved last updated object numbers, ensuring it's not null
-    Set<String> lastObjects = userSelectedHomes.getPreferredObjects() != null ?
-        new HashSet<>(userSelectedHomes.getPreferredObjects()) : new HashSet<>();
+  private Map<String, List<Homes>> getHomesUpdates(HomeSearchConfig config) {
+    // Get all homes based on user preference
+    List<Homes> allPreferredHomes = getCurrentPreferredHomes(config);
 
-    SetView<String> newObjects = difference(preferredHomesObjectNo, lastObjects);
-    Set<String> deletedObjects = getDeletedObjects(preferredHomes);
+    // Get homes base on user preference from last time
+    UserSelectedHomes userSelectedHomes = getUserSelectedHomes(config);
 
-    // Update the last updated record with the new set of preferred objects
-    userSelectedHomes.setPreferredObjects(new ArrayList<>(preferredHomesObjectNo));
+    // Find out new homes for the user (homes that are not in the user's last preference)
+    Set<String> newPreferredHomes = getNewHomesObjectNos(allPreferredHomes, userSelectedHomes);
+
+    updatePreferredHomesRecord(userSelectedHomes, allPreferredHomes);
+    return mapHomesUpdates(allPreferredHomes, newPreferredHomes);
+  }
+
+  private UserSelectedHomes getUserSelectedHomes(HomeSearchConfig config) {
+    return userSelectedHomesRepository.findById(config.name())
+        .orElseGet(() -> createUserSelectedHomesRecord(config));
+  }
+
+  private UserSelectedHomes createUserSelectedHomesRecord(HomeSearchConfig config) {
+    UserSelectedHomes newUserSelectedHomes = new UserSelectedHomes();
+    newUserSelectedHomes.setId(config.name());
+    newUserSelectedHomes.setPreferredObjects(new ArrayList<>());
+    return newUserSelectedHomes;
+  }
+
+  private Set<String> getNewHomesObjectNos(List<Homes> preferredHomes, UserSelectedHomes userSelectedHomes) {
+    Set<String> preferredHomesObjectNos = getObjectNos(preferredHomes);
+    Set<String> lastObjects = new HashSet<>(userSelectedHomes.getPreferredObjects());
+    return difference(preferredHomesObjectNos, lastObjects).toSet();
+  }
+
+  private void updatePreferredHomesRecord(UserSelectedHomes userSelectedHomes, List<Homes> currentPreferredHomes) {
+    userSelectedHomes.setPreferredObjects(getObjectNos(currentPreferredHomes).stream().toList());
     userSelectedHomesRepository.save(userSelectedHomes);
-
-    List<Homes> newHomes = preferredHomes.stream()
-        .filter(homes -> newObjects.contains(homes.getObjectNo())).toList();
-    List<Homes> deletedHomes = preferredHomes.stream()
-        .filter(homes -> deletedObjects.contains(homes.getObjectNo())).toList();
-
-    Map<String, List<Homes>> finalValue = new HashMap<>();
-    finalValue.put("new", newHomes);
-    finalValue.put("deleted", deletedHomes);
-    return finalValue;
   }
 
-
-  private Set<String> getDeletedObjects(List<Homes> preferredHomes) {
-    return preferredHomes.stream().filter(home -> home.getEndPeriodMP().before(new Date()))
-        .map(Homes::getObjectNo).collect(toSet());
+  // Get full Home Objects for new and deleted homes based on String ids
+  private Map<String, List<Homes>> mapHomesUpdates(List<Homes> allHomes, Set<String> newHomesObjectNos) {
+    Map<String, List<Homes>> updates = new HashMap<>();
+    updates.put("new", filterHomesByObjectNos(allHomes, newHomesObjectNos));
+    return updates;
   }
 
-  private List<Homes> getNewPreferredHomes(HomeSearchConfig config) {
-    Date date = new Date();
-    int queuePoints = getQueuePoints(config.queuePoints(), config.queuePointsDate());
-    List<Homes> preferredHomes = homesRepository.findAllByRentPerMonthSortBetweenAndObjectAreaSortBetweenAndQueuePointsLessThanAndObjectSubGroupNoBetweenAndMarketPlaceNoIsNotAndCompanyNoIsAndEndPeriodMPAfter(
-        config.minRent(), config.maxRent(), config.minArea(), config.maxArea(), queuePoints, config.minRooms(), config.maxRooms(),
-        config.marketplace(), config.company(), date);
-
-    // Filter homes based on the place names and marketplace descriptions from the config
-    preferredHomes = filterHomesByPlaceNames(preferredHomes, config.placeNames());
-    preferredHomes = filterHomesByMarketPlaceDescriptions(preferredHomes, config.marketPlaceDescriptions());
-    return preferredHomes;
-  }
-
-  private List<Homes> filterHomesByPlaceNames(List<Homes> homes, Set<PlaceName> placeNames) {
-    Set<String> placeNameDisplayNames = placeNames.stream()
-        .map(PlaceName::getDisplayName)
-        .collect(Collectors.toSet());
-
+  private List<Homes> filterHomesByObjectNos(List<Homes> homes, Set<String> objectNos) {
     return homes.stream()
-        .filter(home -> placeNameDisplayNames.contains(home.getPlaceName()))
-        .collect(toList());
+        .filter(home -> objectNos.contains(home.getObjectNo()))
+        .toList();
   }
 
-  private List<Homes> filterHomesByMarketPlaceDescriptions(List<Homes> homes, Set<MarketPlaceDescription> marketPlaceDescriptions) {
-    Set<String> marketPlaceDescriptionNames = marketPlaceDescriptions.stream()
-        .map(MarketPlaceDescription::getDescription)
+  private Set<String> getObjectNos(List<Homes> homes) {
+    return homes.stream()
+        .map(Homes::getObjectNo)
         .collect(toSet());
-
-    return homes.stream()
-        .filter(home -> marketPlaceDescriptionNames.contains(home.getMarketPlaceDescription()))
-        .collect(toList());
   }
 
-  private int getQueuePoints(int baseQueuePoints, int queuePointsDate) {
-    LocalDate today = LocalDate.now();
-    LocalDate qPointsDate = getPointsDate(queuePointsDate);
-    int days = (int) (today.toEpochDay() - qPointsDate.toEpochDay());
-    return baseQueuePoints + days;
+  private String buildSlackMessage(Map<String, List<Homes>> homesUpdates) {
+    StringBuilder sb = new StringBuilder();
+    appendHomesUpdateMessage(sb, "New Homes", homesUpdates.get("new"));
+    return sb.toString();
   }
 
-  private String getHomeMessage(Homes h) {
-    return h.getStreet()
-        + " | "
-        + this.appConfig.getVxPrefixLink() + h.getObjectNo();
+  private void appendHomesUpdateMessage(StringBuilder sb, String title, List<Homes> homes) {
+    sb.append(title).append(": ").append(homes.size()).append("\n");
+    homes.forEach(home -> sb.append(getHomeMessage(home)).append("\n"));
   }
+
+  private void sendSlackNotification(String webHook, String message) throws IOException {
+    SlackClient slackClient = new SlackClient(webHook);
+    slackClient.sendSlackMessage(message);
+    log.info("Slack message sent. Message: {}", message);
+  }
+
+  private String getHomeMessage(Homes home) {
+    return home.getStreet() + " | " + appConfig.getVxPrefixLink() + home.getObjectNo();
+  }
+
 }

@@ -31,7 +31,7 @@ import org.springframework.web.server.ServerErrorException;
 public class Listing {
 
   private final HomeService homeService;
-  private final SlackService slackService;
+  private final SlackService lastUpdatedService;
   private final List<HomeSearchConfig> homeSearchConfigList;
 
   @GetMapping(value = "/update")
@@ -58,11 +58,28 @@ public class Listing {
           .filter(c -> c.name().equalsIgnoreCase(name))
           .findFirst()
           .orElseThrow(() -> new ClientException("No config found for " + name));
-      slackService.syncPreferredHomes(config);
+      lastUpdatedService.syncPreferredHomes(config);
       return ResponseEntity.ok("Done. Please check your slack.");
     } catch (Exception e) {
       log.error("Error occurred while checking for new homes for the user {}", name, e);
       throw new ServerErrorException("Error occurred while checking for new homes", e);
+    }
+  }
+
+  @GetMapping(value = "/lastday/{name}")
+  public ResponseEntity<String> lastDay(@PathVariable("name") String name) {
+    try {
+      log.info("Checking last day to apply for homes via API for {}", name);
+      HomeSearchConfig config = homeSearchConfigList.stream()
+          .filter(c -> c.name().equalsIgnoreCase(name))
+          .findFirst()
+          .orElseThrow(() -> new ClientException("No config found for " + name));
+      List<Homes> homes = homeService.getHomesWithLastDateToday(config);
+      lastUpdatedService.sendNotificationOfLastDayToApplyForHomes(homes, config, true);
+      return ResponseEntity.ok("Done. Please check your slack.");
+    } catch (Exception e) {
+      log.error("Error occurred while checking for last day to apply for homes for the user {}", name, e);
+      throw new ServerErrorException("Error occurred while checking for last day to apply for homes", e);
     }
   }
 

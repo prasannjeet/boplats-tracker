@@ -1,8 +1,6 @@
 package com.prasannjeet.vaxjobostader.testbeans;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.prasannjeet.vaxjobostader.jpa.Homes;
 import com.prasannjeet.vaxjobostader.service.SlackService;
@@ -17,8 +15,7 @@ public class SlackServiceImpl implements SlackService {
     }
 
     @Override
-    public Map<String, List<Homes>> getNewHomes(HomeSearchConfig config) {
-        log.info("getNewHomes called with config: {}", config);
-        return new HashMap<>();
+    public void sendNotificationOfLastDayToApplyForHomes(List<Homes> homes, HomeSearchConfig config, boolean forceSend) {
+        log.info("sendNotificationOfLastDayToApplyForHomes called with config: {}", config);
     }
 }

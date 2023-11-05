@@ -27,6 +27,7 @@ log:
 
 appconfig:
   vbUrl: ${VB_URL:https://bpvx.vaxjo.se/API/Service/SearchServiceHandler.ashx}
+  lastDateCron: ${LAST_DATE_CRON}
   databaseUpdateCron: ${DATABASE_UPDATE_CRON}
   slackCron: ${SLACK_CRON}
   vxPrefixLink: ${VX_PREFIX_LINK}

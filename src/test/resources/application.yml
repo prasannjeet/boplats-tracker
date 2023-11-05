@@ -21,3 +21,4 @@ appconfig:
   vbUrl: ${VB_URL:https://bpvx.vaxjo.se/API/Service/SearchServiceHandler.ashx}
   databaseUpdateCron: ${DATABASE_UPDATE_CRON:0 0 0 * * *}
   slackCron: ${SLACK_CRON:0 0 0 * * *}
+  lastDateCron: '0 30 7 * * ?'

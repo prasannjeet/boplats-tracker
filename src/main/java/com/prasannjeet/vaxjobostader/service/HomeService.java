@@ -5,6 +5,8 @@ import com.prasannjeet.vaxjobostader.client.dto.response.Result;
 import com.prasannjeet.vaxjobostader.jpa.Homes;
 import java.util.Date;
 import java.util.List;
+
+import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
 import org.springframework.data.jpa.repository.Modifying;
 
 public interface HomeService {
@@ -18,4 +20,6 @@ public interface HomeService {
   List<Homes> getFilteredItems(int rentPerMonth, int rentPerMonth2, double minArea, double maxArea,
       double queuePoints, int objectSubGroupNo, int objectSubGroupNo2, int marketPlaceNo,
       int companyNo, Date date);
+
+  List<Homes> getHomesWithLastDateToday(HomeSearchConfig config);
 }

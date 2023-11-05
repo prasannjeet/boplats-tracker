@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
 import com.prasannjeet.vaxjobostader.enums.PlaceName;
@@ -47,15 +46,14 @@ public class Beans {
   AppConfig appConfig;
 
   @Bean
-  public HomeService homeService() {
-    return new HomeServiceImpl(client, homesRepository, constantsRepository);
-  }
-
-  @Bean
   public SlackService lastUpdatedService() {
     return new SlackServiceImpl(homesRepository, userSelectedHomesRepository, appConfig);
   }
 
+  @Bean
+  public HomeService homeService() {
+    return new HomeServiceImpl(client, homesRepository, constantsRepository);
+  }
 
   @Bean
   public List<HomeSearchConfig> homeSearchConfigList() {
