@@ -31,3 +31,5 @@ appconfig:
   databaseUpdateCron: ${DATABASE_UPDATE_CRON}
   slackCron: ${SLACK_CRON}
   vxPrefixLink: ${VX_PREFIX_LINK}
+  configFilePath: ${CONFIG_FILE_PATH}
+

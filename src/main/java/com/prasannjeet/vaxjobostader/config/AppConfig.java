@@ -16,5 +16,6 @@ public class AppConfig {
   private String databaseUpdateCron;
   private String slackCron;
   private String vxPrefixLink;
+  private String configFilePath;
 
 }

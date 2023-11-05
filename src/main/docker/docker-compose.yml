@@ -8,3 +8,5 @@ services:
        - "5005:5005"
      env_file:
        - template.env
+     volumes:
+       - ./config:/config

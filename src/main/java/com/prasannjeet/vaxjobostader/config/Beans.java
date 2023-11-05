@@ -28,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -55,9 +57,10 @@ public class Beans {
     return new HomeServiceImpl(client, homesRepository, constantsRepository);
   }
 
+  //TODO: Create a scheduled task which can watch for changes in the config file and reload the beans
   @Bean
   public List<HomeSearchConfig> homeSearchConfigList() {
-    ClassPathResource resource = new ClassPathResource("homeSearchConfig.json");
+    Resource resource = getConfigResource();
     List<HomeSearchConfig> validConfigs = new ArrayList<>();
     try {
       JsonNode root = getMapper().readTree(resource.getInputStream());
@@ -87,6 +90,8 @@ public class Beans {
               marketPlaceDescriptions, placeNames, needLastDateNotification);
 
           validConfigs.add(config);
+
+          log.info("Successfully imported config for {}", name);
         } catch (IllegalArgumentException e) {
           // Log and ignore the invalid config
           log.error("Failed to import config for {}", node.get("name").asText(), e);
@@ -107,6 +112,14 @@ public class Beans {
 
     // Return a new list containing only unique configurations
     return new ArrayList<>(uniqueConfigs.values());
+  }
+
+  private Resource getConfigResource() {
+    if (appConfig.getConfigFilePath().contains("classpath:")) {
+      return new ClassPathResource(appConfig.getConfigFilePath().replace("classpath:", ""));
+    } else {
+      return new FileSystemResource(appConfig.getConfigFilePath());
+    }
   }
 
   private Set<MarketPlaceDescription> parseMarketPlaceDescriptions(String descriptions) {

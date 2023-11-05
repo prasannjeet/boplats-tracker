@@ -8,6 +8,12 @@ ENV JAVA_MAX_MEM=1024m \
 COPY application.yml ${APP_FOLDER}/
 COPY @project.artifactId@-@project.version@.jar ${APP_FOLDER}/app.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "app.jar"]
+RUN mkdir -p /app
+
+# Copy the entrypoint script to the container
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 8080
