@@ -1,9 +1,9 @@
 package com.prasannjeet.vaxjobostader.service.preferences;
 
-import java.util.Set;
-
 import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
 import com.prasannjeet.vaxjobostader.enums.PlaceName;
+
+import java.util.Set;
 
 public record HomeSearchConfig(
     String name,

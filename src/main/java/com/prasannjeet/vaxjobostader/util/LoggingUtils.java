@@ -1,9 +1,9 @@
 package com.prasannjeet.vaxjobostader.util;
 
-import static lombok.AccessLevel.PRIVATE;
-
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
+
+import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public class LoggingUtils {

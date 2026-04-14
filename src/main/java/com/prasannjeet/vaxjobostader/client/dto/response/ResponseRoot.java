@@ -1,10 +1,5 @@
 package com.prasannjeet.vaxjobostader.client.dto.response;
 
-import static com.prasannjeet.vaxjobostader.util.LoggingUtils.logException;
-import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
-
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.cloud.translate.Translate;
@@ -16,6 +11,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
+import static com.prasannjeet.vaxjobostader.util.LoggingUtils.logException;
+import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
 
 @NoArgsConstructor
 @AllArgsConstructor

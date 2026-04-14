@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
   private String vbUrl;
+  private String vbApiKey;
+  private Integer listApiCacheDurationHours;
+  private Integer detailApiCallIntervalSeconds;
   private String lastDateCron;
   private String databaseUpdateCron;
   private String slackCron;

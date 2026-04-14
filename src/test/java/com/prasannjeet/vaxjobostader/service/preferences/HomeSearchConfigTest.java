@@ -1,12 +1,5 @@
 package com.prasannjeet.vaxjobostader.service.preferences;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.EnumSet;
-import java.util.List;
-
 import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
 import com.prasannjeet.vaxjobostader.enums.PlaceName;
 import com.prasannjeet.vaxjobostader.testbeans.Config;
@@ -15,6 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.EnumSet;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")

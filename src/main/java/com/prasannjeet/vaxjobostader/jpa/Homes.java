@@ -1,18 +1,13 @@
 package com.prasannjeet.vaxjobostader.jpa;
 
 import com.prasannjeet.vaxjobostader.jpa.converters.StringLobConverter;
-import java.util.Date;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor

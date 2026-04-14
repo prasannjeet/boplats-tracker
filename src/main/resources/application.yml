@@ -26,7 +26,10 @@ log:
   spring: ${SPRING_LOG_LEVEL:INFO}
 
 appconfig:
-  vbUrl: ${VB_URL:https://bpvx.vaxjo.se/API/Service/SearchServiceHandler.ashx}
+  vbUrl: ${VB_URL:https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects}
+  vbApiKey: ${VB_API_KEY:REDACTED}
+  listApiCacheDurationHours: ${LIST_API_CACHE_DURATION_HOURS:24}
+  detailApiCallIntervalSeconds: ${DETAIL_API_CALL_INTERVAL_SECONDS:60}
   lastDateCron: ${LAST_DATE_CRON}
   databaseUpdateCron: ${DATABASE_UPDATE_CRON}
   slackCron: ${SLACK_CRON}

@@ -1,27 +1,22 @@
 package com.prasannjeet.vaxjobostader.controller;
 
-import static com.prasannjeet.vaxjobostader.util.HomeResultConverter.convertHomesToResults;
-
-import java.util.Date;
-import java.util.List;
-
 import com.prasannjeet.vaxjobostader.client.dto.response.ResponseRoot;
 import com.prasannjeet.vaxjobostader.client.dto.response.Result;
 import com.prasannjeet.vaxjobostader.exception.ClientException;
-import com.prasannjeet.vaxjobostader.jpa.Homes;
+import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.service.HomeService;
 import com.prasannjeet.vaxjobostader.service.SlackService;
 import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerErrorException;
+
+import java.util.Date;
+import java.util.List;
+
+import static com.prasannjeet.vaxjobostader.util.HomeResultConverter.convertHomesToResults;
 
 @RestController
 @RequestMapping("/list")
@@ -74,7 +69,7 @@ public class Listing {
           .filter(c -> c.name().equalsIgnoreCase(name))
           .findFirst()
           .orElseThrow(() -> new ClientException("No config found for " + name));
-      List<Homes> homes = homeService.getHomesWithLastDateToday(config);
+      List<House> homes = homeService.getHomesWithLastDateToday(config);
       lastUpdatedService.sendNotificationOfLastDayToApplyForHomes(homes, config, true);
       return ResponseEntity.ok("Done. Please check your slack.");
     } catch (Exception e) {
@@ -100,7 +95,7 @@ public class Listing {
       Date date = new Date();
       log.info("Querying the database now.");
 
-      List<Homes> allHomes = homeService.getFilteredItems(
+      List<House> allHomes = homeService.getFilteredItems(
           minRent, maxRent, minArea, maxArea, points, minRooms, maxRooms, excludeSenior ? 9 : -1,
           company, date
       );

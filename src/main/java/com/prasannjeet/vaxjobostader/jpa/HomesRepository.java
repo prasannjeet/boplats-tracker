@@ -1,11 +1,11 @@
 package com.prasannjeet.vaxjobostader.jpa;
 
+import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HomesRepository extends JpaRepository<Homes, String> {
 

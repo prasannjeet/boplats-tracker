@@ -1,15 +1,15 @@
 package com.prasannjeet.vaxjobostader.client;
 
-import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
-
-import java.io.IOException;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
+
+import java.io.IOException;
+
+import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
 
 @RequiredArgsConstructor
 @Slf4j

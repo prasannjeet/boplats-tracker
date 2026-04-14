@@ -1,33 +1,34 @@
 package com.prasannjeet.vaxjobostader.service;
 
-import static lombok.AccessLevel.PRIVATE;
+import com.prasannjeet.vaxjobostader.enums.PlaceName;
+import com.prasannjeet.vaxjobostader.jpa.House;
+import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
-import com.prasannjeet.vaxjobostader.enums.PlaceName;
-import com.prasannjeet.vaxjobostader.jpa.Homes;
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
-import lombok.NoArgsConstructor;
+import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public class HomeUtil {
 
-    //TODO: Filter by market place no (not description) and fetch directly from sql
-    public static List<Homes> filterHomes(List<Homes> homes, HomeSearchConfig config) {
+    public static List<House> filterHomes(List<House> houses, HomeSearchConfig config) {
         Set<String> placeNameDisplayNames = config.placeNames().stream()
             .map(PlaceName::getDisplayName)
+            .map(String::toLowerCase)
             .collect(Collectors.toSet());
 
-        Set<String> marketPlaceDescriptionNames = config.marketPlaceDescriptions().stream()
-            .map(MarketPlaceDescription::getDescription)
-            .collect(Collectors.toSet());
-
-        return homes.stream()
-            .filter(home -> placeNameDisplayNames.contains(home.getPlaceName()))
-            .filter(home -> marketPlaceDescriptionNames.contains(home.getMarketPlaceDescription()))
+        return houses.stream()
+            .filter(house -> {
+                if (placeNameDisplayNames.isEmpty()) return true; // If no place names specified, don't filter
+                if (house.getAddress() == null) return false;
+                
+                // If any of the place names are found in the address (case insensitive)
+                String addressLower = house.getAddress().toLowerCase();
+                return placeNameDisplayNames.stream().anyMatch(addressLower::contains);
+            })
             .toList();
     }
 }

@@ -1,12 +1,12 @@
 package com.prasannjeet.vaxjobostader.jpa.converters;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
+import jakarta.persistence.AttributeConverter;
 
 import java.util.Arrays;
 import java.util.List;
 
-import jakarta.persistence.AttributeConverter;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
 
 public class ListLobConverter implements AttributeConverter<List<String>, byte[]> {
 

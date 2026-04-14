@@ -1,0 +1,116 @@
+{
+    "id": "HFPvTcWGtGFRqJddx76BHbJb",
+    "localId": "4430449",
+    "number": "AN-12936",
+    "displayName": "Hagtornsvägen 5 A",
+    "type": "residential",
+    "queueType": "residential",
+    "queueTypeDisplayName": "Bostad",
+    "nrApplications": 0,
+    "pricing": {
+        "price": 5035.6000
+    },
+    "economy": {},
+    "location": {
+        "area": {
+            "displayName": "Åbyfors  2:81"
+        },
+        "areaPath": [
+            {
+                "id": "HVgdmFhhMX4dm4DtKVgXRGWm",
+                "displayName": "Åby"
+            }
+        ],
+        "address": {
+            "address": "Hagtornsvägen 5 A",
+            "street": "Hagtornsvägen",
+            "streetnumber": "5",
+            "postcode": "36334",
+            "city": "TJUREDA",
+            "country": "Sverige",
+            "completeAdress": "Hagtornsvägen 5 A, 36334, TJUREDA, Sverige"
+        },
+        "floorDisplayName": "Våning BV"
+    },
+    "availability": {
+        "availableFrom": "/Date(1785535200000)/"
+    },
+    "publishing": {
+        "published": true
+    },
+    "application": {
+        "openTo": "/Date(1776549540000)/"
+    },
+    "size": {
+        "roomsDisplayName": "2 rum och kök",
+        "area": 51.0000
+    },
+    "included": [
+        {
+            "displayName": "Bredband finns"
+        },
+        {
+            "displayName": "Marklägenhet"
+        },
+        {
+            "displayName": "P-plats ingår i mån av tillgång"
+        },
+        {
+            "displayName": "TV-grundutbud"
+        },
+        {
+            "displayName": "Uteplats"
+        }
+    ],
+    "attributes": [],
+    "info": {
+        "list": [
+            {
+                "displayName": "Om Hagtornsvägen 5",
+                "value": "Här bor du i trivsamma marklägenheter med skolan och förskolan som granne.",
+                "linkedToType": "building",
+                "typeOrder": 15
+            }
+        ],
+        "area": [
+            {
+                "displayName": "Om Åby",
+                "value": "Vackra Åby ligger 25 km norr om Växjö. Orten har en egen personlighet och erbjuder en hög livskvalitet.\r\n\r\nAvkopplingsmöjligheter och naturskönhet är karakteristiska drag. Här finns bland annat härliga strövområden, båtplats (Sveriges sydligaste sluss) i Helgasjön som sträcker sig in mot Växjö, kanotuthyrning, badplats, fotbollsplan samt en bandyanläggning och ett bandylag på svensk elitnivå! \r\n\r\nOrten må vara liten, men den saknar inte nödvändigheter som förskola, fritidshem och skola (årskurs 1-6). En aktiv idrottsförening verkar för en omfattande barn- och ungdomsverksamhet och otaliga aktiviteter erbjuds.",
+                "linkedToType": "marketRegion",
+                "typeOrder": 50
+            }
+        ],
+        "company": [
+            {
+                "displayName": "Hyresvärd: Vidingehem",
+                "value": "Det här objektet hyrs ut av Vidingehem AB.\n\nEventuella interiörbilder är avsedda som exempel och speglar inte nödvändigtvis den faktiska lägenheten. \n\nAlla lägenheter hyrs ut omöblerade, om inte annat anges.",
+                "linkedToType": "organisation1",
+                "order": 1,
+                "typeOrder": 60
+            }
+        ]
+    },
+    "files": {
+        "locationImage": [
+            {
+                "displayName": "Bild Hagtornsv 5",
+                "mimeType": "image/jpeg",
+                "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/HFPvTcWGtGFRqJddx76BHbJb/images/565812",
+                "linkedToType": "building"
+            },
+            {
+                "displayName": "Bild Hagtornsv 5",
+                "mimeType": "image/jpeg",
+                "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/HFPvTcWGtGFRqJddx76BHbJb/images/565813",
+                "linkedToType": "building"
+            }
+        ],
+        "floorplan": [
+            {
+                "displayName": "033-001.pdf",
+                "mimeType": "application/pdf",
+                "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/HFPvTcWGtGFRqJddx76BHbJb/files/567079"
+            }
+        ]
+    }
+}

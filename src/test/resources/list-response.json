@@ -1,0 +1,40 @@
+{
+    "count": 153,
+    "items": [
+        {
+            "id": "HFPvTcWGtGFRqJddx76BHbJb",
+            "localId": "4430449",
+            "displayName": "Hagtornsvägen 5 A",
+            "description": "Här bor du i trivsamma marklägenheter med skolan och förskolan som granne.",
+            "type": "residential",
+            "queueType": "residential",
+            "pricing": {
+                "price": 5035.6000
+            },
+            "location": {
+                "area": {
+                    "displayName": "Åbyfors  2:81"
+                },
+                "areaPath": [
+                    {
+                        "id": "HVgdmFhhMX4dm4DtKVgXRGWm",
+                        "displayName": "Åby"
+                    }
+                ]
+            },
+            "availability": {
+                "availableFrom": "/Date(1785535200000)/"
+            },
+            "size": {
+                "roomsDisplayName": "2 rum och kök",
+                "shortRoomsDisplayName": "2 ROK",
+                "area": 51.0000
+            },
+            "thumbnail": {
+                "exists": true,
+                "displayName": "Bild Hagtornsv 5",
+                "version": "f-565812"
+            }
+        }
+    ]
+}

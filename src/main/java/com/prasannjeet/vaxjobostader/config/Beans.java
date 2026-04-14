@@ -1,22 +1,10 @@
 package com.prasannjeet.vaxjobostader.config;
 
-import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
 import com.prasannjeet.vaxjobostader.enums.PlaceName;
-import com.prasannjeet.vaxjobostader.jpa.ConstantsRepository;
-import com.prasannjeet.vaxjobostader.jpa.HomesRepository;
+import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
 import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomesRepository;
 import com.prasannjeet.vaxjobostader.service.HomeService;
 import com.prasannjeet.vaxjobostader.service.HomeServiceImpl;
@@ -31,6 +19,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
+
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -38,23 +32,20 @@ public class Beans {
 
   final VaxjobostaderClient client;
 
-  final HomesRepository homesRepository;
+  final HouseRepository houseRepository;
 
   final UserSelectedHomesRepository userSelectedHomesRepository;
 
-  final ConstantsRepository constantsRepository;
-
-  final
-  AppConfig appConfig;
+  final AppConfig appConfig;
 
   @Bean
   public SlackService lastUpdatedService() {
-    return new SlackServiceImpl(homesRepository, userSelectedHomesRepository, appConfig);
+    return new SlackServiceImpl(houseRepository, userSelectedHomesRepository, appConfig);
   }
 
   @Bean
   public HomeService homeService() {
-    return new HomeServiceImpl(client, homesRepository, constantsRepository);
+    return new HomeServiceImpl(houseRepository);
   }
 
   //TODO: Create a scheduled task which can watch for changes in the config file and reload the beans
