@@ -15,6 +15,7 @@ public class AppConfig {
   private String vbApiKey;
   private Integer listApiCacheDurationHours;
   private Integer detailApiCallIntervalSeconds;
+  private String slackWebhookUrl;
   private String lastDateCron;
   private String databaseUpdateCron;
   private String slackCron;

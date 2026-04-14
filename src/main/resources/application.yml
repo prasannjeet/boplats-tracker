@@ -30,6 +30,7 @@ appconfig:
   vbApiKey: ${VB_API_KEY:REDACTED}
   listApiCacheDurationHours: ${LIST_API_CACHE_DURATION_HOURS:24}
   detailApiCallIntervalSeconds: ${DETAIL_API_CALL_INTERVAL_SECONDS:60}
+  slackWebhookUrl: ${SLACK_WEBHOOK_URL:https://hooks.slack.com/services/REDACTED/REDACTED/REDACTED}
   lastDateCron: ${LAST_DATE_CRON}
   databaseUpdateCron: ${DATABASE_UPDATE_CRON}
   slackCron: ${SLACK_CRON}

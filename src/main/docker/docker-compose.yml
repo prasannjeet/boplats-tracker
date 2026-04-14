@@ -7,6 +7,6 @@ services:
        - "8080:8080"
        - "5005:5005"
      env_file:
-       - template.env
+       - local.env
      volumes:
        - ./config:/config

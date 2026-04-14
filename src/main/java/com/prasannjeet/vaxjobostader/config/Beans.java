@@ -58,7 +58,7 @@ public class Beans {
       for (JsonNode node : root) {
         try {
           String name = node.get("name").asText();
-          String webHook = node.get("webHook").asText();
+          String webHook = appConfig.getSlackWebhookUrl();
           int minRent = node.get("minRent").asInt();
           int maxRent = node.get("maxRent").asInt();
           int minArea = node.get("minArea").asInt();
