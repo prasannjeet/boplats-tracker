@@ -5,7 +5,7 @@ spring:
   application:
     name: vaxjobostader
   datasource:
-    url: jdbc:mariadb://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}?allowPublicKeyRetrieval=true
+    url: jdbc:mariadb://${HOSTNAME:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:vaxjo}?allowPublicKeyRetrieval=true
 #    url: jdbc:mysql://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 
     username: ${DATABASE_USERNAME:vaxjo}
