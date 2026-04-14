@@ -14,7 +14,7 @@ spring:
       max-lifetime: 600000
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: ${HIBERNATE_DDL_AUTO:none}
     database: MYSQL
     database-platform: org.hibernate.dialect.MariaDBDialect
 
@@ -32,7 +32,6 @@ appconfig:
   detailApiCallIntervalSeconds: ${DETAIL_API_CALL_INTERVAL_SECONDS:60}
   slackWebhookUrl: ${SLACK_WEBHOOK_URL:https://hooks.slack.com/services/REDACTED/REDACTED/REDACTED}
   lastDateCron: ${LAST_DATE_CRON}
-  databaseUpdateCron: ${DATABASE_UPDATE_CRON}
   slackCron: ${SLACK_CRON}
   vxPrefixLink: ${VX_PREFIX_LINK}
   configFilePath: ${CONFIG_FILE_PATH}

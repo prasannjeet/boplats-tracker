@@ -17,7 +17,6 @@ public class AppConfig {
   private Integer detailApiCallIntervalSeconds;
   private String slackWebhookUrl;
   private String lastDateCron;
-  private String databaseUpdateCron;
   private String slackCron;
   private String vxPrefixLink;
   private String configFilePath;
