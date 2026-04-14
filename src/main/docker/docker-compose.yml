@@ -10,3 +10,5 @@ services:
        - local.env
      volumes:
        - ./config:/config
+     extra_hosts:
+       - "host.docker.internal:172.17.0.1"  # Map to host IP
