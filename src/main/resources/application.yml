@@ -5,9 +5,8 @@ spring:
   application:
     name: vaxjobostader
   datasource:
-    url: jdbc:mariadb://${HOSTNAME:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:vaxjo}?allowPublicKeyRetrieval=true
-#    url: jdbc:mysql://${HOSTNAME:localhost}:3306/${DATABASE_NAME:vaxjo}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-
+    url: jdbc:mysql://${HOSTNAME:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:vaxjo}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    url: jdbc:mariadb://${HOSTNAME:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:vaxjo}?allowPublicKeyRetrieval=true
     username: ${DATABASE_USERNAME:vaxjo}
     password: ${DATABASE_PASSWORD}
     hikari:
@@ -16,7 +15,7 @@ spring:
     hibernate:
       ddl-auto: ${HIBERNATE_DDL_AUTO:none}
     database: MYSQL
-    database-platform: org.hibernate.dialect.MariaDBDialect
+    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
 
 server:
   port: ${SERVER_PORT:8080}
@@ -26,13 +25,12 @@ log:
   spring: ${SPRING_LOG_LEVEL:INFO}
 
 appconfig:
-  vbUrl: ${VB_URL:https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects}
-  vbApiKey: ${VB_API_KEY:REDACTED}
+  vbUrl: ${VB_URL}
+  vbApiKey: ${VB_API_KEY}
   listApiCacheDurationHours: ${LIST_API_CACHE_DURATION_HOURS:24}
   detailApiCallIntervalSeconds: ${DETAIL_API_CALL_INTERVAL_SECONDS:60}
-  slackWebhookUrl: ${SLACK_WEBHOOK_URL:https://hooks.slack.com/services/REDACTED/REDACTED/REDACTED}
+  slackWebhookUrl: ${SLACK_WEBHOOK_URL}
   lastDateCron: ${LAST_DATE_CRON}
   slackCron: ${SLACK_CRON}
   vxPrefixLink: ${VX_PREFIX_LINK}
   configFilePath: ${CONFIG_FILE_PATH}
-
