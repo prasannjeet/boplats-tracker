@@ -7,18 +7,29 @@ import com.prasannjeet.vaxjobostader.client.dto.house.HouseListResponse;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -28,132 +39,185 @@ public class HouseSyncService {
     private final VaxjobostaderClient vaxjobostaderClient;
     private final HouseRepository houseRepository;
     private final AppConfig appConfig;
+    private final TaskScheduler taskScheduler;
+
+    private final AtomicReference<ScheduledFuture<?>> nextDetailRun = new AtomicReference<>();
 
     /**
-     * Fetches the full property listing and reconciles it with the database.
-     * Runs every N hours (default 24). Does NOT touch detail fields (queue points,
-     * application deadline, image) — those are managed by syncHouseDetails().
+     * Reconciles the API listing with the database. Order matters:
+     * 1) reconcile active rows against the API response (insert / update / end-date)
+     * 2) end any house whose application deadline has passed
+     *
+     * Doing the deadline sweep AFTER the reconcile means a listing that is past
+     * its deadline but still present in the API response is matched (and updated)
+     * before being ended, instead of producing a duplicate row.
      */
     @Scheduled(fixedDelayString = "${appconfig.listApiCacheDurationHours:24}", timeUnit = TimeUnit.HOURS)
     @Transactional
     public void syncHouseList() {
         log.info("Starting house list synchronization...");
+        Date now = new Date();
+        LocalDate today = LocalDate.now();
         try {
             HouseListResponse response = vaxjobostaderClient.getPropertiesList();
-            if (response == null || response.items() == null || response.items().isEmpty()) {
-                log.warn("Received empty or null list response from API. Aborting sync.");
-                return;
+
+            int inserted = 0;
+            int updated = 0;
+            int skipped = 0;
+            int endedMissing = 0;
+
+            // Reconcile only when the API response is healthy. Otherwise we'd
+            // mark every active house ended just because the API hiccupped.
+            if (response != null && response.items() != null && !response.items().isEmpty()) {
+                List<HouseListItem> apiItems = response.items();
+                List<House> active = houseRepository.findAllByEndDateIsNull();
+                Map<HouseKey, House> activeByKey = new HashMap<>(active.size());
+                for (House h : active) {
+                    activeByKey.put(HouseKey.of(h.getId(), h.getAvailableFrom()), h);
+                }
+
+                List<House> toSave = new ArrayList<>(apiItems.size());
+
+                for (HouseListItem item : apiItems) {
+                    Date availableFrom = item.availability() == null ? null : item.availability().availableFrom();
+                    if (availableFrom == null) {
+                        log.warn("API item id={} has no availableFrom; skipping.", item.id());
+                        skipped++;
+                        continue;
+                    }
+
+                    HouseKey key = HouseKey.of(item.id(), availableFrom);
+                    House existing = activeByKey.remove(key);
+                    House house = existing != null ? existing : new House();
+                    boolean isNew = existing == null;
+
+                    house.setId(item.id());
+                    house.setLocalId(item.localId());
+                    house.setDescription(item.description());
+                    house.setAvailableFrom(availableFrom);
+
+                    if (isNew && item.location() != null && item.location().area() != null) {
+                        house.setAddress(item.location().area().displayName());
+                    }
+                    if (item.pricing() != null) {
+                        house.setRent(item.pricing().price());
+                    }
+                    if (item.size() != null) {
+                        house.setArea(item.size().area());
+                        house.setRooms(parseRooms(item.size().shortRoomsDisplayName()));
+                    }
+
+                    toSave.add(house);
+                    if (isNew) inserted++;
+                    else updated++;
+                }
+
+                houseRepository.saveAll(toSave);
+
+                // Whatever remained in activeByKey is no longer in the API response → ended.
+                List<House> toEnd = new ArrayList<>(activeByKey.values());
+                for (House h : toEnd) {
+                    h.setEndDate(now);
+                }
+                if (!toEnd.isEmpty()) {
+                    houseRepository.saveAll(toEnd);
+                }
+                endedMissing = toEnd.size();
+            } else {
+                log.warn("Received empty or null list response from API. Skipping reconcile but still running deadline sweep.");
             }
 
-            List<HouseListItem> apiItems = response.items();
-            Set<String> apiIds = apiItems.stream()
-                .map(HouseListItem::id)
-                .collect(Collectors.toSet());
+            // Always run the deadline sweep — it's independent of API health and
+            // a hiccup shouldn't leave past-deadline rows lingering as active.
+            int pastDeadline = houseRepository.markPastDeadlineEnded(today, now);
 
-            // Load all existing houses as a map for O(1) lookup
-            Map<String, House> existingMap = houseRepository.findAll().stream()
-                .collect(Collectors.toMap(House::getId, h -> h));
-
-            List<House> toUpsert = new ArrayList<>(apiItems.size());
-
-            for (HouseListItem item : apiItems) {
-                House house = existingMap.getOrDefault(item.id(), new House());
-                boolean isNew = house.getId() == null;
-
-                house.setId(item.id());
-                house.setLocalId(item.localId());
-                house.setDescription(item.description());
-                house.setEndDate(null); // ensure active
-
-                // Only set area-level address for new houses; detail sync will overwrite with full address
-                if (isNew && item.location() != null && item.location().area() != null) {
-                    house.setAddress(item.location().area().displayName());
-                }
-
-                if (item.pricing() != null) {
-                    house.setRent(item.pricing().price());
-                }
-                if (item.size() != null) {
-                    house.setArea(item.size().area());
-                    house.setRooms(parseRooms(item.size().shortRoomsDisplayName()));
-                }
-                if (item.availability() != null) {
-                    house.setAvailableFrom(item.availability().availableFrom());
-                }
-
-                toUpsert.add(house);
-            }
-
-            houseRepository.saveAll(toUpsert);
-
-            // Mark houses that disappeared from the listing as ended
-            List<House> toEnd = existingMap.values().stream()
-                .filter(h -> !apiIds.contains(h.getId()) && h.getEndDate() == null)
-                .peek(h -> h.setEndDate(new Date()))
-                .collect(Collectors.toList());
-
-            if (!toEnd.isEmpty()) {
-                houseRepository.saveAll(toEnd);
-            }
-
-            log.info("House list sync complete. Upserted: {}, marked ended: {}",
-                toUpsert.size(), toEnd.size());
+            log.info("House list sync complete. Inserted: {}, updated: {}, ended-missing: {}, ended-past-deadline: {}, skipped: {}",
+                inserted, updated, endedMissing, pastDeadline, skipped);
 
         } catch (Exception e) {
             log.error("Error during house list synchronization", e);
         }
     }
 
+    @PostConstruct
+    void scheduleFirstDetailRun() {
+        scheduleNextDetailRun(Duration.ofSeconds(appConfig.getDetailFetchMinDelaySeconds()));
+    }
+
+    @PreDestroy
+    void cancelDetailRun() {
+        ScheduledFuture<?> f = nextDetailRun.getAndSet(null);
+        if (f != null) f.cancel(false);
+    }
+
     /**
-     * Processes a batch of houses that need their details refreshed.
-     * A house needs a refresh if it has never been fetched (lastDetailFetchedAt IS NULL)
-     * or if its last fetch is older than detailRefreshIntervalHours.
-     * Runs every N seconds (default 60). Processes detailSyncBatchSize houses per tick.
-     *
-     * This design ensures queue points (queuePointsCurrentPositionX), which can appear
-     * days after a listing goes live, are always eventually captured.
+     * Picks the single oldest stale active house, refreshes its detail, and
+     * re-schedules itself with a delay derived from active-house count and
+     * the refresh window. Cadence is therefore a consequence of workload.
      */
-    @Scheduled(fixedDelayString = "${appconfig.detailApiCallIntervalSeconds:60}", timeUnit = TimeUnit.SECONDS)
+    void runDetailTick() {
+        try {
+            syncOneHouseDetail();
+        } catch (Exception e) {
+            log.error("Unexpected error in detail tick", e);
+        } finally {
+            scheduleNextDetailRun(computeNextDelay());
+        }
+    }
+
     @Transactional
-    public void syncHouseDetails() {
+    public void syncOneHouseDetail() {
         Instant cutoff = Instant.now().minus(appConfig.getDetailRefreshIntervalHours(), ChronoUnit.HOURS);
-        int batchSize = appConfig.getDetailSyncBatchSize();
-
         List<House> batch = houseRepository.findHousesNeedingDetailRefresh(
-            cutoff, PageRequest.of(0, batchSize)
+            cutoff, PageRequest.of(0, 1)
         );
-
         if (batch.isEmpty()) {
             log.debug("No houses needing detail refresh.");
             return;
         }
 
-        log.info("Refreshing details for {} house(s).", batch.size());
-
-        for (House house : batch) {
-            Instant fetchedAt = Instant.now();
-            try {
-                HouseDetail detail = vaxjobostaderClient.getPropertyDetail(house.getId());
-                if (detail == null) {
-                    log.warn("Null detail response for house {}. Skipping.", house.getId());
-                    house.setLastDetailFetchedAt(fetchedAt);
-                    houseRepository.save(house);
-                    continue;
-                }
-
+        House house = batch.get(0);
+        Instant fetchedAt = Instant.now();
+        try {
+            HouseDetail detail = vaxjobostaderClient.getPropertyDetail(house.getId());
+            if (detail == null) {
+                log.warn("Null detail response for house {}.", house.getId());
+            } else {
                 applyDetailToHouse(house, detail);
-                house.setLastDetailFetchedAt(fetchedAt);
-                houseRepository.save(house);
-
-                log.debug("Detail refreshed for house {}", house.getId());
-
-            } catch (Exception e) {
-                log.error("Failed to fetch detail for house {}. Will retry next cycle.", house.getId(), e);
-                // Mark as attempted so this house doesn't block the queue; it will be retried next cycle
-                house.setLastDetailFetchedAt(fetchedAt);
-                houseRepository.save(house);
             }
+        } catch (Exception e) {
+            log.error("Failed to fetch detail for house {}.", house.getId(), e);
+        } finally {
+            // Always advance the timestamp so a single problematic house cannot
+            // block the queue by being picked first repeatedly.
+            house.setLastDetailFetchedAt(fetchedAt);
+            houseRepository.save(house);
         }
+    }
+
+    Duration computeNextDelay() {
+        long active = houseRepository.countByEndDateIsNull();
+        int min = appConfig.getDetailFetchMinDelaySeconds();
+        int max = appConfig.getDetailFetchMaxDelaySeconds();
+        int idle = appConfig.getDetailFetchIdleDelaySeconds();
+
+        if (active <= 0) {
+            return Duration.ofSeconds(idle);
+        }
+
+        long windowSeconds = appConfig.getDetailRefreshIntervalHours() * 3600L;
+        long perHouse = Math.max(1L, windowSeconds / active);
+        long clamped = Math.min(max, Math.max(min, perHouse));
+        return Duration.ofSeconds(clamped);
+    }
+
+    private void scheduleNextDetailRun(Duration delay) {
+        ScheduledFuture<?> scheduled = taskScheduler.schedule(
+            this::runDetailTick,
+            Instant.now().plus(delay)
+        );
+        ScheduledFuture<?> previous = nextDetailRun.getAndSet(scheduled);
+        if (previous != null) previous.cancel(false);
     }
 
     private void applyDetailToHouse(House house, HouseDetail detail) {
@@ -171,8 +235,12 @@ public class HouseSyncService {
                 && !detail.files().locationImage().isEmpty()) {
             house.setImageUrl(detail.files().locationImage().get(0).address());
         }
-        // Store queue points even when null — null is valid data meaning no cutoff established yet
-        house.setQueuePoints(detail.queuePointsCurrentPositionX());
+        // Sticky: only overwrite when the API actually returns a value.
+        // null means "no cut-off computed yet for this listing", not "reset to nothing".
+        Double incoming = detail.queuePointsCurrentPositionX();
+        if (incoming != null) {
+            house.setQueuePoints(incoming);
+        }
     }
 
     private Integer parseRooms(String shortRoomsDisplayName) {
@@ -183,6 +251,21 @@ public class HouseSyncService {
             return Integer.parseInt(digits);
         } catch (NumberFormatException e) {
             return null;
+        }
+    }
+
+    /**
+     * Date-truncated key. The DB column is DATE, so loaded values have time=00:00,
+     * but API values can carry a time component. Comparing via LocalDate avoids
+     * spurious "new instance" matches when the same calendar day has different
+     * times on the two sides.
+     */
+    private record HouseKey(String id, LocalDate availableFrom) {
+        static HouseKey of(String id, Date date) {
+            LocalDate ld = date == null
+                ? null
+                : date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return new HouseKey(id, ld);
         }
     }
 }

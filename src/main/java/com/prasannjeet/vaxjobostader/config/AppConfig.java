@@ -14,9 +14,10 @@ public class AppConfig {
     private String vbUrl;
     private String vbApiKey;
     private int listApiCacheDurationHours = 24;
-    private int detailApiCallIntervalSeconds = 60;
     private int detailRefreshIntervalHours = 12;
-    private int detailSyncBatchSize = 5;
+    private int detailFetchMinDelaySeconds = 30;
+    private int detailFetchMaxDelaySeconds = 1800;
+    private int detailFetchIdleDelaySeconds = 1800;
     private String slackWebhookUrl;
     private String vxPrefixLink;
 

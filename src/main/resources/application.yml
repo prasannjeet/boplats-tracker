@@ -27,8 +27,9 @@ appconfig:
   vbUrl: ${VB_URL}
   vbApiKey: ${VB_API_KEY}
   listApiCacheDurationHours: ${LIST_API_CACHE_DURATION_HOURS:24}
-  detailApiCallIntervalSeconds: ${DETAIL_API_CALL_INTERVAL_SECONDS:60}
   detailRefreshIntervalHours: ${DETAIL_REFRESH_INTERVAL_HOURS:12}
-  detailSyncBatchSize: ${DETAIL_SYNC_BATCH_SIZE:5}
+  detailFetchMinDelaySeconds: ${DETAIL_FETCH_MIN_DELAY_SECONDS:30}
+  detailFetchMaxDelaySeconds: ${DETAIL_FETCH_MAX_DELAY_SECONDS:1800}
+  detailFetchIdleDelaySeconds: ${DETAIL_FETCH_IDLE_DELAY_SECONDS:1800}
   slackWebhookUrl: ${SLACK_WEBHOOK_URL}
   vxPrefixLink: ${VX_PREFIX_LINK}

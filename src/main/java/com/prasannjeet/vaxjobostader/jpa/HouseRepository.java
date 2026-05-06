@@ -3,15 +3,23 @@ package com.prasannjeet.vaxjobostader.jpa;
 import com.prasannjeet.vaxjobostader.legacy.HomeSearchConfig;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-public interface HouseRepository extends JpaRepository<House, String> {
+public interface HouseRepository extends JpaRepository<House, Long> {
 
     List<House> findAllByEndDateIsNull();
+
+    Optional<House> findByIdAndAvailableFromAndEndDateIsNull(String id, Date availableFrom);
+
+    long countByEndDateIsNull();
 
     List<House> findAllByRentBetweenAndAreaBetweenAndRoomsBetweenAndEndDateIsNull(
         Double minRent, Double maxRent, Double minArea, Double maxArea, Integer minRooms, Integer maxRooms
@@ -24,6 +32,16 @@ public interface HouseRepository extends JpaRepository<House, String> {
         ORDER BY h.lastDetailFetchedAt ASC NULLS FIRST
         """)
     List<House> findHousesNeedingDetailRefresh(@Param("cutoff") Instant cutoff, Pageable pageable);
+
+    @Modifying
+    @Query("""
+        UPDATE House h
+        SET h.endDate = :endDate
+        WHERE h.endDate IS NULL
+        AND h.applicationDeadline IS NOT NULL
+        AND h.applicationDeadline < :now
+        """)
+    int markPastDeadlineEnded(@Param("endDate") LocalDate endDate, @Param("now") Date now);
 
     default List<House> findPreferredHomes(HomeSearchConfig config) {
         return findAllByRentBetweenAndAreaBetweenAndRoomsBetweenAndEndDateIsNull(

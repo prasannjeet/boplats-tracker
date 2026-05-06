@@ -18,6 +18,10 @@ import java.util.Date;
 public class House {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "internal_id", nullable = false)
+    private Long internalId;
+
     @Column(name = "id", nullable = false)
     private String id;
 

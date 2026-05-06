@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        Migrate house identity model:
+        - A listing is uniquely identified by (id, available_from), not id alone.
+        - Same external id with a different available_from is a new listing instance.
+        Replace the PK on `id` with a surrogate `internal_id`, and enforce the
+        natural key via a unique constraint.
+    -->
+    <changeSet id="house-drop-id-pk" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <primaryKeyExists tableName="house"/>
+        </preConditions>
+        <dropPrimaryKey tableName="house"/>
+    </changeSet>
+
+    <changeSet id="house-add-internal-id" author="prasannjeet">
+        <addColumn tableName="house">
+            <column name="internal_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="house-add-id-available-from-unique" author="prasannjeet">
+        <addUniqueConstraint
+            tableName="house"
+            columnNames="id, available_from"
+            constraintName="uk_house_id_available_from"/>
+    </changeSet>
+
+    <changeSet id="house-index-id" author="prasannjeet">
+        <createIndex tableName="house" indexName="ix_house_id">
+            <column name="id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

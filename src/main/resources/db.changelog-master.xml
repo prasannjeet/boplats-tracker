@@ -13,6 +13,7 @@
     <include file="db/changelog/rename-last-updated.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/create-house-table.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/add-house-detail-fields.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/add-surrogate-pk-and-composite-uniqueness.xml" relativeToChangelogFile="true"/>
 
     <!-- You can include more change logs here as your project evolves -->
     <!-- <include file="path/to/your/next/changelog.xml" relativeToChangelogFile="true"/> -->

@@ -14,12 +14,22 @@ mymvn test
 
 ## Architecture
 
-Two scheduled jobs in `HouseSyncService`:
+Two jobs in `HouseSyncService`:
 
-- **`syncHouseList()`** — runs every `listApiCacheDurationHours` (default 24h). Fetches the full property list from the API, upserts into the `house` table, marks removed properties with `end_date`.
-- **`syncHouseDetails()`** — runs every `detailApiCallIntervalSeconds` (default 60s). Picks up to `detailSyncBatchSize` (default 5) active houses whose `last_detail_fetched_at` is null or older than `detailRefreshIntervalHours` (default 12h), fetches full detail per property (address, deadline, image, queue points), saves back.
+- **`syncHouseList()`** — `@Scheduled` every `listApiCacheDurationHours` (default 24h). Fetches the full property list and reconciles it against the active rows; then sweeps any house whose `applicationDeadline` has passed and ends it. The order matters: reconcile-then-sweep means a listing that the API still returns past its deadline is matched (and updated) before being ended, instead of producing a duplicate row that violates the `(id, available_from)` unique constraint. The sweep runs unconditionally — even when the API hiccups and returns an empty response — because past-deadline rows shouldn't linger as active just because the API was unhealthy. Active rows missing from a healthy API response are marked with `end_date`.
+- **`syncHouseDetails()`** — self-rescheduling via `TaskScheduler` (no `@Scheduled`). After each detail fetch the next delay is recomputed as `detailRefreshIntervalHours / activeHouseCount`, clamped to `[detailFetchMinDelaySeconds, detailFetchMaxDelaySeconds]`. When no houses are active the loop polls every `detailFetchIdleDelaySeconds`. Each tick processes exactly one stale active house, so cadence is a consequence of workload rather than a magic constant.
 
-Queue points (`queuePointsCurrentPositionX`) are nullable — they appear only after a listing has enough applicants to establish a cut-off. The detail sync re-fetches all active houses on a rolling cycle, so queue points are captured whenever they appear.
+### Data model
+
+A listing instance is uniquely `(id, availableFrom)`, not `id` alone. The `house` table has a surrogate `internal_id` BIGINT primary key plus a unique constraint on `(id, available_from)`. Same external `id` with a different `availableFrom` is treated as a new row — re-listed properties get a fresh row and never mutate the historical one. API items missing `availableFrom` are skipped with a warning (we have not observed null `availableFrom` in production data; sentinel handling would hide debugging signal).
+
+### Queue points
+
+`queuePointsCurrentPositionX` is nullable — it appears only after a listing has enough applicants to establish a cut-off. Once a non-null value is captured, it is sticky: a later null response from the API does not overwrite it. A new non-null value does overwrite, so a moving cut-off is reflected.
+
+### Design history
+
+Background and rationale for the current sync model: `docs/superpowers/specs/2026-05-06-house-sync-redesign-design.md`.
 
 ## Key env vars
 
@@ -30,12 +40,13 @@ Queue points (`queuePointsCurrentPositionX`) are nullable — they appear only a
 | `SLACK_WEBHOOK_URL` | — | Slack incoming webhook |
 | `VX_PREFIX_LINK` | — | URL prefix for property links in Slack messages |
 | `LIST_API_CACHE_DURATION_HOURS` | 24 | Hours between full list syncs |
-| `DETAIL_API_CALL_INTERVAL_SECONDS` | 60 | Seconds between detail sync ticks |
 | `DETAIL_REFRESH_INTERVAL_HOURS` | 12 | Hours before a house's details are considered stale |
-| `DETAIL_SYNC_BATCH_SIZE` | 5 | Houses processed per detail sync tick |
+| `DETAIL_FETCH_MIN_DELAY_SECONDS` | 30 | Lower bound on adaptive detail-fetch delay |
+| `DETAIL_FETCH_MAX_DELAY_SECONDS` | 1800 | Upper bound on adaptive detail-fetch delay |
+| `DETAIL_FETCH_IDLE_DELAY_SECONDS` | 1800 | Delay used when no houses are active |
 
 ## Legacy
 
 - `Homes` + `HomesRepository` (in `jpa/`) — map to the old `homes` DB table which still exists.
 - `legacy/HomeSearchConfig` + `legacy/MarketPlaceDescription` — user preference types kept because `SlackService` is retained for future use.
-- `homeSearchConfig.json` — legacy user preference file (no longer loaded; kept for reference).
+- `SlackService` / `SlackServiceImpl` / `SlackClient` — Slack notification path is intact but no longer scheduled. Kept available for future re-introduction.

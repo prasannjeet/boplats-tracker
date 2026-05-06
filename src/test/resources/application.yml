@@ -23,6 +23,7 @@ appconfig:
   slackWebhookUrl: https://hooks.slack.com/services/...
   vxPrefixLink: https://example.com/
   listApiCacheDurationHours: 24
-  detailApiCallIntervalSeconds: 60
   detailRefreshIntervalHours: 12
-  detailSyncBatchSize: 5
+  detailFetchMinDelaySeconds: 30
+  detailFetchMaxDelaySeconds: 1800
+  detailFetchIdleDelaySeconds: 1800
