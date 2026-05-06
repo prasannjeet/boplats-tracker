@@ -1,6 +1,5 @@
-package com.prasannjeet.vaxjobostader.service.preferences;
+package com.prasannjeet.vaxjobostader.legacy;
 
-import com.prasannjeet.vaxjobostader.enums.MarketPlaceDescription;
 import com.prasannjeet.vaxjobostader.enums.PlaceName;
 
 import java.util.Set;

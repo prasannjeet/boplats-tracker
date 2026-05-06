@@ -1,6 +1,6 @@
 package com.prasannjeet.vaxjobostader.jpa;
 
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
+import com.prasannjeet.vaxjobostader.legacy.HomeSearchConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

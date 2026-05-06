@@ -1,4 +1,4 @@
-package com.prasannjeet.vaxjobostader.enums;
+package com.prasannjeet.vaxjobostader.legacy;
 
 public enum MarketPlaceDescription {
     TORG("Torget"),
@@ -18,4 +18,3 @@ public enum MarketPlaceDescription {
         return description;
     }
 }
-

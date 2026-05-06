@@ -1,102 +1,31 @@
 package com.prasannjeet.vaxjobostader;
 
-import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
-import com.prasannjeet.vaxjobostader.config.AppConfig;
-import com.prasannjeet.vaxjobostader.jpa.House;
-import com.prasannjeet.vaxjobostader.service.HomeService;
-import com.prasannjeet.vaxjobostader.service.SlackService;
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import java.util.List;
 
 @SpringBootApplication
 @EnableScheduling
-@RequiredArgsConstructor
 @Slf4j
 public class Application {
 
-  final VaxjobostaderClient client;
-  final HomeService homeService;
-  final SlackService lastUpdatedService;
-  final AppConfig appConfig;
-  final List<HomeSearchConfig> homeSearchConfigList;
-
-  public static void main(String[] args) {
-    while (true) {
-      try {
-        SpringApplication.run(Application.class, args);
-        log.info("Application started");
-        break;
-      } catch (Exception e) {
-        log.error("Startup Exception: {}", e.getMessage());
-        log.error("Retrying in 5 seconds...");
-        try {
-          Thread.sleep(5000);
-        } catch (InterruptedException e1) {
-          Thread.currentThread().interrupt();
-          log.error("Thread interrupted while sleeping.", e1);
+    public static void main(String[] args) {
+        while (true) {
+            try {
+                SpringApplication.run(Application.class, args);
+                log.info("Application started");
+                break;
+            } catch (Exception e) {
+                log.error("Startup Exception: {}", e.getMessage());
+                log.error("Retrying in 5 seconds...");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                    log.error("Thread interrupted while sleeping.", e1);
+                }
+            }
         }
-      }
     }
-  }
-
-  @EventListener(ApplicationReadyEvent.class)
-  public void runOnStartup() {
-    try {
-      log.info("Running one-time startup logic.");
-
-      if (!homeSearchConfigList.isEmpty()) {
-        var firstConfig = homeSearchConfigList.get(0);
-        lastUpdatedService.syncPreferredHomes(firstConfig);
-      }
-
-    } catch (Exception e) {
-      log.error("An error occurred while running startup method.", e);
-    }
-  }
-
-  @Scheduled(cron = "${appconfig.lastDateCron}")
-  public void notifyUsersOfHomesWithLastDateToday() {
-    log.info("Notifying users of homes that have last date today");
-    try {
-      if (homeSearchConfigList.isEmpty()) {
-        log.info("No search configs found. Skipping slack notification.");
-      } else {
-        log.info("Found {} search configs. Running slack notification.", homeSearchConfigList.size());
-        homeSearchConfigList.stream().filter(HomeSearchConfig::needLastDateNotification).forEach(config -> {
-          List<House> homes = homeService.getHomesWithLastDateToday(config);
-          lastUpdatedService.sendNotificationOfLastDayToApplyForHomes(homes, config, false);
-        });
-      }
-    } catch (Exception e) {
-      log.error("Error notifying users of homes with last date today: {}", e.getMessage(), e);
-    }
-    log.info("Scheduled task completed.");
-  }
-
-  @Scheduled(cron = "${appconfig.slackCron}")
-  public void checkForNewItems() {
-    try {
-
-      if (homeSearchConfigList.isEmpty()) {
-        log.info("No search configs found. Skipping slack notification.");
-      } else {
-        log.info("Found {} search configs. Running slack notification.", homeSearchConfigList.size());
-        for (var homeSearchConfig : homeSearchConfigList) {
-          lastUpdatedService.syncPreferredHomes(homeSearchConfig);
-        }
-      }
-    } catch (Exception e) {
-      log.error("An error occurred while comparing new and deleted items", e);
-    }
-  }
-
 }

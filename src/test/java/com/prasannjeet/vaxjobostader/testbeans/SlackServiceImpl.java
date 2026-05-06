@@ -2,7 +2,7 @@ package com.prasannjeet.vaxjobostader.testbeans;
 
 import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.service.SlackService;
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
+import com.prasannjeet.vaxjobostader.legacy.HomeSearchConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

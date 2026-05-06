@@ -6,7 +6,7 @@ import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
 import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomes;
 import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomesRepository;
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
+import com.prasannjeet.vaxjobostader.legacy.HomeSearchConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

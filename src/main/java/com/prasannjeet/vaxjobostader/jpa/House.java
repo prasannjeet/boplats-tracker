@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -53,4 +54,10 @@ public class House {
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     private Date endDate;
+
+    @Column(name = "queue_points")
+    private Double queuePoints;
+
+    @Column(name = "last_detail_fetched_at")
+    private Instant lastDetailFetchedAt;
 }

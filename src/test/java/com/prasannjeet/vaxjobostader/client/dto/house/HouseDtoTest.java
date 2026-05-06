@@ -47,6 +47,7 @@ class HouseDtoTest {
             assertThat(detail.files().locationImage().get(0).address()).contains("565812");
             assertThat(detail.files().floorplan()).hasSize(1);
             assertThat(detail.files().floorplan().get(0).displayName()).isEqualTo("033-001.pdf");
+            assertThat(detail.queuePointsCurrentPositionX()).isNull(); // not present in fixture = null
         }
     }
 }

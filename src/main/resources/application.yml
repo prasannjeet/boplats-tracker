@@ -6,7 +6,6 @@ spring:
     name: vaxjobostader
   datasource:
     url: jdbc:mysql://${HOSTNAME:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:vaxjo}?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-#    url: jdbc:mariadb://${HOSTNAME:localhost}:${DATABASE_PORT:3306}/${DATABASE_NAME:vaxjo}?allowPublicKeyRetrieval=true
     username: ${DATABASE_USERNAME:vaxjo}
     password: ${DATABASE_PASSWORD}
     hikari:
@@ -29,8 +28,7 @@ appconfig:
   vbApiKey: ${VB_API_KEY}
   listApiCacheDurationHours: ${LIST_API_CACHE_DURATION_HOURS:24}
   detailApiCallIntervalSeconds: ${DETAIL_API_CALL_INTERVAL_SECONDS:60}
+  detailRefreshIntervalHours: ${DETAIL_REFRESH_INTERVAL_HOURS:12}
+  detailSyncBatchSize: ${DETAIL_SYNC_BATCH_SIZE:5}
   slackWebhookUrl: ${SLACK_WEBHOOK_URL}
-  lastDateCron: ${LAST_DATE_CRON}
-  slackCron: ${SLACK_CRON}
   vxPrefixLink: ${VX_PREFIX_LINK}
-  configFilePath: ${CONFIG_FILE_PATH}

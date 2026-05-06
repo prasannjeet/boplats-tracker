@@ -13,5 +13,6 @@ public record HouseDetail(
     HouseAvailability availability,
     HouseApplication application,
     HouseSize size,
-    HouseFiles files
+    HouseFiles files,
+    Double queuePointsCurrentPositionX
 ) {}

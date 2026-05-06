@@ -11,14 +11,13 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("appconfig")
 public class AppConfig {
 
-  private String vbUrl;
-  private String vbApiKey;
-  private Integer listApiCacheDurationHours;
-  private Integer detailApiCallIntervalSeconds;
-  private String slackWebhookUrl;
-  private String lastDateCron;
-  private String slackCron;
-  private String vxPrefixLink;
-  private String configFilePath;
+    private String vbUrl;
+    private String vbApiKey;
+    private int listApiCacheDurationHours = 24;
+    private int detailApiCallIntervalSeconds = 60;
+    private int detailRefreshIntervalHours = 12;
+    private int detailSyncBatchSize = 5;
+    private String slackWebhookUrl;
+    private String vxPrefixLink;
 
 }

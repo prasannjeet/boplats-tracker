@@ -2,7 +2,7 @@ package com.prasannjeet.vaxjobostader.service;
 
 import com.prasannjeet.vaxjobostader.enums.PlaceName;
 import com.prasannjeet.vaxjobostader.jpa.House;
-import com.prasannjeet.vaxjobostader.service.preferences.HomeSearchConfig;
+import com.prasannjeet.vaxjobostader.legacy.HomeSearchConfig;
 import lombok.NoArgsConstructor;
 
 import java.util.List;

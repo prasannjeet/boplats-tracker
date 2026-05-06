@@ -10,16 +10,19 @@ spring:
     password: sa
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
-    enabled: false # Enable Liquibase (it's enabled by default, but being explicit is fine)
+    enabled: false
   jpa:
     hibernate:
-      ddl-auto: create # Disable Hibernate DDL auto (since Liquibase is managing the schema)
+      ddl-auto: create
     show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect # Set the correct dialect for H2
+    database-platform: org.hibernate.dialect.H2Dialect
 
 appconfig:
-  vbUrl: ${VB_URL:https://bpvx.vaxjo.se/API/Service/SearchServiceHandler.ashx}
+  vbUrl: https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects
+  vbApiKey: test-api-key
   slackWebhookUrl: https://hooks.slack.com/services/...
-  slackCron: ${SLACK_CRON:0 0 0 * * *}
-  lastDateCron: '0 30 7 * * ?'
-  configFilePath: 'classpath:homeSearchConfig.json'
+  vxPrefixLink: https://example.com/
+  listApiCacheDurationHours: 24
+  detailApiCallIntervalSeconds: 60
+  detailRefreshIntervalHours: 12
+  detailSyncBatchSize: 5
