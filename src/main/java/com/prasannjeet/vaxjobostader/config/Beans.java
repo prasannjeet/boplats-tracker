@@ -1,5 +1,6 @@
 package com.prasannjeet.vaxjobostader.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
 import com.prasannjeet.vaxjobostader.jpa.UserSelectedHomesRepository;
 import com.prasannjeet.vaxjobostader.service.SlackService;
@@ -21,6 +22,11 @@ public class Beans {
     @Bean
     public SlackService lastUpdatedService() {
         return new SlackServiceImpl(houseRepository, userSelectedHomesRepository, appConfig);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
     @Bean

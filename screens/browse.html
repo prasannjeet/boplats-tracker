@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browse rentals</title>
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+  <main class="app">
+    <div class="safe-top"></div>
+    <div class="topline">
+      <a href="../index.html">Boplats Tracker</a>
+      <span class="mono">Updated 4m ago</span>
+    </div>
+
+    <header class="header-row">
+      <div>
+        <span class="kicker">Search the city</span>
+        <h1>Find a home<em>.</em><span class="dot">●</span></h1>
+      </div>
+      <button class="icon-btn" type="button" aria-label="Open saved listings">
+        <svg class="icon" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+    </header>
+
+    <label class="search" aria-label="Search listings">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input value="Växjö under 8 500 kr" aria-label="Search query">
+      <button class="icon-btn dark" type="button" data-open-sheet aria-label="Open filters">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M7 12h10"/><path d="M10 17h4"/></svg>
+      </button>
+    </label>
+
+    <nav class="pill-row" aria-label="Quick categories">
+      <button class="pill active"><span class="tiny-icon">1</span> All</button>
+      <button class="pill"><span class="tiny-icon">m²</span> Spacious</button>
+      <button class="pill"><span class="tiny-icon">q</span> Low queue</button>
+      <button class="pill"><span class="tiny-icon">7</span> Deadline soon</button>
+      <button class="pill"><span class="tiny-icon">p</span> Floor plan</button>
+    </nav>
+
+    <section class="summary">
+      <strong>42 listings match</strong>
+      <span class="meta">Växjö · rent 3 000–8 500 · deadline next 7 days</span>
+    </section>
+
+    <div class="viewbar" role="tablist" aria-label="View mode">
+      <a class="active" href="browse.html">List</a>
+      <a href="map.html">Map</a>
+      <button type="button">Split</button>
+    </div>
+
+    <article class="card" data-carousel>
+      <a href="detail.html" aria-label="Open Herrgårdsgatan 13 A detail">
+        <div class="photo img-living">
+          <span class="photo-label">Facade</span>
+          <div class="dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+        </div>
+      </a>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <h2>Herrgårdsgatan 13 A</h2>
+            <p class="sub">Växjö · Lammhult · Våning 2</p>
+          </div>
+          <button class="icon-btn" type="button" aria-label="Save Herrgårdsgatan">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+        <div class="fact-grid">
+          <div class="fact"><b>7 980 kr</b><span>monthly rent</span></div>
+          <div class="fact"><b>63 m²</b><span>living area</span></div>
+          <div class="fact"><b>2 rooms</b><span>residential</span></div>
+        </div>
+        <div class="status">
+          <div><span class="deadline">2 days left</span><p class="sub">Move-in 2026-06-01 · 127 kr/m²</p></div>
+          <span class="queue">2 184 pts · med</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-carousel>
+      <a href="detail.html" aria-label="Open Kungsvägen 4B detail">
+        <div class="photo img-kitchen">
+          <span class="photo-label">Kitchen</span>
+          <div class="dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+        </div>
+      </a>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <h2>Kungsvägen 4B</h2>
+            <p class="sub">Rottne · Centrum · Våning BV</p>
+          </div>
+          <button class="icon-btn" type="button" aria-label="Save Kungsvägen">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+        <div class="fact-grid">
+          <div class="fact"><b>5 642 kr</b><span>monthly rent</span></div>
+          <div class="fact"><b>48 m²</b><span>living area</span></div>
+          <div class="fact"><b>1 room</b><span>residential</span></div>
+        </div>
+        <div class="status">
+          <div><span class="deadline">Today</span><p class="sub">Move-in 2026-07-01 · 118 kr/m²</p></div>
+          <span class="queue">— pts · unknown</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="card" data-carousel>
+      <a href="detail.html" aria-label="Open Björkvägen 9 detail">
+        <div class="photo img-bedroom">
+          <span class="photo-label">Balcony</span>
+          <div class="dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+        </div>
+      </a>
+      <div class="card-body">
+        <div class="card-head">
+          <div>
+            <h2>Björkvägen 9</h2>
+            <p class="sub">Braås · Sjösidan · Våning 3</p>
+          </div>
+          <button class="icon-btn" type="button" aria-label="Save Björkvägen">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+        <div class="fact-grid">
+          <div class="fact"><b>9 240 kr</b><span>monthly rent</span></div>
+          <div class="fact"><b>81 m²</b><span>living area</span></div>
+          <div class="fact"><b>3 rooms</b><span>residential</span></div>
+        </div>
+        <div class="status">
+          <div><span class="deadline">6 days left</span><p class="sub">Move-in 2026-08-01 · 114 kr/m²</p></div>
+          <span class="queue">1 504 pts · low</span>
+        </div>
+      </div>
+    </article>
+
+    <nav class="bottom-nav" aria-label="Primary">
+      <a class="active" href="../index.html"><svg class="icon" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Home</span></a>
+      <a href="map.html"><svg class="icon" viewBox="0 0 24 24"><path d="M9 18 3 21V6l6-3 6 3 6-3v15l-6 3-6-3Z"/><path d="M9 3v15M15 6v15"/></svg><span>Map</span></a>
+      <button type="button" data-open-sheet><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M7 12h10"/><path d="M10 17h4"/></svg><span>Filter</span></button>
+      <a href="detail.html"><svg class="icon" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>Saved</span></a>
+    </nav>
+
+    <aside class="sheet" data-sheet aria-label="Filters">
+      <div class="sheet-head">
+        <div><span class="kicker">Full filter inventory</span><h2>Refine search</h2></div>
+        <button class="icon-btn" type="button" data-close-sheet aria-label="Close filters">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <section class="filter-group">
+        <h3>Location</h3>
+        <div class="pill-row">
+          <button class="pill active">Växjö</button><button class="pill">Braås</button><button class="pill">Gemla</button><button class="pill">Rottne</button><button class="pill">Åryd</button>
+        </div>
+        <div class="range-row"><input class="field" value="Postcode 35"><button class="field" type="button">Within map view on</button></div>
+      </section>
+
+      <section class="filter-group">
+        <h3>Property basics</h3>
+        <div class="pill-row">
+          <button class="pill">1 room</button><button class="pill active">2 rooms</button><button class="pill">3 rooms</button><button class="pill">4 rooms</button>
+        </div>
+        <div class="range-row"><div class="field">Area 26–96 m²</div><div class="field">Floor BV, 1, 2, 3</div></div>
+        <div class="pill-row">
+          <button class="pill active">Residential</button><button class="pill">Future types</button>
+        </div>
+      </section>
+
+      <section class="filter-group">
+        <h3>Cost and queue</h3>
+        <div class="range-row"><div class="field">Rent 3 000–8 500 kr</div><div class="field">Cost 100–145 kr/m²</div></div>
+        <div class="pill-row">
+          <button class="pill active">Low</button><button class="pill">Medium</button><button class="pill">High</button><button class="pill">Unknown</button>
+        </div>
+        <div class="toggle-row"><span>Include listings with no queue data</span><span class="switch"></span></div>
+      </section>
+
+      <section class="filter-group">
+        <h3>Dates and quality</h3>
+        <div class="pill-row">
+          <button class="pill">Today</button><button class="pill active">Next 3 days</button><button class="pill">Next 7 days</button><button class="pill">This month</button>
+        </div>
+        <div class="range-row"><div class="date-field">Move-in from Jun 1</div><div class="date-field">Deadline until May 19</div></div>
+        <div class="toggle-row"><span>Hide passed deadlines</span><span class="switch"></span></div>
+        <div class="toggle-row"><span>Has floor plan</span><span class="switch"></span></div>
+        <div class="toggle-row"><span>At least 3 images</span><span class="switch"></span></div>
+        <div class="toggle-row"><span>Has description</span><span class="switch"></span></div>
+      </section>
+
+      <section class="filter-group">
+        <h3>Status and recall</h3>
+        <div class="toggle-row"><span>Include ended listings</span><span class="switch"></span></div>
+        <div class="range-row"><button class="field" type="button">Save this filter set</button><button class="field" type="button">Export query URL</button></div>
+      </section>
+
+      <div class="sheet-actions">
+        <button class="btn" type="button">Reset all</button>
+        <button class="btn primary" type="button" data-close-sheet>Show 42 listings</button>
+      </div>
+    </aside>
+  </main>
+  <script src="../assets/app.js"></script>
+</body>
+</html>

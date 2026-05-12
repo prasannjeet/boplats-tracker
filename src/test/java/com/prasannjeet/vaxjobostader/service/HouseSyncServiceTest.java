@@ -1,5 +1,6 @@
 package com.prasannjeet.vaxjobostader.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseAvailability;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseDetail;
@@ -9,7 +10,10 @@ import com.prasannjeet.vaxjobostader.client.dto.house.HousePricing;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseSize;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
+import com.prasannjeet.vaxjobostader.jpa.HouseFloorplanRepository;
+import com.prasannjeet.vaxjobostader.jpa.HouseImageRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
+import com.prasannjeet.vaxjobostader.service.geocoding.AddressGeocodeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +44,10 @@ class HouseSyncServiceTest {
 
     @Mock VaxjobostaderClient client;
     @Mock HouseRepository repository;
+    @Mock HouseImageRepository imageRepository;
+    @Mock HouseFloorplanRepository floorplanRepository;
     @Mock TaskScheduler taskScheduler;
+    @Mock AddressGeocodeService addressGeocodeService;
 
     AppConfig appConfig;
 
@@ -55,7 +62,10 @@ class HouseSyncServiceTest {
         appConfig.setDetailFetchMaxDelaySeconds(1800);
         appConfig.setDetailFetchIdleDelaySeconds(1800);
         // re-create with the prepared appConfig
-        service = new HouseSyncService(client, repository, appConfig, taskScheduler);
+        service = new HouseSyncService(
+            client, repository, imageRepository, floorplanRepository,
+            appConfig, taskScheduler, new ObjectMapper(), addressGeocodeService
+        );
     }
 
     // -------- Sticky queue points --------

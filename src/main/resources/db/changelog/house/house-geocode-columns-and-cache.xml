@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        Geocoding storage.
+
+        Two pieces:
+        1) Coordinates denormalized onto `house` (latitude, longitude,
+           geocoded_address, geocoded_at) so the API can return them without
+           a join, and so map rendering is cheap.
+        2) An `address_geocode` cache table keyed by complete_address. Many
+           house rows share the same building, so caching by address ensures
+           we never call the geocoding provider twice for the same string.
+
+        `geocoded_address` on the house lets the detail sync detect an
+        address change cheaply: if the current completeAddress already
+        matches geocoded_address and coords are set, no work is done.
+    -->
+
+    <changeSet id="house-add-latitude" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="house" columnName="latitude"/></not>
+        </preConditions>
+        <addColumn tableName="house">
+            <column name="latitude" type="DOUBLE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="house-add-longitude" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="house" columnName="longitude"/></not>
+        </preConditions>
+        <addColumn tableName="house">
+            <column name="longitude" type="DOUBLE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="house-add-geocoded-address" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="house" columnName="geocoded_address"/></not>
+        </preConditions>
+        <addColumn tableName="house">
+            <column name="geocoded_address" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="house-add-geocoded-at" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="house" columnName="geocoded_at"/></not>
+        </preConditions>
+        <addColumn tableName="house">
+            <column name="geocoded_at" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="address-geocode-create-table" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="address_geocode"/></not>
+        </preConditions>
+        <createTable tableName="address_geocode">
+            <!--
+                Address is the natural key. VARCHAR(500) matches the size we
+                already use for house.complete_address. Stored verbatim — we
+                trim to normalize but otherwise treat the API value as-is, so
+                callers must produce the same string for cache hits.
+            -->
+            <column name="address" type="VARCHAR(500)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <!-- SUCCESS or NOT_FOUND. Transient FAILED outcomes are NOT
+                 persisted, so a temporary provider outage will be retried
+                 on the next sync. -->
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="geocoded_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

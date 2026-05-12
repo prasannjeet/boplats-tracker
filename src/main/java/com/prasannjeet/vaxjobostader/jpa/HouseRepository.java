@@ -33,6 +33,19 @@ public interface HouseRepository extends JpaRepository<House, Long> {
         """)
     List<House> findHousesNeedingDetailRefresh(@Param("cutoff") Instant cutoff, Pageable pageable);
 
+    /**
+     * Internal IDs of houses that have an address but no coordinates yet.
+     * Used by the one-shot geocode backfill to catch rows that were
+     * inserted before geocoding was wired into the sync.
+     */
+    @Query("""
+        SELECT h.internalId FROM House h
+        WHERE h.completeAddress IS NOT NULL
+        AND h.completeAddress <> ''
+        AND (h.latitude IS NULL OR h.longitude IS NULL)
+        """)
+    List<Long> findInternalIdsNeedingGeocode();
+
     @Modifying
     @Query("""
         UPDATE House h

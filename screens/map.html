@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map rentals</title>
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+  <main class="app">
+    <div class="safe-top"></div>
+    <div class="topline">
+      <a href="../index.html">Boplats Tracker · Map view</a>
+      <span class="mono">56.8790°N 14.8059°E</span>
+    </div>
+
+    <div class="bar-row">
+      <a class="icon-btn" href="browse.html" aria-label="Back to results">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg>
+      </a>
+      <div class="viewbar" style="flex:1; margin:0;">
+        <a href="browse.html">List</a>
+        <a class="active" href="map.html">Map</a>
+        <button type="button">Split</button>
+      </div>
+      <button class="icon-btn dark" type="button" data-open-sheet aria-label="Open filters">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M7 12h10"/><path d="M10 17h4"/></svg>
+      </button>
+    </div>
+
+    <section class="map-wrap" aria-label="Map of listings">
+      <div class="map-grid"></div>
+      <div class="floating-search">
+        <button class="btn primary" type="button">Search this area</button>
+        <button class="btn" type="button">Within view on</button>
+      </div>
+      <span class="map-label" style="left:26px; top:154px;">Växjö centrum</span>
+      <span class="map-label" style="right:40px; top:318px;">Lammhult</span>
+      <span class="map-label" style="left:70px; bottom:310px;">Rottne</span>
+      <button class="pin hot" style="left:58%; top:31%;" data-name="Herrgårdsgatan 13 A" data-rent="7 980 kr">7.9</button>
+      <button class="pin" style="left:30%; top:42%;" data-name="Kungsvägen 4B" data-rent="5 642 kr">5.6</button>
+      <button class="pin" style="left:68%; top:54%;" data-name="Björkvägen 9" data-rent="9 240 kr">9.2</button>
+      <button class="pin cluster" style="left:43%; top:61%;" data-name="Växjö cluster" data-rent="12 homes">12</button>
+      <button class="pin" style="left:18%; top:72%;" data-name="Storgatan 18" data-rent="6 120 kr">6.1</button>
+      <div class="map-pop" data-map-pop>
+        <div class="card-head">
+          <div>
+            <h3>Herrgårdsgatan 13 A</h3>
+            <p class="sub">7 980 kr / month · deadline in 2 days</p>
+          </div>
+          <a class="icon-btn dark" href="detail.html" aria-label="Open detail">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <aside class="map-sheet" aria-label="Map results">
+      <div class="section-title">
+        <div><span class="kicker">In this viewport</span><h3>42 listings</h3></div>
+        <span class="meta">Sort · deadline soonest</span>
+      </div>
+      <a class="mini-card" href="detail.html">
+        <div class="mini-photo photo img-living"></div>
+        <div><h3>Herrgårdsgatan 13 A</h3><p class="sub">2 rooms · 63 m² · 2 days left</p></div>
+      </a>
+      <a class="mini-card" href="detail.html">
+        <div class="mini-photo photo img-kitchen"></div>
+        <div><h3>Kungsvägen 4B</h3><p class="sub">1 room · 48 m² · closes today</p></div>
+      </a>
+    </aside>
+
+    <aside class="sheet" data-sheet aria-label="Map filters">
+      <div class="sheet-head">
+        <div><span class="kicker">Map filters</span><h2>Restrict view</h2></div>
+        <button class="icon-btn" type="button" data-close-sheet aria-label="Close filters">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <section class="filter-group">
+        <h3>Spatial controls</h3>
+        <div class="toggle-row"><span>Only show current viewport</span><span class="switch"></span></div>
+        <div class="toggle-row"><span>Cluster nearby pins</span><span class="switch"></span></div>
+      </section>
+      <section class="filter-group">
+        <h3>Fast refinements</h3>
+        <div class="pill-row"><button class="pill active">Low queue</button><button class="pill">Floor plan</button><button class="pill">Available June</button><button class="pill">Under 8 500</button></div>
+      </section>
+      <div class="sheet-actions">
+        <button class="btn" type="button">Reset</button>
+        <button class="btn primary" type="button" data-close-sheet>Apply to map</button>
+      </div>
+    </aside>
+  </main>
+  <script src="../assets/app.js"></script>
+</body>
+</html>

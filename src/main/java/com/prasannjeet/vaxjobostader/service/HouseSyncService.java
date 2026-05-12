@@ -1,16 +1,28 @@
 package com.prasannjeet.vaxjobostader.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseDetail;
+import com.prasannjeet.vaxjobostader.client.dto.house.HouseFiles;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseListItem;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseListResponse;
+import com.prasannjeet.vaxjobostader.client.dto.house.HouseLocation;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
+import com.prasannjeet.vaxjobostader.jpa.HouseFloorplan;
+import com.prasannjeet.vaxjobostader.jpa.HouseFloorplanRepository;
+import com.prasannjeet.vaxjobostader.jpa.HouseImage;
+import com.prasannjeet.vaxjobostader.jpa.HouseImageRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
+import com.prasannjeet.vaxjobostader.service.geocoding.AddressGeocodeService;
+import com.prasannjeet.vaxjobostader.service.geocoding.Coordinates;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,8 +50,20 @@ public class HouseSyncService {
 
     private final VaxjobostaderClient vaxjobostaderClient;
     private final HouseRepository houseRepository;
+    private final HouseImageRepository houseImageRepository;
+    private final HouseFloorplanRepository houseFloorplanRepository;
     private final AppConfig appConfig;
     private final TaskScheduler taskScheduler;
+    private final ObjectMapper objectMapper;
+    private final AddressGeocodeService addressGeocodeService;
+
+    // Self-reference through the Spring proxy so @Transactional applies when
+    // the scheduled tick calls back into the service. A plain this.method()
+    // would bypass the proxy and run without a transaction, which breaks
+    // the @Modifying delete-by-external-id queries.
+    @Autowired
+    @Lazy
+    private HouseSyncService self;
 
     private final AtomicReference<ScheduledFuture<?>> nextDetailRun = new AtomicReference<>();
 
@@ -95,7 +119,12 @@ public class HouseSyncService {
                     house.setLocalId(item.localId());
                     house.setDescription(item.description());
                     house.setAvailableFrom(availableFrom);
+                    house.setType(item.type());
+                    house.setDisplayName(item.displayName());
 
+                    if (item.location() != null && item.location().area() != null) {
+                        house.setAreaName(item.location().area().displayName());
+                    }
                     if (isNew && item.location() != null && item.location().area() != null) {
                         house.setAddress(item.location().area().displayName());
                     }
@@ -157,7 +186,7 @@ public class HouseSyncService {
      */
     void runDetailTick() {
         try {
-            syncOneHouseDetail();
+            self.syncOneHouseDetail();
         } catch (Exception e) {
             log.error("Unexpected error in detail tick", e);
         } finally {
@@ -221,25 +250,120 @@ public class HouseSyncService {
     }
 
     private void applyDetailToHouse(House house, HouseDetail detail) {
-        if (detail.location() != null && detail.location().address() != null) {
-            String fullAddress = detail.location().address().completeAdress();
-            if (fullAddress != null && !fullAddress.isBlank()) {
-                house.setAddress(fullAddress);
+        if (detail.type() != null) house.setType(detail.type());
+        if (detail.displayName() != null) house.setDisplayName(detail.displayName());
+        if (detail.number() != null) house.setNumber(detail.number());
+
+        HouseLocation location = detail.location();
+        if (location != null) {
+            if (location.area() != null) {
+                house.setAreaName(location.area().displayName());
             }
+            house.setFloorDisplayName(location.floorDisplayName());
+            HouseLocation.HouseAddress addr = location.address();
+            if (addr != null) {
+                house.setStreet(addr.street());
+                house.setStreetNumber(addr.streetnumber());
+                house.setPostcode(addr.postcode());
+                house.setCity(addr.city());
+                house.setCountry(addr.country());
+                house.setCompleteAddress(addr.completeAdress());
+                if (addr.completeAdress() != null && !addr.completeAdress().isBlank()) {
+                    house.setAddress(addr.completeAdress());
+                }
+            }
+            house.setAreaPathJson(toJsonOrNull(location.areaPath()));
         }
         if (detail.application() != null) {
             house.setApplicationDeadline(detail.application().openTo());
         }
-        if (detail.files() != null
-                && detail.files().locationImage() != null
-                && !detail.files().locationImage().isEmpty()) {
-            house.setImageUrl(detail.files().locationImage().get(0).address());
+        if (detail.files() != null) {
+            replaceImages(house.getId(), detail.files().locationImage());
+            replaceFloorplans(house.getId(), detail.files().floorplan());
+            if (detail.files().locationImage() != null
+                    && !detail.files().locationImage().isEmpty()) {
+                house.setImageUrl(detail.files().locationImage().get(0).address());
+            }
         }
         // Sticky: only overwrite when the API actually returns a value.
         // null means "no cut-off computed yet for this listing", not "reset to nothing".
         Double incoming = detail.queuePointsCurrentPositionX();
         if (incoming != null) {
             house.setQueuePoints(incoming);
+        }
+
+        geocodeIfChanged(house);
+    }
+
+    /**
+     * Resolves coordinates for the house's current address, but only when
+     * the address is new or has changed. Re-listings of the same building
+     * therefore make at most one provider call total (shared via the
+     * AddressGeocodeService cache), and unchanged addresses make zero.
+     */
+    private void geocodeIfChanged(House house) {
+        if (!appConfig.getGeocoding().isEnabled()) return;
+
+        String current = house.getCompleteAddress();
+        if (current == null || current.isBlank()) return;
+
+        boolean alreadyResolved = current.equals(house.getGeocodedAddress())
+            && house.getLatitude() != null
+            && house.getLongitude() != null;
+        if (alreadyResolved) return;
+
+        addressGeocodeService.resolve(current).ifPresent(coords -> {
+            house.setLatitude(coords.latitude());
+            house.setLongitude(coords.longitude());
+            house.setGeocodedAddress(current);
+            house.setGeocodedAt(Instant.now());
+        });
+    }
+
+    private void replaceImages(String houseExternalId, List<HouseFiles.HouseImage> apiImages) {
+        if (apiImages == null) return;
+        houseImageRepository.deleteByHouseExternalId(houseExternalId);
+        if (apiImages.isEmpty()) return;
+        List<HouseImage> rows = new ArrayList<>(apiImages.size());
+        int order = 0;
+        for (HouseFiles.HouseImage img : apiImages) {
+            HouseImage row = new HouseImage();
+            row.setHouseExternalId(houseExternalId);
+            row.setDisplayName(img.displayName());
+            row.setMimeType(img.mimeType());
+            row.setAddress(img.address());
+            row.setLinkedToType(img.linkedToType());
+            row.setSortOrder(order++);
+            rows.add(row);
+        }
+        houseImageRepository.saveAll(rows);
+    }
+
+    private void replaceFloorplans(String houseExternalId, List<HouseFiles.HouseFloorplan> apiFloorplans) {
+        if (apiFloorplans == null) return;
+        houseFloorplanRepository.deleteByHouseExternalId(houseExternalId);
+        if (apiFloorplans.isEmpty()) return;
+        List<HouseFloorplan> rows = new ArrayList<>(apiFloorplans.size());
+        int order = 0;
+        for (HouseFiles.HouseFloorplan fp : apiFloorplans) {
+            HouseFloorplan row = new HouseFloorplan();
+            row.setHouseExternalId(houseExternalId);
+            row.setDisplayName(fp.displayName());
+            row.setMimeType(fp.mimeType());
+            row.setAddress(fp.address());
+            row.setSortOrder(order++);
+            rows.add(row);
+        }
+        houseFloorplanRepository.saveAll(rows);
+    }
+
+    private String toJsonOrNull(Object value) {
+        if (value == null) return null;
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            log.warn("Failed to serialize {} to JSON: {}", value.getClass().getSimpleName(), e.getMessage());
+            return null;
         }
     }
 
@@ -262,9 +386,15 @@ public class HouseSyncService {
      */
     private record HouseKey(String id, LocalDate availableFrom) {
         static HouseKey of(String id, Date date) {
-            LocalDate ld = date == null
-                ? null
-                : date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate ld;
+            if (date == null) {
+                ld = null;
+            } else if (date instanceof java.sql.Date sqlDate) {
+                // java.sql.Date.toInstant() throws UnsupportedOperationException by spec.
+                ld = sqlDate.toLocalDate();
+            } else {
+                ld = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            }
             return new HouseKey(id, ld);
         }
     }

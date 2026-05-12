@@ -1,6 +1,22 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        Legacy tables from the pre-Momentum-v2 schema. No longer written to,
+        but kept around in case data is ever needed. Every changeset is wrapped
+        with MARK_RAN preconditions so this changelog is safe to run against
+        an existing database that already has these tables, against a fresh
+        database, or against a partially-migrated one.
+    -->
+
     <changeSet author="PRASI" id="1">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="homes"/></not>
+        </preConditions>
         <createTable tableName="homes">
             <column name="object_no" type="TINYTEXT"/>
             <column name="area_no" type="TINYTEXT"/>
@@ -73,14 +89,25 @@
             <column defaultValueComputed="NULL" name="use_filter" type="INT"/>
         </createTable>
     </changeSet>
+
     <changeSet author="PRASI" id="2">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <not><tableExists tableName="last_updated"/></not>
+                <not><tableExists tableName="user_selected_items"/></not>
+            </and>
+        </preConditions>
         <createTable tableName="last_updated">
             <column defaultValueComputed="NULL" name="id" type="INT"/>
             <column defaultValueComputed="NULL" name="last_updated" type="datetime"/>
             <column defaultValueComputed="NULL" name="preferred_objects" type="LONGBLOB"/>
         </createTable>
     </changeSet>
+
     <changeSet author="PRASI" id="3">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="preferences"/></not>
+        </preConditions>
         <createTable tableName="preferences">
             <column name="id" type="TINYTEXT"/>
             <column name="include_external_companies" type="BIT"/>

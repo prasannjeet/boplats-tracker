@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        Replace house.images / house.floorplans JSON columns with proper child
+        tables, keyed by the house's external id (the same value stored in
+        house.id). The external id is reused across re-listings of the same
+        property, so images/floorplans naturally deduplicate at the property
+        level rather than per listing instance.
+
+        area_path stays as JSON on house — it's a tiny structural blob with no
+        per-element query need.
+    -->
+
+    <changeSet id="house-image-create-table" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="house_image"/></not>
+        </preConditions>
+        <createTable tableName="house_image">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="house_external_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="VARCHAR(500)"/>
+            <column name="mime_type" type="VARCHAR(100)"/>
+            <column name="address" type="VARCHAR(1000)"/>
+            <column name="linked_to_type" type="VARCHAR(100)"/>
+            <column name="sort_order" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="house-image-index-external-id" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><indexExists tableName="house_image" indexName="ix_house_image_external_id"/></not>
+        </preConditions>
+        <createIndex tableName="house_image" indexName="ix_house_image_external_id">
+            <column name="house_external_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="house-floorplan-create-table" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="house_floorplan"/></not>
+        </preConditions>
+        <createTable tableName="house_floorplan">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="house_external_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="VARCHAR(500)"/>
+            <column name="mime_type" type="VARCHAR(100)"/>
+            <column name="address" type="VARCHAR(1000)"/>
+            <column name="sort_order" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="house-floorplan-index-external-id" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><indexExists tableName="house_floorplan" indexName="ix_house_floorplan_external_id"/></not>
+        </preConditions>
+        <createIndex tableName="house_floorplan" indexName="ix_house_floorplan_external_id">
+            <column name="house_external_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="house-drop-images-column" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="house" columnName="images"/>
+        </preConditions>
+        <dropColumn tableName="house" columnName="images"/>
+    </changeSet>
+
+    <changeSet id="house-drop-floorplans-column" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="house" columnName="floorplans"/>
+        </preConditions>
+        <dropColumn tableName="house" columnName="floorplans"/>
+    </changeSet>
+
+</databaseChangeLog>

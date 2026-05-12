@@ -21,4 +21,17 @@ public class AppConfig {
     private String slackWebhookUrl;
     private String vxPrefixLink;
 
+    private Geocoding geocoding = new Geocoding();
+
+    @Data
+    public static class Geocoding {
+        private boolean enabled = true;
+        private String baseUrl = "https://nominatim.openstreetmap.org";
+        // Nominatim usage policy: every client MUST send a meaningful
+        // User-Agent (ideally with a contact). Keep this configurable.
+        private String userAgent = "boplats-tracker/1.0";
+        // Minimum gap between provider calls. Nominatim allows ~1 req/s;
+        // 1100ms gives a small safety margin.
+        private long rateLimitMs = 1100;
+    }
 }

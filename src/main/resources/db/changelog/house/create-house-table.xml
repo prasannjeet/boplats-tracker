@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        Consolidated house table definition: builds the entire final-state
+        schema in one go (surrogate internal_id PK, the natural key on
+        (id, available_from), all detail and extended fields including the
+        MySQL JSON columns for images / floorplans / area_path).
+
+        IMPORTANT: if a database already has a `house` table from the
+        pre-Liquibase era, drop it manually before the first run, otherwise
+        the precondition trips and the changeset is marked-applied without
+        actually updating the schema — leaving the old (wrong) shape in place.
+    -->
+
+    <changeSet id="house-create-table" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="house"/></not>
+        </preConditions>
+        <createTable tableName="house">
+            <column name="internal_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="local_id" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(500)"/>
+            <column name="description" type="TEXT"/>
+            <column name="rent" type="DOUBLE"/>
+            <column name="area" type="DOUBLE"/>
+            <column name="rooms" type="INT"/>
+            <column name="available_from" type="DATE"/>
+            <column name="application_deadline" type="DATETIME"/>
+            <column name="image_url" type="VARCHAR(1000)"/>
+            <column name="end_date" type="DATE"/>
+            <column name="queue_points" type="DOUBLE"/>
+            <column name="last_detail_fetched_at" type="DATETIME"/>
+            <column name="type" type="VARCHAR(100)"/>
+            <column name="display_name" type="VARCHAR(500)"/>
+            <column name="number" type="VARCHAR(100)"/>
+            <column name="floor_display_name" type="VARCHAR(100)"/>
+            <column name="area_name" type="VARCHAR(255)"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="street_number" type="VARCHAR(50)"/>
+            <column name="postcode" type="VARCHAR(50)"/>
+            <column name="city" type="VARCHAR(100)"/>
+            <column name="country" type="VARCHAR(100)"/>
+            <column name="complete_address" type="VARCHAR(500)"/>
+            <column name="area_path" type="JSON"/>
+            <column name="images" type="JSON"/>
+            <column name="floorplans" type="JSON"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="house-unique-id-available-from" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><indexExists indexName="uk_house_id_available_from"/></not>
+        </preConditions>
+        <addUniqueConstraint
+            tableName="house"
+            columnNames="id, available_from"
+            constraintName="uk_house_id_available_from"/>
+    </changeSet>
+
+    <changeSet id="house-index-id" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><indexExists tableName="house" indexName="ix_house_id"/></not>
+        </preConditions>
+        <createIndex tableName="house" indexName="ix_house_id">
+            <column name="id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

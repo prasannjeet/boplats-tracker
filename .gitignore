@@ -91,6 +91,7 @@ fabric.properties
 
 ### Maven ###
 target/
+.frontend-tools/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -108,5 +109,8 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij+all,mavenlocal.env
-src/main/docker/local.env
+# End of https://www.toptal.com/developers/gitignore/api/intellij+all,maven
+
+# Local env files (never commit — use template.env as the reference)
+local.env
+**/local.env

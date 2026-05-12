@@ -6,16 +6,17 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <!-- Include your initial schema -->
-    <include file="db/changelog/db.changelog-init.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/add-string-id.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/create-constants-table.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/rename-last-updated.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/create-house-table.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/add-house-detail-fields.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/add-surrogate-pk-and-composite-uniqueness.xml" relativeToChangelogFile="true"/>
+    <!-- Legacy tables (homes, preferences, user_selected_items, constants).
+         Not written to anymore; every changeset is idempotent via
+         preConditions so this is safe against any existing DB. -->
+    <include file="db/changelog/legacy/db.changelog-init.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/legacy/add-string-id.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/legacy/create-constants-table.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/legacy/rename-last-updated.xml" relativeToChangelogFile="true"/>
 
-    <!-- You can include more change logs here as your project evolves -->
-    <!-- <include file="path/to/your/next/changelog.xml" relativeToChangelogFile="true"/> -->
+    <!-- Active schema: the `house` table the Momentum sync writes to. -->
+    <include file="db/changelog/house/create-house-table.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/house/house-images-floorplans-tables.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/house/house-geocode-columns-and-cache.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

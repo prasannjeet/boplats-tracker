@@ -33,3 +33,8 @@ appconfig:
   detailFetchIdleDelaySeconds: ${DETAIL_FETCH_IDLE_DELAY_SECONDS:1800}
   slackWebhookUrl: ${SLACK_WEBHOOK_URL}
   vxPrefixLink: ${VX_PREFIX_LINK}
+  geocoding:
+    enabled: ${GEOCODING_ENABLED:true}
+    baseUrl: ${GEOCODING_BASE_URL:https://nominatim.openstreetmap.org}
+    userAgent: ${GEOCODING_USER_AGENT:boplats-tracker/1.0}
+    rateLimitMs: ${GEOCODING_RATE_LIMIT_MS:1100}

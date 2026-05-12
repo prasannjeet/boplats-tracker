@@ -1,0 +1,32 @@
+:root {
+  --bg: #efe8d5;
+  --bg-soft: #e7dec7;
+  --surface: #f6f0dd;
+  --surface-2: #faf5e6;
+  --ink: #14110d;
+  --ink-soft: #2a261f;
+  --muted: #6b6457;
+  --line: rgba(20, 17, 13, 0.12);
+  --line-strong: rgba(20, 17, 13, 0.25);
+  --accent: #e75c4d;
+  --accent-soft: #f08877;
+  --accent-ink: #fff5f1;
+  --black: #14110d;
+  --white: #fffcf3;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: 'Archivo Black', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --shadow-card: 0 1px 0 rgba(20, 17, 13, 0.04), 0 12px 32px -22px rgba(20, 17, 13, 0.35);
+  --shadow-lift: 0 1px 0 rgba(20, 17, 13, 0.05), 0 28px 56px -32px rgba(20, 17, 13, 0.45);
+
+  --page-max: 1440px;
+  --page-pad: clamp(20px, 4vw, 56px);
+}

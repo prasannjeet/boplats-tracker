@@ -1,14 +1,19 @@
-version: "2.0"
 services:
+  # UI + REST API are served on host port 8080 (SERVER_PORT in local.env).
   @project.artifactId@:
      container_name: my-@project.artifactId@
      image: prasannjeet/@project.artifactId@:@project.version@
-     ports:
-       - "8080:8080"
-       - "5005:5005"
+     # host networking lets the container reach LAN hosts (e.g. the MySQL
+     # box at vaxjo-db) directly via the Mac's network stack — necessary
+     # when a VPN client is intercepting Docker Desktop's outbound traffic
+     # but allowing the Mac's. Requires Docker Desktop 4.34+ on macOS with
+     # "Enable host networking" turned on in Settings → Resources → Network.
+     network_mode: host
      env_file:
        - local.env
      volumes:
        - ./config:/config
+     # With host networking the container resolves names via the Mac's
+     # /etc/hosts and DNS, so the LAN IP can live directly in local.env.
      extra_hosts:
-       - "host.docker.internal:172.17.0.1"  # Map to host IP
+       - "vaxjo-db:192.168.0.16"

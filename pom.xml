@@ -19,7 +19,16 @@
     <jdk>25</jdk>
     <springboot.version>4.0.5</springboot.version>
     <lombok.version>1.18.44</lombok.version>
-    <liquibase.version>4.24.0</liquibase.version>
+    <!-- Do NOT redeclare `liquibase.version` here: Spring Boot's parent BOM
+         already exports it and overriding it pinned us to an old Liquibase
+         that silently broke autoconfig under Spring Boot 4. -->
+    <frontend.dir>${project.basedir}/frontend</frontend.dir>
+    <!-- Kept outside target/ so `mvn clean` does not wipe node/pnpm.
+         Avoids a macOS-specific flake where Finder writes .DS_Store into
+         target/node/tmp while the plugin is cleaning it up. -->
+    <frontend.tools.dir>${project.basedir}/.frontend-tools</frontend.tools.dir>
+    <frontend.node.version>v22.18.0</frontend.node.version>
+    <frontend.pnpm.version>9.15.4</frontend.pnpm.version>
   </properties>
   <dependencies>
     <dependency>
@@ -118,10 +127,15 @@
       <artifactId>mksapi-jar</artifactId>
       <version>4.16.2671</version>
     </dependency>
+    <!-- Spring Boot 4 split out optional integrations into separate starter
+         modules; LiquibaseAutoConfiguration is no longer bundled in
+         spring-boot-autoconfigure. The starter brings liquibase-core
+         transitively + the auto-config class that wires it to the
+         DataSource on startup. -->
     <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
-      <version>${liquibase.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-liquibase</artifactId>
+      <version>${springboot.version}</version>
     </dependency>
       <dependency>
           <groupId>com.mysql</groupId>
@@ -161,6 +175,15 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+      <!-- Retry deletes so a macOS .DS_Store with FinderInfo xattrs in
+           target/docker doesn't fail `mvn clean`. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <retryOnError>true</retryOnError>
+        </configuration>
+      </plugin>
       <!-- Copy docker directory and resources directory to target -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -176,9 +199,22 @@
             <configuration>
               <outputDirectory>${basedir}/target</outputDirectory>
               <resources>
+                <!-- Filter only docker-compose.yml (has @project.artifactId@ tokens).
+                     Everything else (.env, .sh, config/) is copied verbatim so a
+                     stray @ in API keys / webhook URLs doesn't break the build. -->
                 <resource>
                   <directory>src/main/docker</directory>
                   <filtering>true</filtering>
+                  <includes>
+                    <include>docker-compose.yml</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>src/main/docker</directory>
+                  <filtering>false</filtering>
+                  <excludes>
+                    <exclude>docker-compose.yml</exclude>
+                  </excludes>
                 </resource>
               </resources>
             </configuration>
@@ -195,6 +231,24 @@
                 <resource>
                   <directory>src/main/resources</directory>
                   <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <!-- Copy the Vite build output into Spring Boot's static resources path
+               so the Vue SPA is served from / on the same origin as the API. -->
+          <execution>
+            <id>copy-frontend-dist</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${frontend.dir}/dist</directory>
+                  <filtering>false</filtering>
                 </resource>
               </resources>
             </configuration>
@@ -217,35 +271,96 @@
         </configuration>
       </plugin>
 
-      <!-- Create the docker image. -->
+      <!-- Build the docker image. Context is src/main/docker (Dockerfile +
+           entrypoint.sh); fabric8 filters @project.*@ tokens in the Dockerfile
+           and drops the fat JAR (with the bundled Vue SPA) into the context's
+           maven/ subdir via the inline assembly. -->
       <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>1.4.6</version>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.48.1</version>
+        <configuration>
+          <images>
+            <image>
+              <name>prasannjeet/${project.artifactId}:${project.version}</name>
+              <build>
+                <contextDir>${project.basedir}/src/main/docker</contextDir>
+                <dockerFile>Dockerfile</dockerFile>
+                <filter>@</filter>
+                <tags>
+                  <tag>${project.version}</tag>
+                  <tag>latest</tag>
+                </tags>
+                <assembly>
+                  <inline>
+                    <id>app</id>
+                    <files>
+                      <file>
+                        <source>${project.build.directory}/${project.build.finalName}.jar</source>
+                      </file>
+                    </files>
+                  </inline>
+                </assembly>
+              </build>
+            </image>
+          </images>
+        </configuration>
         <executions>
           <execution>
-            <id>tag-version</id>
+            <id>docker-build</id>
+            <phase>package</phase>
             <goals>
               <goal>build</goal>
-              <goal>tag</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Build the Vue frontend and copy it into the Spring Boot static resources
+           so it ships in the same JAR and is served from / on the same origin. -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.15.1</version>
+        <configuration>
+          <workingDirectory>${frontend.dir}</workingDirectory>
+          <installDirectory>${frontend.tools.dir}</installDirectory>
+          <nodeVersion>${frontend.node.version}</nodeVersion>
+          <pnpmVersion>${frontend.pnpm.version}</pnpmVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install-node-and-pnpm</id>
+            <goals>
+              <goal>install-node-and-pnpm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <id>pnpm-install</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <phase>generate-resources</phase>
             <configuration>
-              <tag>${project.version}</tag>
-              <username>prasannjeet</username>
-              <repository>prasannjeet/${project.artifactId}</repository>
-              <contextDirectory>target</contextDirectory>
-              <testOutputDirectory>target/dockerbuild</testOutputDirectory>
+              <arguments>install --frozen-lockfile</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>pnpm-build</id>
+            <goals>
+              <goal>pnpm</goal>
+            </goals>
+            <!-- Build at generate-resources so frontend/dist exists before
+                 maven-resources-plugin's copy-frontend-dist runs at
+                 prepare-package, regardless of plugin declaration order. -->
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run build</arguments>
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.github.jnr</groupId>
-            <artifactId>jnr-unixsocket</artifactId>
-            <version>0.38.14</version>
-          </dependency>
-        </dependencies>
       </plugin>
+
       <plugin>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>

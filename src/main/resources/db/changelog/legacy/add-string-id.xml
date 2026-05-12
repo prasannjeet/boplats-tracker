@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="update-id-to-string" author="PRASI">
+        <!-- Only relevant if last_updated still exists (i.e. it hasn't been
+             renamed yet by rename-last-updated.xml). On a DB where the
+             rename already happened, skip. -->
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="last_updated"/>
+        </preConditions>
+        <modifyDataType tableName="last_updated" columnName="id" newDataType="VARCHAR(255)"/>
+        <update tableName="last_updated">
+            <column name="id" value="Prasannjeet"/>
+            <where>id = 1</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

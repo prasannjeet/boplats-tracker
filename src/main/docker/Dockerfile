@@ -2,15 +2,13 @@ FROM docker.io/amazoncorretto:25
 
 ENV JAVA_MAX_MEM=1024m \
     JAVA_MAX_PERM_MEM=128m \
-    SERVICE_8080_NAME=timetable-core \
+    SERVICE_8080_NAME=vb-back \
     TZ=Europe/Stockholm
 
-COPY application.yml ${APP_FOLDER}/
-COPY @project.artifactId@-@project.version@.jar ${APP_FOLDER}/app.jar
+# fabric8 docker-maven-plugin places the assembly under /maven inside the
+# build context, so the fat JAR (with the bundled Vue SPA) is copied from there.
+COPY maven/@project.artifactId@-@project.version@.jar /app.jar
 
-RUN mkdir -p /app
-
-# Copy the entrypoint script to the container
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
