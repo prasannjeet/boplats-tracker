@@ -56,7 +56,7 @@ export const defaultFilters: Filters = {
   hasFloorplan: false,
   minImages: null,
   hasDescription: false,
-  view: 'list',
+  view: 'split',
   sort: 'deadline',
   preset: 'all',
 };

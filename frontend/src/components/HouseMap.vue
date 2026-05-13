@@ -1,21 +1,22 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, watch, computed } from 'vue';
+import { createApp, type App as VueApp } from 'vue';
 import L, { type Map as LMap, type Marker, type DivIcon, type MarkerClusterGroup } from 'leaflet';
 import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
-import { useRouter } from 'vue-router';
+import router from '@/router';
 import type { House } from '@/types/house';
-import { competitionTier, shortHeadline } from '@/lib/derived';
-import { formatRent } from '@/lib/format';
+import { competitionTier } from '@/lib/derived';
+import MapPopupCard from './MapPopupCard.vue';
 
 const props = defineProps<{ houses: House[]; highlightId?: number | null; height?: string }>();
 const emit = defineEmits<{ (e: 'hover', id: number | null): void }>();
 
-const router = useRouter();
 const mapEl = ref<HTMLDivElement | null>(null);
 let mapInstance: LMap | null = null;
 let clusterGroup: MarkerClusterGroup | null = null;
 const markerByInternalId = new Map<number, Marker>();
+const popupApps = new Map<number, VueApp>();
 
 const containerStyle = computed(() => ({ height: props.height ?? '600px' }));
 
@@ -25,13 +26,14 @@ function clusterSizeClass(count: number): string {
   return 'cluster-sm';
 }
 
+const HOME_SVG = `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`;
+
 function pinIcon(house: House, highlighted: boolean): DivIcon {
   const tier = competitionTier(house.queuePoints);
-  const label = house.rent ? Math.round(house.rent / 1000).toString() : '·';
   const classes = ['pin', tier, highlighted ? 'highlight' : ''].filter(Boolean).join(' ');
   return L.divIcon({
     className: classes,
-    html: `<span>${label}</span>`,
+    html: HOME_SVG,
     iconSize: [40, 40],
     iconAnchor: [20, 20],
   });
@@ -47,46 +49,51 @@ function clusterIcon(count: number): DivIcon {
   });
 }
 
-function popupHtml(house: House): string {
-  const headline = escapeHtml(shortHeadline(house));
-  const rent = escapeHtml(formatRent(house.rent));
-  const city = escapeHtml(house.city ?? '');
-  return `
-    <div class="pop">
-      <strong>${headline}</strong>
-      <div class="pop-sub">${rent}${city ? ` · ${city}` : ''}</div>
-      <a data-internal-id="${house.internalId}" class="pop-link">Open detail →</a>
-    </div>`;
+function buildPopupEl(house: House): HTMLElement {
+  const div = document.createElement('div');
+  const app = createApp(MapPopupCard, { house });
+  app.use(router);
+  app.mount(div);
+  popupApps.set(house.internalId, app);
+  return div;
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] ?? c));
+function unmountPopupApp(internalId: number) {
+  const app = popupApps.get(internalId);
+  if (app) {
+    app.unmount();
+    popupApps.delete(internalId);
+  }
 }
 
 function rebuildMarkers() {
+  for (const app of popupApps.values()) app.unmount();
+  popupApps.clear();
+
   if (!mapInstance || !clusterGroup) return;
   clusterGroup.clearLayers();
   markerByInternalId.clear();
+
   const located = props.houses.filter((h) => h.latitude != null && h.longitude != null);
   const markers: Marker[] = [];
+
   for (const h of located) {
     const isHighlighted = props.highlightId === h.internalId;
-    const m = L.marker([h.latitude as number, h.longitude as number], { icon: pinIcon(h, isHighlighted) });
-    m.bindPopup(popupHtml(h));
+    const m = L.marker([h.latitude as number, h.longitude as number], {
+      icon: pinIcon(h, isHighlighted),
+    });
+    m.bindPopup(() => buildPopupEl(h), {
+      maxWidth: 300,
+      minWidth: 280,
+      className: 'house-popup-wrapper',
+    });
+    m.on('popupclose', () => unmountPopupApp(h.internalId));
     m.on('mouseover', () => emit('hover', h.internalId));
     m.on('mouseout', () => emit('hover', null));
-    m.on('popupopen', (e) => {
-      const link = (e.popup as L.Popup).getElement()?.querySelector('.pop-link') as HTMLAnchorElement | null;
-      if (link) {
-        link.addEventListener('click', (ev) => {
-          ev.preventDefault();
-          router.push({ name: 'detail', params: { internalId: String(h.internalId) } });
-        });
-      }
-    });
     markerByInternalId.set(h.internalId, m);
     markers.push(m);
   }
+
   clusterGroup.addLayers(markers);
   fitToMarkers();
 }
@@ -109,10 +116,13 @@ function fitToMarkers() {
 onMounted(() => {
   if (!mapEl.value) return;
   mapInstance = L.map(mapEl.value, { zoomControl: true, attributionControl: true });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution:
+      '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: ['a', 'b', 'c', 'd'],
     maxZoom: 19,
   }).addTo(mapInstance);
+
   clusterGroup = L.markerClusterGroup({
     showCoverageOnHover: false,
     spiderfyOnMaxZoom: true,
@@ -125,6 +135,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  for (const app of popupApps.values()) app.unmount();
+  popupApps.clear();
   if (mapInstance) {
     mapInstance.remove();
     mapInstance = null;
@@ -178,9 +190,6 @@ watch(
   z-index: 0;
 }
 
-/* Leaflet DivIcon assigns class `leaflet-marker-icon` + whatever we pass.
-   Target `.pin` directly — the default `leaflet-div-icon` background is
-   NOT applied because our className overrides the DivIcon default. */
 .leaflet-marker-icon.pin {
   background: var(--ink);
   color: var(--white);
@@ -195,12 +204,15 @@ watch(
   box-shadow: 0 4px 12px rgba(20, 17, 13, 0.35);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
-  letter-spacing: -0.01em;
 }
 
 .leaflet-marker-icon.pin span {
   pointer-events: none;
   line-height: 1;
+}
+
+.leaflet-marker-icon.pin svg {
+  pointer-events: none;
 }
 
 .leaflet-marker-icon.pin:hover {
@@ -238,7 +250,6 @@ watch(
   border-color: var(--accent);
 }
 
-/* Cluster pins — larger circle, white outline, count inside */
 .leaflet-marker-icon.pin.cluster {
   background: var(--ink);
   color: var(--white);
@@ -250,7 +261,6 @@ watch(
 
 .leaflet-marker-icon.pin.cluster.cluster-md {
   font-size: 15px;
-  background: var(--ink);
   border-color: var(--accent);
 }
 
@@ -261,30 +271,21 @@ watch(
   box-shadow: 0 10px 26px rgba(231, 92, 77, 0.55);
 }
 
-/* MarkerCluster animations rely on this default class; keep transitions smooth. */
 .leaflet-cluster-anim .leaflet-marker-icon,
 .leaflet-cluster-anim .leaflet-marker-shadow {
   transition: transform 0.3s ease-out, opacity 0.3s ease-in;
 }
 
-.leaflet-popup-content .pop strong {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 14px;
-  font-weight: 700;
+/* Rich popup — zero inner margin so MapPopupCard controls layout */
+.house-popup-wrapper .leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+  width: auto !important;
 }
 
-.leaflet-popup-content .pop-sub {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-.leaflet-popup-content .pop-link {
-  display: inline-block;
-  font-weight: 600;
-  font-size: 12px;
-  color: var(--accent);
-  cursor: pointer;
+.house-popup-wrapper .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: var(--r-md);
+  overflow: hidden;
 }
 </style>

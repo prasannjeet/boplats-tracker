@@ -278,10 +278,6 @@ textarea {
   font-family: var(--font-sans) !important;
 }
 
-.leaflet-tile {
-  filter: grayscale(0.45) sepia(0.18) hue-rotate(-12deg) saturate(0.7);
-}
-
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
   background: var(--surface-2);
