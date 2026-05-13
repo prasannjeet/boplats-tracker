@@ -1,0 +1,74 @@
+{
+  "total": 1297,
+  "types": {
+    "parking": {
+      "count": 852,
+      "queueTypes": [
+        "parking"
+      ]
+    },
+    "RwxTWw86hrYkBhPv4KhtBBrk": {
+      "count": 186,
+      "queueTypes": [
+        "student"
+      ]
+    },
+    "fdRCFvqgMwjfyQP4Y8hRwF4W": {
+      "count": 75,
+      "queueTypes": [
+        "residential"
+      ]
+    },
+    "residential": {
+      "count": 169,
+      "queueTypes": [
+        "residential"
+      ]
+    },
+    "fQHrWQhP9kGBf8m7Mb6R88KB": {
+      "count": 10,
+      "queueTypes": [
+        "residential"
+      ]
+    },
+    "PchcrTj8FVXJcCkxRFwMx7Qk": {
+      "count": 5,
+      "queueTypes": [
+        "residential"
+      ]
+    }
+  },
+  "queueTypeDistribution": {
+    "parking": 852,
+    "student": 186,
+    "residential": 259
+  },
+  "rentalObjectTypes": {
+    "Garage motorvärmaruttag": 108,
+    "Parkeringsplats": 453,
+    "Parkeringsplats 10 mån.": 110,
+    "Centralgarage": 22,
+    "Carport": 21,
+    "Garage kall": 5,
+    "Carport motorvärmaruttag": 2,
+    "P-plats motorvärmaruttag": 109,
+    "P-plats elbil": 5,
+    "Garage elbil": 4,
+    "Garage varm": 3,
+    "Centralgarage mc ": 10
+  },
+  "fieldPresence": {
+    "id": 1297,
+    "localId": 1297,
+    "displayName": 1297,
+    "type": 1297,
+    "queueType": 1297,
+    "rentalObjectType": 852,
+    "location": 1297,
+    "availability": 1297,
+    "thumbnail": 1297,
+    "description": 444,
+    "pricing": 445,
+    "size": 445
+  }
+}

@@ -1,0 +1,766 @@
+{
+  "parking": {
+    "id": "BbjyRwBYt4DbHv44gyQp7mmK",
+    "localId": "4389865",
+    "number": "AN-12512",
+    "displayName": "Vintervägen 22",
+    "type": "parking",
+    "queueType": "parking",
+    "queueTypeDisplayName": "Fordonsplats",
+    "rentalObjectType": "Garage motorvärmaruttag",
+    "nrApplications": 0,
+    "pricing": {
+      "price": 479.45
+    },
+    "location": {
+      "areaPath": [
+        {
+          "id": "CPKCrBH8VBFhPPR79vCyvbcv",
+          "displayName": "Centrum, Växjö"
+        }
+      ],
+      "address": {
+        "address": "Vintervägen 22",
+        "street": "Vintervägen",
+        "streetnumber": "22",
+        "postcode": "35237",
+        "city": "VÄXJÖ",
+        "country": "Sverige",
+        "completeAdress": "Vintervägen 22, 35237, VÄXJÖ, Sverige"
+      },
+      "signNumber": "0804-102-00-0209"
+    },
+    "availability": {
+      "availableFrom": "/Date(1785535200000)/"
+    },
+    "publishing": {
+      "published": true
+    },
+    "application": {
+      "openTo": "/Date(1779141540000)/"
+    },
+    "size": {
+      "area": 14.6
+    },
+    "included": [
+      {
+        "displayName": "Säkerhetsdörr"
+      }
+    ],
+    "attributes": [],
+    "info": {},
+    "files": {
+      "floorplan": [
+        {
+          "displayName": "Kråkan-park.pdf",
+          "mimeType": "application/pdf",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/BbjyRwBYt4DbHv44gyQp7mmK/files/571269"
+        }
+      ]
+    },
+    "thumbnail": {
+      "exists": false
+    }
+  },
+  "RwxTWw86hrYkBhPv4KhtBBrk": {
+    "id": "XbkXy8pRwWdKhRXQwHT4cbQY",
+    "localId": "4282618",
+    "number": "AN-10292",
+    "displayName": "Lyan 62",
+    "type": "RwxTWw86hrYkBhPv4KhtBBrk",
+    "queueType": "student",
+    "queueTypeDisplayName": "Student",
+    "nrApplications": 0,
+    "pricing": {
+      "price": 5053.9
+    },
+    "location": {
+      "area": {
+        "displayName": "Lyan 1"
+      },
+      "areaPath": [
+        {
+          "id": "dpmh6MG7xWRgjM77W4Xqg8DT",
+          "displayName": "Campus, Växjö"
+        }
+      ],
+      "address": {
+        "address": "Lyan 62",
+        "street": "Lyan",
+        "streetnumber": "62",
+        "postcode": "35252",
+        "city": "VÄXJÖ",
+        "country": "Sverige",
+        "completeAdress": "Lyan 62, 35252, VÄXJÖ, Sverige"
+      },
+      "floorDisplayName": "Våning 3",
+      "officialApartmentNumber": "1207"
+    },
+    "availability": {
+      "availableFrom": "/Date(1774994400000)/"
+    },
+    "publishing": {
+      "published": true
+    },
+    "application": {
+      "openTo": "/Date(1778968740000)/"
+    },
+    "size": {
+      "roomsDisplayName": "1 rum",
+      "area": 25.0
+    },
+    "included": [
+      {
+        "displayName": "El ingår"
+      },
+      {
+        "displayName": "Hiss"
+      },
+      {
+        "displayName": "Internet ingår"
+      },
+      {
+        "displayName": "Möblerat korridorsrum"
+      },
+      {
+        "displayName": "P-plats finns att hyra i mån av tillgång"
+      }
+    ],
+    "attributes": [],
+    "info": {
+      "list": [
+        {
+          "displayName": "Om P G Vejdes väg 10-16",
+          "value": "Välkommen till Kvarteret Lyan 61 och 62! Ett populärt korridorsboende med riktigt bra läge mitt i studentlivet. Här bor du bekvämt i ett stort studentkvarter med närhet till både studieplatser och det sociala studentlivet. \r\n\r\nKorridorrummet består av ett privat rum, toalett och hall med låsbar ytterdörr. Alla korridorsrum har egen dusch. Du har dina egna hyllor och utrymme i det gemensamma kökets kyl och frys. Målade väggar och plastmatta på golv.\r\n\r\nHyresgästerna ansvarar tillsammans för att städa de gemensamma utrymmena. \r\n\r\nUnless nothing else is specified under \"ingår\", the room is unfurnished.\r\n\r\nFor more information in english, please see our webpage https://www.vidingehem.se/en/student.html",
+          "linkedToType": "building",
+          "typeOrder": 15
+        }
+      ],
+      "area": [
+        {
+          "displayName": "Om Campus",
+          "value": "På campusområdet finns allt för studenter samlat på ett och samma ställe. Här bor du bekvämt, mitt i studentlivet med promenadavstånd till det du behöver för ett härligt student- och vardagsliv. Från våra studentlägenheter tar du dig snabbt till lärosalar, institutioner och fakulteter. På campusområdet finns universitetsbibliotek, idrottshall, gym, kaféer, restauranger, pubar och mycket mer.\r\n\r\nHär bor du med närhet till vackra grönområden, vatten, skog och vandringsleder. Samtidigt är det inte långt in till centrum, med cykel eller buss tar det inte mer än cirka 10 minuter.",
+          "linkedToType": "marketArea",
+          "typeOrder": 50
+        }
+      ],
+      "company": [
+        {
+          "displayName": "Hyresvärd: Vidingehem",
+          "value": "Detta objekt hyrs ut av Vidingehem AB.\nEventuella bilder i annonsen är exempelbilder och speglar inte alltid den aktuella lägenheten.\nAlla lägenheter hyrs ut omöblerade, om inget annat anges.",
+          "linkedToType": "organisation1",
+          "order": 1,
+          "typeOrder": 60
+        }
+      ]
+    },
+    "files": {
+      "locationImage": [
+        {
+          "displayName": "Bild Lyan",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/XbkXy8pRwWdKhRXQwHT4cbQY/images/565245",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Lyan",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/XbkXy8pRwWdKhRXQwHT4cbQY/images/565247",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Lyan 61-62",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/XbkXy8pRwWdKhRXQwHT4cbQY/images/987169",
+          "linkedToType": "building"
+        }
+      ],
+      "floorplan": [
+        {
+          "displayName": "NS.pdf",
+          "mimeType": "application/pdf",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/XbkXy8pRwWdKhRXQwHT4cbQY/files/573737"
+        }
+      ]
+    }
+  },
+  "fdRCFvqgMwjfyQP4Y8hRwF4W": {
+    "id": "WjG9B6TBrttRtbH7FxJbjHW4",
+    "localId": "4325037",
+    "number": "AN-11114",
+    "displayName": "Löpanäsvägen 10",
+    "type": "fdRCFvqgMwjfyQP4Y8hRwF4W",
+    "queueType": "residential",
+    "queueTypeDisplayName": "Bostad",
+    "nrApplications": 0,
+    "pricing": {
+      "price": 5524.97
+    },
+    "location": {
+      "area": {
+        "displayName": "Södra Rottne   11:42"
+      },
+      "areaPath": [
+        {
+          "id": "bTQmPfcJVktp6fKrPkV9djDB",
+          "displayName": "Rottne"
+        }
+      ],
+      "address": {
+        "address": "Löpanäsvägen 10 ",
+        "street": "Löpanäsvägen",
+        "streetnumber": "10",
+        "postcode": "36330",
+        "city": "ROTTNE",
+        "country": "Sverige",
+        "completeAdress": "Löpanäsvägen 10 , 36330, ROTTNE, Sverige"
+      },
+      "floorDisplayName": "Våning KV",
+      "officialApartmentNumber": "0903"
+    },
+    "availability": {
+      "availableFrom": "/Date(1774994400000)/"
+    },
+    "publishing": {
+      "published": true
+    },
+    "application": {
+      "openTo": "/Date(1779055140000)/"
+    },
+    "size": {
+      "roomsDisplayName": "1 rum och kokvrå",
+      "area": 46.0
+    },
+    "included": [
+      {
+        "displayName": "Bottenvåning/markplan"
+      },
+      {
+        "displayName": "Bredband finns"
+      },
+      {
+        "displayName": "Hiss"
+      },
+      {
+        "displayName": "TV-grundutbud"
+      },
+      {
+        "displayName": "Uteplats"
+      }
+    ],
+    "attributes": [],
+    "info": {
+      "list": [
+        {
+          "displayName": "Om Postvägen 9 och Löpanäsvägen 10",
+          "value": "Här bor du verkligen centralt: vårdcentral rakt över gatan, mataffär som granne, restaurang och frisör i samma byggnad och annan service precis intill.\r\nEn viss andel av lägenheterna erbjuds i första hand som seniorbostäder till personer som har fyllt 70 år.",
+          "linkedToType": "property",
+          "typeOrder": 15
+        }
+      ],
+      "important": [
+        {
+          "displayName": "Tidigare inflyttning",
+          "value": "Möjligt med inflytt omgående.",
+          "linkedToType": "rentalObject",
+          "typeOrder": 20
+        }
+      ],
+      "area": [
+        {
+          "displayName": "Om Rottne",
+          "value": "Mitt emellan fiskrika Innaren och Sörabysjön ligger Rottne – ett modernt villasamhälle med komplett service, välutbyggd barnomsorg och ett rikt föreningsliv.\r\n\r\nI centrum finns affärer, restauranger, tandläkare och vårdcentral. Till ortens särprägel hör ett aktivt näringsliv som bidrar till att bygden sjuder av liv. I det omedelbara omlandet finns många härliga utflyktsmål, till exempel slussområdet i Åby och det natursköna Tolg. Med täta bussförbindelser tar man sig snabbt till Växjö.",
+          "linkedToType": "marketRegion",
+          "typeOrder": 50
+        }
+      ],
+      "company": [
+        {
+          "displayName": "Hyresvärd: Vidingehem",
+          "value": "Detta objekt hyrs ut av Vidingehem AB.\nEventuella bilder i annonsen är exempelbilder och speglar inte alltid den aktuella lägenheten.\nAlla lägenheter hyrs ut omöblerade, om inget annat anges.",
+          "linkedToType": "organisation1",
+          "order": 1,
+          "typeOrder": 60
+        }
+      ]
+    },
+    "files": {
+      "locationImage": [
+        {
+          "displayName": "Foto Postvägen 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/WjG9B6TBrttRtbH7FxJbjHW4/images/566231",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Foto Löpanäsvägen 10",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/WjG9B6TBrttRtbH7FxJbjHW4/images/566230",
+          "linkedToType": "building"
+        }
+      ],
+      "floorplan": [
+        {
+          "displayName": "054-009.pdf",
+          "mimeType": "application/pdf",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/WjG9B6TBrttRtbH7FxJbjHW4/files/567382"
+        }
+      ]
+    }
+  },
+  "residential": {
+    "id": "gyDCbTt8rKCjkrXjGg4Mbbbf",
+    "localId": "4438270",
+    "number": "AN-13280",
+    "displayName": "Herrgårdsgatan 7 A",
+    "type": "residential",
+    "queueType": "residential",
+    "queueTypeDisplayName": "Bostad",
+    "nrApplications": 0,
+    "pricing": {
+      "price": 6532.02
+    },
+    "economy": {},
+    "location": {
+      "area": {
+        "displayName": "Lammhult  39:14"
+      },
+      "areaPath": [
+        {
+          "id": "DDY7fJqDcPhdth984WByDMB8",
+          "displayName": "Lammhult"
+        }
+      ],
+      "address": {
+        "address": "Herrgårdsgatan 7 A",
+        "street": "Herrgårdsgatan",
+        "streetnumber": "7",
+        "postcode": "36345",
+        "city": "Lammhult",
+        "country": "Sverige",
+        "completeAdress": "Herrgårdsgatan 7 A, 36345, Lammhult, Sverige"
+      },
+      "floorDisplayName": "Våning 2",
+      "officialApartmentNumber": "1102"
+    },
+    "availability": {
+      "availableFrom": "/Date(1788213600000)/"
+    },
+    "publishing": {
+      "published": true
+    },
+    "application": {
+      "openTo": "/Date(1779141540000)/"
+    },
+    "size": {
+      "roomsDisplayName": "2 rum och kök",
+      "area": 66.0
+    },
+    "included": [
+      {
+        "displayName": "Balkong"
+      },
+      {
+        "displayName": "Bredband finns"
+      },
+      {
+        "displayName": "P-plats ingår i mån av tillgång"
+      },
+      {
+        "displayName": "Säkerhetsdörr"
+      },
+      {
+        "displayName": "TV-grundutbud"
+      }
+    ],
+    "info": {
+      "list": [
+        {
+          "displayName": "Om Herrgårdsgatan 5-15",
+          "value": "Här bor man ett stenkast från den nybyggda F–9-skolan och med närhet till ortens centrum, samtidigt som naturen ligger alldeles runt knuten.",
+          "linkedToType": "property",
+          "typeOrder": 15
+        }
+      ],
+      "area": [
+        {
+          "displayName": "Om Lammhult",
+          "value": "Lammhult ligger mitt i det berömda Möbelriket med en rad internationellt välkända möbelföretag.\r\n\r\nHär finns bland annat mataffär, frisörer, blomsterbutik, pizzeria, gym och vårdcentral.\r\n\r\n2024 färdigställdes storsatsningen på en ny F–9-skola och ny förskola. De nya byggnaderna rymmer även fritidsgård, bibliotek och sporthall med publikläktare. \r\n\r\nKollektivtrafiken är välutbyggd i form av såväl buss som tåg för den som pendlar till arbetet eller föredrar kollektiva transportmedel till shopping och upplevelser. Till Växjö tar du dig snabbt och smidigt utan byten och lika enkelt når du de stora järnvägsknutarna Alvesta och Nässjö.\r\n\r\nNaturen kring Lammhult är vacker och bygden sjuder av såväl ett aktivt föreningsliv som ett stort stycke svensk kulturhistoria.",
+          "linkedToType": "marketRegion",
+          "typeOrder": 50
+        }
+      ],
+      "company": [
+        {
+          "displayName": "Hyresvärd: Vidingehem",
+          "value": "Detta objekt hyrs ut av Vidingehem AB.\nEventuella bilder i annonsen är exempelbilder och speglar inte alltid den aktuella lägenheten.\nAlla lägenheter hyrs ut omöblerade, om inget annat anges.",
+          "linkedToType": "organisation1",
+          "order": 1,
+          "typeOrder": 60
+        }
+      ]
+    },
+    "files": {
+      "locationImage": [
+        {
+          "displayName": "Bild Herrgårdsgatan 7",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/gyDCbTt8rKCjkrXjGg4Mbbbf/images/792617",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Herrgårdsgatan 7",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/gyDCbTt8rKCjkrXjGg4Mbbbf/images/812904",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Herrgårdsgatan 7",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/gyDCbTt8rKCjkrXjGg4Mbbbf/images/565927",
+          "linkedToType": "building"
+        }
+      ],
+      "floorplan": [
+        {
+          "displayName": "080-020.pdf",
+          "mimeType": "application/pdf",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/gyDCbTt8rKCjkrXjGg4Mbbbf/files/567712"
+        }
+      ]
+    }
+  },
+  "fQHrWQhP9kGBf8m7Mb6R88KB": {
+    "id": "8GyxgbBD4vGPyRJhxJbKHxtV",
+    "localId": "4357291",
+    "number": "AN-11925",
+    "displayName": "Gullebovägen 2 B",
+    "type": "fQHrWQhP9kGBf8m7Mb6R88KB",
+    "queueType": "residential",
+    "queueTypeDisplayName": "Bostad",
+    "nrApplications": 0,
+    "pricing": {
+      "price": 8529.45
+    },
+    "location": {
+      "area": {
+        "displayName": "Södra Rottne  5:41"
+      },
+      "areaPath": [
+        {
+          "id": "bTQmPfcJVktp6fKrPkV9djDB",
+          "displayName": "Rottne"
+        }
+      ],
+      "address": {
+        "address": "Gullebovägen 2 B",
+        "street": "Gullebovägen",
+        "streetnumber": "2",
+        "postcode": "36330",
+        "city": "ROTTNE",
+        "country": "Sverige",
+        "completeAdress": "Gullebovägen 2 B, 36330, ROTTNE, Sverige"
+      },
+      "floorDisplayName": "Våning 2",
+      "officialApartmentNumber": "1101"
+    },
+    "availability": {
+      "availableFrom": "/Date(1774994400000)/"
+    },
+    "publishing": {
+      "published": true
+    },
+    "application": {
+      "openTo": "/Date(1779141540000)/"
+    },
+    "size": {
+      "roomsDisplayName": "3 rum och kök",
+      "area": 69.7
+    },
+    "included": [
+      {
+        "displayName": "Balkong"
+      },
+      {
+        "displayName": "Bredband finns"
+      },
+      {
+        "displayName": "Diskmaskin"
+      },
+      {
+        "displayName": "Garage finns att hyra i mån av tillgång"
+      },
+      {
+        "displayName": "Hiss"
+      },
+      {
+        "displayName": "Torktumlare"
+      },
+      {
+        "displayName": "TV-grundutbud"
+      },
+      {
+        "displayName": "Tvättmaskin"
+      },
+      {
+        "displayName": "Ökad tillgänglighet"
+      }
+    ],
+    "attributes": [],
+    "info": {
+      "list": [
+        {
+          "displayName": "Om Gullebovägen 2",
+          "value": "Här bor du med utpräglad tillgänglighet och allt på bekvämt avstånd. En viss andel av lägenheterna erbjuds i första hand som seniorbostäder till personer som har fyllt 70 år.",
+          "linkedToType": "building",
+          "typeOrder": 15
+        }
+      ],
+      "area": [
+        {
+          "displayName": "Om Rottne",
+          "value": "Mitt emellan fiskrika Innaren och Sörabysjön ligger Rottne – ett modernt villasamhälle med komplett service, välutbyggd barnomsorg och ett rikt föreningsliv.\r\n\r\nI centrum finns affärer, restauranger, tandläkare och vårdcentral. Till ortens särprägel hör ett aktivt näringsliv som bidrar till att bygden sjuder av liv. I det omedelbara omlandet finns många härliga utflyktsmål, till exempel slussområdet i Åby och det natursköna Tolg. Med täta bussförbindelser tar man sig snabbt till Växjö.",
+          "linkedToType": "marketRegion",
+          "typeOrder": 50
+        }
+      ],
+      "company": [
+        {
+          "displayName": "Hyresvärd: Vidingehem",
+          "value": "Detta objekt hyrs ut av Vidingehem AB.\nEventuella bilder i annonsen är exempelbilder och speglar inte alltid den aktuella lägenheten.\nAlla lägenheter hyrs ut omöblerade, om inget annat anges.",
+          "linkedToType": "organisation1",
+          "order": 1,
+          "typeOrder": 60
+        }
+      ]
+    },
+    "files": {
+      "locationImage": [
+        {
+          "displayName": "Bild Gullebovägen 2",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/8GyxgbBD4vGPyRJhxJbKHxtV/images/566232",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Gullebovägen 2",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/8GyxgbBD4vGPyRJhxJbKHxtV/images/566233",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Gullebovägen 2",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/8GyxgbBD4vGPyRJhxJbKHxtV/images/566236",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Gullebovägen 2",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/8GyxgbBD4vGPyRJhxJbKHxtV/images/566274",
+          "linkedToType": "building"
+        }
+      ],
+      "floorplan": [
+        {
+          "displayName": "055-007.pdf",
+          "mimeType": "application/pdf",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/8GyxgbBD4vGPyRJhxJbKHxtV/files/567396"
+        }
+      ]
+    }
+  },
+  "PchcrTj8FVXJcCkxRFwMx7Qk": {
+    "id": "ckTmwcYgytwffT47JK6P947g",
+    "localId": "4298196",
+    "number": "AN-10679",
+    "displayName": "Köpmannagatan 9",
+    "type": "PchcrTj8FVXJcCkxRFwMx7Qk",
+    "queueType": "residential",
+    "queueTypeDisplayName": "Bostad",
+    "nrApplications": 0,
+    "pricing": {
+      "price": 7302.37
+    },
+    "location": {
+      "area": {
+        "displayName": "Ljungsåsa  1:9"
+      },
+      "areaPath": [
+        {
+          "id": "DDY7fJqDcPhdth984WByDMB8",
+          "displayName": "Lammhult"
+        }
+      ],
+      "address": {
+        "address": "Köpmannagatan 9 ",
+        "street": "Köpmannagatan",
+        "streetnumber": "9",
+        "postcode": "36344",
+        "city": "Lammhult",
+        "country": "Sverige",
+        "completeAdress": "Köpmannagatan 9 , 36344, Lammhult, Sverige"
+      },
+      "floorDisplayName": "Våning 4",
+      "officialApartmentNumber": "1305"
+    },
+    "availability": {
+      "availableFrom": "/Date(1774994400000)/"
+    },
+    "publishing": {
+      "published": true
+    },
+    "application": {
+      "openTo": "/Date(1779141540000)/"
+    },
+    "size": {
+      "roomsDisplayName": "1 rum och kök",
+      "area": 50.4
+    },
+    "included": [
+      {
+        "displayName": "Balkong"
+      },
+      {
+        "displayName": "Bredband finns"
+      },
+      {
+        "displayName": "El ingår"
+      },
+      {
+        "displayName": "Handdukstork"
+      },
+      {
+        "displayName": "Hiss"
+      },
+      {
+        "displayName": "P-plats ingår i mån av tillgång"
+      },
+      {
+        "displayName": "TV-grundutbud"
+      },
+      {
+        "displayName": "Ökad tillgänglighet"
+      }
+    ],
+    "attributes": [],
+    "info": {
+      "list": [
+        {
+          "displayName": "Om Köpmannagatan 9",
+          "value": "Här bor du mitt i samhället, ett stenkast från all den service som behövs i vardagen. Den mycket speciella byggnaden utmärks invändigt av ett vackert atrium som ger luft och rymd. På baksidan gränsar tomten mot den trivsamma park som Vidingehem lät anlägga 2022.",
+          "linkedToType": "property",
+          "typeOrder": 15
+        }
+      ],
+      "important": [
+        {
+          "displayName": "Tidigare inflyttning",
+          "value": "Lägenheten är tillgänglig för omgående inflyttning.",
+          "linkedToType": "rentalObject",
+          "typeOrder": 20
+        }
+      ],
+      "area": [
+        {
+          "displayName": "Om Lammhult",
+          "value": "Lammhult ligger mitt i det berömda Möbelriket med en rad internationellt välkända möbelföretag.\r\n\r\nHär finns bland annat mataffär, frisörer, blomsterbutik, pizzeria, gym och vårdcentral.\r\n\r\n2024 färdigställdes storsatsningen på en ny F–9-skola och ny förskola. De nya byggnaderna rymmer även fritidsgård, bibliotek och sporthall med publikläktare. \r\n\r\nKollektivtrafiken är välutbyggd i form av såväl buss som tåg för den som pendlar till arbetet eller föredrar kollektiva transportmedel till shopping och upplevelser. Till Växjö tar du dig snabbt och smidigt utan byten och lika enkelt når du de stora järnvägsknutarna Alvesta och Nässjö.\r\n\r\nNaturen kring Lammhult är vacker och bygden sjuder av såväl ett aktivt föreningsliv som ett stort stycke svensk kulturhistoria.",
+          "linkedToType": "marketRegion",
+          "typeOrder": 50
+        }
+      ],
+      "company": [
+        {
+          "displayName": "Hyresvärd: Vidingehem",
+          "value": "Detta objekt hyrs ut av Vidingehem AB.\nEventuella bilder i annonsen är exempelbilder och speglar inte alltid den aktuella lägenheten.\nAlla lägenheter hyrs ut omöblerade, om inget annat anges.",
+          "linkedToType": "organisation1",
+          "order": 1,
+          "typeOrder": 60
+        }
+      ]
+    },
+    "files": {
+      "locationImage": [
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/565914",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/792645",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/792647",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032712",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032739",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032740",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032742",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032743",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032745",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032747",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032748",
+          "linkedToType": "building"
+        },
+        {
+          "displayName": "Bild Köpmannagatan 9",
+          "mimeType": "image/jpeg",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/images/1032758",
+          "linkedToType": "building"
+        }
+      ],
+      "floorplan": [
+        {
+          "displayName": "087-030.pdf",
+          "mimeType": "application/pdf",
+          "address": "https://vidingehem-fastighet.momentum.se/Prod/Vidingehem/PmApi/v2/market/objects/ckTmwcYgytwffT47JK6P947g/files/567980"
+        }
+      ]
+    }
+  }
+}

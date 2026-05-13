@@ -1,0 +1,1091 @@
+{
+  "parking": {
+    "displayName": "Fordonsplats",
+    "description": "I många bostadsområden finns det möjlighet att hyra fordonsplats. Tänk på att det kan vara väntetid för dessa platser och därför behöver du ställa dig i kö. När du har fått en plats nollställs dina köpoäng och startar om.\n\nVill du se på en karta? Gå in på Vidingehems websida och klicka i menyn på - Här finns vi. Välj sedan den ort eller del av Växjö du vill se. Om du söker en plats som inte tillhör ditt bostadsområde så tillkommer 25% moms enligt Skatteverkets bestämmelser.",
+    "maxNumberOfApplications": "3",
+    "minPrice": "0",
+    "maxPrice": "1500",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 11
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "rentalObjectType",
+        "displayName": "Objekttyp",
+        "order": 71
+      },
+      {
+        "type": "location.signNumber",
+        "displayName": "Skyltnummer",
+        "order": 75
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 90
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 170
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 175
+      },
+      {
+        "type": "attributes",
+        "displayName": "Egenskaper",
+        "order": 180
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 190
+      },
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 290
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 50
+      },
+      {
+        "type": "rentalObjectType",
+        "displayName": "Objekttyp",
+        "order": 71
+      },
+      {
+        "type": "location.signNumber",
+        "displayName": "Skyltnummer",
+        "order": 220
+      }
+    ]
+  },
+  "RwxTWw86hrYkBhPv4KhtBBrk": {
+    "displayName": "Studentbostad",
+    "description": "För att hyra en studentbostad behöver du studera vid Linnéuniversitetet, en Yrkeshögskola i Växjö eller på distans oavsett lärosäte. Tänk på att ladda upp ditt studieintyg i sökandeprofilen under rubriken Mitt sökande.\n\nFör dig som ännu inte är antagen så ber vi dig ladda upp bekräftelse på att du har sökt kurser om minst 15 studiepoäng vid LNU eller motsvarande inför kommande termin och du kan då söka lägenheter med inflyttning i samband med terminsstart.\n\nAlla våra studentbostäder ligger på Campus och har",
+    "maxNumberOfApplications": "3",
+    "minNumberOfRooms": "1",
+    "maxNumberOfRooms": "4",
+    "minSize": "0",
+    "maxSize": "100",
+    "minPrice": "0",
+    "maxPrice": "18000",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 10
+      },
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 70
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 90
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "location.floorDisplayName",
+        "displayName": "Våningsplan",
+        "order": 140
+      },
+      {
+        "type": "location.officialApartmentNumber",
+        "displayName": "Lägenhetsnummer",
+        "order": 150
+      },
+      {
+        "type": "attributes",
+        "displayName": "Egenskaper",
+        "order": 180
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 200
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 210
+      },
+      {
+        "type": "queuePointsCurrentPositionX",
+        "displayName": "Köpoäng på plats 6",
+        "order": 340
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 370
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 50
+      },
+      {
+        "type": "size.shortRoomsDisplayName",
+        "displayName": "Storlek",
+        "order": 60
+      },
+      {
+        "type": "size.area",
+        "displayName": "Kvm",
+        "order": 70
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Kr/mån",
+        "order": 80
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 90
+      },
+      {
+        "type": "description",
+        "displayName": "Annonsbeskrivning",
+        "order": 100
+      }
+    ]
+  },
+  "residential": {
+    "displayName": "Bostad",
+    "description": "Här hittar du lägenheter som går att söka just nu. Det finns även lägenheter som du kan söka under Poängfritt. Logga in för att göra en intresseanmälan.\n\nTänk på att ladda upp intyg för inkomst eller studier i god tid i sökandeprofilen under rubriken Mitt sökande.",
+    "maxNumberOfApplications": "5",
+    "minNumberOfRooms": "1",
+    "maxNumberOfRooms": "7",
+    "minSize": "0",
+    "maxSize": "170",
+    "minPrice": "0",
+    "maxPrice": "20000",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 11
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 70
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 91
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "economy.billingPeriodDescription",
+        "displayName": "Debiteringsperiod beskrivning",
+        "order": 120
+      },
+      {
+        "type": "economy.billingPeriodDisplayName",
+        "displayName": "Debiteringsperiod beteckning",
+        "order": 130
+      },
+      {
+        "type": "location.floorDisplayName",
+        "displayName": "Våningsplan",
+        "order": 140
+      },
+      {
+        "type": "location.officialApartmentNumber",
+        "displayName": "Lägenhetsnummer",
+        "order": 150
+      },
+      {
+        "type": "location.signNumber",
+        "displayName": "Skyltnummer",
+        "order": 160
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 200
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 210
+      },
+      {
+        "type": "queuePointsCurrentPositionX",
+        "displayName": "Köpoäng på plats 6",
+        "order": 340
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 370
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 50
+      },
+      {
+        "type": "size.shortRoomsDisplayName",
+        "displayName": "Storlek",
+        "order": 60
+      },
+      {
+        "type": "size.area",
+        "displayName": "Kvm",
+        "order": 70
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Kr/mån",
+        "order": 80
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 90
+      },
+      {
+        "type": "description",
+        "displayName": "Annonsbeskrivning",
+        "order": 100
+      }
+    ]
+  },
+  "fdRCFvqgMwjfyQP4Y8hRwF4W": {
+    "displayName": "Poängfritt",
+    "description": "Här hittar du lediga lägenheter som du kan söka utan köpoäng. Det är ofta snabb inflyttning och bostaden erbjuds till den som först gör sin intresseanmälan och uppfyller uthyrningskriterierna. Behöver du flytta in tidigare eller senare än vad som står i bostadsannonsen går det i vissa fall att komma överens om annat inflyttningsdatum.\n\nTänk på att ladda upp intyg för inkomst eller studier i god tid i sökandeprofilen under rubriken Mitt sökande.\n\nLogga in för att göra en intresseanmälan.",
+    "maxNumberOfApplications": "5",
+    "minNumberOfRooms": "1",
+    "maxNumberOfRooms": "7",
+    "minSize": "0",
+    "maxSize": "170",
+    "minPrice": "0",
+    "maxPrice": "20000",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 10
+      },
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 70
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 90
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "location.floorDisplayName",
+        "displayName": "Våningsplan",
+        "order": 140
+      },
+      {
+        "type": "location.officialApartmentNumber",
+        "displayName": "Lägenhetsnummer",
+        "order": 150
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 170
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 175
+      },
+      {
+        "type": "attributes",
+        "displayName": "Egenskaper",
+        "order": 180
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 370
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 50
+      },
+      {
+        "type": "size.shortRoomsDisplayName",
+        "displayName": "Storlek",
+        "order": 60
+      },
+      {
+        "type": "size.area",
+        "displayName": "Kvm",
+        "order": 70
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Kr/mån",
+        "order": 80
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 90
+      },
+      {
+        "type": "description",
+        "displayName": "Annonsbeskrivning",
+        "order": 100
+      }
+    ]
+  },
+  "fQHrWQhP9kGBf8m7Mb6R88KB": {
+    "displayName": "Seniorbostad",
+    "description": "En seniorbostad är en bostad med god tillgänglighet. Den ligger i markplan eller kan nås med hiss, den har rymligare badrum, bredare dörröppningar och låga trösklar. Lägenheterna ligger ofta nära service och vårdcentral. \n\nSeniorboende erbjuds i första hand personer som fyllt 70 år och i andra hand till de som fyllt 55 år. Seniorlägenheter kan även erbjudas till yngre personer. Därför är det möjligt för alla att söka en seniorbostad.",
+    "maxNumberOfApplications": "5",
+    "minNumberOfRooms": "1",
+    "maxNumberOfRooms": "4",
+    "minSize": "0",
+    "maxSize": "100",
+    "minPrice": "0",
+    "maxPrice": "13000",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 10
+      },
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 70
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 90
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "location.floorDisplayName",
+        "displayName": "Våningsplan",
+        "order": 140
+      },
+      {
+        "type": "location.officialApartmentNumber",
+        "displayName": "Lägenhetsnummer",
+        "order": 150
+      },
+      {
+        "type": "attributes",
+        "displayName": "Egenskaper",
+        "order": 180
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 200
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 210
+      },
+      {
+        "type": "queuePointsCurrentPositionX",
+        "displayName": "Köpoäng på plats 6",
+        "order": 340
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 370
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 50
+      },
+      {
+        "type": "size.shortRoomsDisplayName",
+        "displayName": "Storlek",
+        "order": 60
+      },
+      {
+        "type": "size.area",
+        "displayName": "Kvm",
+        "order": 70
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Kr/mån",
+        "order": 80
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 90
+      },
+      {
+        "type": "description",
+        "displayName": "Annonsbeskrivning",
+        "order": 100
+      }
+    ]
+  },
+  "PchcrTj8FVXJcCkxRFwMx7Qk": {
+    "displayName": "Trygghetsboende",
+    "description": "Det perfekta boendet för dig som är 65 år eller äldre. Här bor du bekvämt med möjlighet till gemenskap och sociala aktiviteter – helt på dina villkor. I de gemensamma utrymmena finns plats för att umgås, se på TV tillsammans, spela sällskapsspel, delta i studiecirklar eller ordna mindre middagar. Flera dagar i veckan finns en bovärd på plats under ett par timmar för att arrangera aktiviteter både inne och ute. Du deltar i det dagliga umgänget precis som det passar dig – aktivt eller mer i bakgrunden.",
+    "maxNumberOfApplications": "5",
+    "minNumberOfRooms": "1",
+    "maxNumberOfRooms": "3",
+    "minSize": "0",
+    "maxSize": "80",
+    "minPrice": "0",
+    "maxPrice": "15000",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 10
+      },
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 70
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 90
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "location.floorDisplayName",
+        "displayName": "Våningsplan",
+        "order": 140
+      },
+      {
+        "type": "location.officialApartmentNumber",
+        "displayName": "Lägenhetsnummer",
+        "order": 150
+      },
+      {
+        "type": "attributes",
+        "displayName": "Egenskaper",
+        "order": 180
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 200
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 210
+      },
+      {
+        "type": "queuePointsCurrentPositionX",
+        "displayName": "Köpoäng på plats 6",
+        "order": 340
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 370
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 50
+      },
+      {
+        "type": "size.shortRoomsDisplayName",
+        "displayName": "Storlek",
+        "order": 60
+      },
+      {
+        "type": "size.area",
+        "displayName": "Kvm",
+        "order": 70
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Kr/mån",
+        "order": 80
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 90
+      },
+      {
+        "type": "description",
+        "displayName": "Annonsbeskrivning",
+        "order": 100
+      }
+    ]
+  },
+  "KPJGYD7TJGMjXRVJCmbmtb7d": {
+    "displayName": "Ungdomsbostad",
+    "description": "En ungdomsbostad är en bostad för dig mellan 18-26 år. Det är lägenheter i storlek ettor och treor, ofta med kokvrå. Lägenheterna erbjuds i första hand dig mellan 18-26 år och kan om ingen i det åldersspannet tackar ja erbjudas för dig upp till 30 år.",
+    "maxNumberOfApplications": "5",
+    "minNumberOfRooms": "1",
+    "maxNumberOfRooms": "3",
+    "minSize": "0",
+    "maxSize": "60",
+    "minPrice": "0",
+    "maxPrice": "8000",
+    "numberOfMarketObjects": 0,
+    "areas": [],
+    "includes": [],
+    "sizeRoomsDisplayName": [],
+    "singleMarketObjektDataFields": [
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 10
+      },
+      {
+        "type": "number",
+        "displayName": "Annonsnummer",
+        "order": 10
+      },
+      {
+        "type": "files",
+        "displayName": "Filer",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "application.openTo",
+        "displayName": "Sista anmälningsdag",
+        "order": 50
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 60
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 70
+      },
+      {
+        "type": "size.area",
+        "displayName": "Yta",
+        "order": 80
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Pris",
+        "order": 90
+      },
+      {
+        "type": "info",
+        "displayName": "Annonsinformation",
+        "order": 110
+      },
+      {
+        "type": "location.floorDisplayName",
+        "displayName": "Våningsplan",
+        "order": 140
+      },
+      {
+        "type": "location.officialApartmentNumber",
+        "displayName": "Lägenhetsnummer",
+        "order": 150
+      },
+      {
+        "type": "attributes",
+        "displayName": "Egenskaper",
+        "order": 180
+      },
+      {
+        "type": "queueTypeDisplayName",
+        "displayName": "Kö",
+        "order": 200
+      },
+      {
+        "type": "nrApplications",
+        "displayName": "Antal intressenter",
+        "order": 210
+      },
+      {
+        "type": "queuePointsCurrentPositionX",
+        "displayName": "Köpoäng på plats 6",
+        "order": 340
+      },
+      {
+        "type": "included",
+        "displayName": "Information",
+        "order": 370
+      }
+    ],
+    "marketObjektListDataFields": [
+      {
+        "type": "thumbnail",
+        "displayName": "Miniatyrbild",
+        "order": 10
+      },
+      {
+        "type": "displayName",
+        "displayName": "Annonsbeteckning",
+        "order": 20
+      },
+      {
+        "type": "location.area.displayName",
+        "displayName": "Områdesbeteckning",
+        "order": 30
+      },
+      {
+        "type": "location.areaPath",
+        "displayName": "Område",
+        "order": 40
+      },
+      {
+        "type": "size.roomsDisplayName",
+        "displayName": "Storlek",
+        "order": 50
+      },
+      {
+        "type": "size.shortRoomsDisplayName",
+        "displayName": "Storlek",
+        "order": 60
+      },
+      {
+        "type": "size.area",
+        "displayName": "Kvm",
+        "order": 70
+      },
+      {
+        "type": "pricing.price",
+        "displayName": "Kr/mån",
+        "order": 80
+      },
+      {
+        "type": "availability.availableFrom",
+        "displayName": "Ledig fr.o.m.",
+        "order": 90
+      },
+      {
+        "type": "description",
+        "displayName": "Annonsbeskrivning",
+        "order": 100
+      }
+    ]
+  }
+}
