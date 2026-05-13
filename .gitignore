@@ -114,3 +114,4 @@ buildNumber.properties
 # Local env files (never commit — use template.env as the reference)
 local.env
 **/local.env
+bitbucket.log
