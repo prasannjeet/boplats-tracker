@@ -115,3 +115,6 @@ buildNumber.properties
 local.env
 **/local.env
 bitbucket.log
+
+# TypeScript incremental build cache
+**/*.tsbuildinfo
