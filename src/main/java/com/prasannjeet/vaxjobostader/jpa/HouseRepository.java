@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,19 @@ import java.util.Optional;
 public interface HouseRepository extends JpaRepository<House, Long> {
 
     List<House> findAllByEndDateIsNull();
+
+    @Query("""
+        SELECT h FROM House h
+        WHERE h.applicationDeadline IS NULL
+        OR h.applicationDeadline >= :startOfToday
+        """)
+    List<House> findAllDisplayable(@Param("startOfToday") Date startOfToday);
+
+    @Query("""
+        SELECT h FROM House h
+        WHERE h.id IN :externalIds
+        """)
+    List<House> findAllByExternalIds(@Param("externalIds") Collection<String> externalIds);
 
     Optional<House> findByIdAndAvailableFromAndEndDateIsNull(String id, Date availableFrom);
 

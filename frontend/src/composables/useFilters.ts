@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router';
 import type { House } from '@/types/house';
 import { competitionTier, costPerM2, hasFloorplan, imageCount } from '@/lib/derived';
+import { daysUntil } from '@/lib/format';
 
 export type ViewMode = 'list' | 'grid' | 'split';
 export type QuickPreset = 'all' | 'spacious' | 'lowqueue' | 'deadline' | 'floorplan';
@@ -154,7 +155,8 @@ function applyQuickPreset(f: Filters, h: House, now: number): boolean {
       return competitionTier(h.queuePoints) === 'low' || (h.queuePoints == null && f.includeUnknownQueue);
     case 'deadline':
       if (!h.applicationDeadline) return false;
-      const days = (new Date(h.applicationDeadline).getTime() - now) / 86400000;
+      const days = daysUntil(h.applicationDeadline, new Date(now));
+      if (days == null) return false;
       return days >= 0 && days <= 7;
     case 'floorplan':
       return hasFloorplan(h);
@@ -205,10 +207,11 @@ export function filterHouses(houses: House[], f: Filters, now = Date.now()): Hou
       if (f.queueMax != null && h.queuePoints > f.queueMax) return false;
     }
     if (f.hidePassed && h.applicationDeadline) {
-      if (new Date(h.applicationDeadline).getTime() < now) return false;
+      if ((daysUntil(h.applicationDeadline, new Date(now)) ?? 0) < 0) return false;
     }
     if (deadlineDays != null && h.applicationDeadline) {
-      const days = (new Date(h.applicationDeadline).getTime() - now) / 86400000;
+      const days = daysUntil(h.applicationDeadline, new Date(now));
+      if (days == null) return false;
       if (days < 0 || days > deadlineDays) return false;
     } else if (deadlineDays != null && !h.applicationDeadline) {
       return false;

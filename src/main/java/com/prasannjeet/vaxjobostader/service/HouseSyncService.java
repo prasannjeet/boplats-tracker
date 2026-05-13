@@ -37,8 +37,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -69,8 +71,10 @@ public class HouseSyncService {
 
     /**
      * Reconciles the API listing with the database. Order matters:
-     * 1) reconcile active rows against the API response (insert / update / end-date)
-     * 2) end any house whose application deadline has passed
+     * 1) reconcile API rows by the DB identity (id + available_from), even if
+     *    the matching row is currently ended
+     * 2) end active rows missing from the API response
+     * 3) end any house whose application deadline has passed
      *
      * Doing the deadline sweep AFTER the reconcile means a listing that is past
      * its deadline but still present in the API response is matched (and updated)
@@ -100,6 +104,20 @@ public class HouseSyncService {
                     activeByKey.put(HouseKey.of(h.getId(), h.getAvailableFrom()), h);
                 }
 
+                Set<String> apiExternalIds = new HashSet<>();
+                for (HouseListItem item : apiItems) {
+                    if (item.id() != null) {
+                        apiExternalIds.add(item.id());
+                    }
+                }
+
+                Map<HouseKey, House> existingByKey = new HashMap<>();
+                if (!apiExternalIds.isEmpty()) {
+                    for (House h : houseRepository.findAllByExternalIds(apiExternalIds)) {
+                        existingByKey.put(HouseKey.of(h.getId(), h.getAvailableFrom()), h);
+                    }
+                }
+
                 List<House> toSave = new ArrayList<>(apiItems.size());
 
                 for (HouseListItem item : apiItems) {
@@ -111,7 +129,8 @@ public class HouseSyncService {
                     }
 
                     HouseKey key = HouseKey.of(item.id(), availableFrom);
-                    House existing = activeByKey.remove(key);
+                    House existing = existingByKey.get(key);
+                    activeByKey.remove(key);
                     House house = existing != null ? existing : new House();
                     boolean isNew = existing == null;
 
@@ -119,6 +138,7 @@ public class HouseSyncService {
                     house.setLocalId(item.localId());
                     house.setDescription(item.description());
                     house.setAvailableFrom(availableFrom);
+                    house.setEndDate(null);
                     house.setType(item.type());
                     house.setDisplayName(item.displayName());
 

@@ -48,9 +48,13 @@ export function formatDeadlineTimestamp(iso: string | null | undefined): string 
 
 export function daysUntil(iso: string | null | undefined, ref: Date = new Date()): number | null {
   if (!iso) return null;
-  const target = new Date(iso).getTime();
-  const diff = target - ref.getTime();
+  const target = startOfLocalDay(new Date(iso)).getTime();
+  const diff = target - startOfLocalDay(ref).getTime();
   return Math.floor(diff / 86400000);
+}
+
+function startOfLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 export function formatCountdown(iso: string | null | undefined, ref: Date = new Date()): string {

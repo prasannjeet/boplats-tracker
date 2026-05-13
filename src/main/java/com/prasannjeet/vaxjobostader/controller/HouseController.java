@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +35,13 @@ public class HouseController {
     public List<House> list(@RequestParam(name = "includeEnded", defaultValue = "false") boolean includeEnded) {
         List<House> houses = includeEnded
             ? houseRepository.findAll()
-            : houseRepository.findAllByEndDateIsNull();
+            : houseRepository.findAllDisplayable(startOfToday());
         attachImagesAndFloorplans(houses);
         return houses;
+    }
+
+    private Date startOfToday() {
+        return Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     private void attachImagesAndFloorplans(List<House> houses) {

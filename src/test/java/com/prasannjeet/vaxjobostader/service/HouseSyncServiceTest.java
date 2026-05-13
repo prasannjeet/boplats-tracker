@@ -121,6 +121,7 @@ class HouseSyncServiceTest {
             new HouseListResponse(1, List.of(listItem("A", avail)))
         );
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
         service.syncHouseList();
 
@@ -143,11 +144,36 @@ class HouseSyncServiceTest {
             new HouseListResponse(1, List.of(listItem("A", avail, 250.0)))
         );
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of(existing));
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
 
         service.syncHouseList();
 
         assertThat(existing.getRent()).isEqualTo(250.0);
         assertThat(existing.getEndDate()).isNull();
+    }
+
+    @Test
+    void reconcile_updatesExistingEndedOnMatchAndClearsEndDate() throws Exception {
+        Date avail = date(2026, 6, 1);
+        House existing = house("A", avail);
+        existing.setEndDate(date(2026, 6, 2));
+        existing.setRent(100.0);
+
+        when(client.getPropertiesList()).thenReturn(
+            new HouseListResponse(1, List.of(listItem("A", avail, 250.0)))
+        );
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
+
+        service.syncHouseList();
+
+        assertThat(existing.getRent()).isEqualTo(250.0);
+        assertThat(existing.getEndDate()).isNull();
+
+        ArgumentCaptor<List<House>> saved = listCaptor();
+        verify(repository, atLeastOnce()).saveAll(saved.capture());
+        assertThat(saved.getAllValues().stream().flatMap(List::stream))
+            .contains(existing);
     }
 
     @Test
@@ -159,6 +185,7 @@ class HouseSyncServiceTest {
             new HouseListResponse(0, List.of(listItem("OTHER", avail)))
         );
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of(gone));
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
         service.syncHouseList();
 
@@ -175,6 +202,7 @@ class HouseSyncServiceTest {
             new HouseListResponse(1, List.of(listItem("A", newAvail)))
         );
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of(existingActive));
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of(existingActive));
 
         service.syncHouseList();
 
@@ -197,6 +225,7 @@ class HouseSyncServiceTest {
             new HouseListResponse(1, List.of(listItem("BAD", null)))
         );
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
         service.syncHouseList();
 
@@ -211,6 +240,7 @@ class HouseSyncServiceTest {
             new HouseListResponse(1, List.of(listItem("A", avail)))
         );
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
         service.syncHouseList();
 
