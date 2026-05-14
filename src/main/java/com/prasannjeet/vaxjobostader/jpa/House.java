@@ -120,6 +120,19 @@ public class House {
     @Column(name = "geocoded_at")
     private Instant geocodedAt;
 
+    @Column(name = "queue_type", length = 50)
+    private String queueType;
+
+    @Column(name = "rental_object_type")
+    private String rentalObjectType;
+
+    @Column(name = "nr_applications")
+    private Integer nrApplications;
+
+    @JsonRawValue
+    @Column(name = "included_json", columnDefinition = "json")
+    private String includedJson;
+
     // Populated by the controller from the house_image / house_floorplan child
     // tables. Not persisted on House itself — keyed by external id, so the
     // same image rows belong to every re-listing of a given property.
