@@ -6,7 +6,7 @@ import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import router from '@/router';
 import type { House } from '@/types/house';
-import { competitionTier } from '@/lib/derived';
+import { competitionTier, typeSvgIcon } from '@/lib/derived';
 import MapPopupCard from './MapPopupCard.vue';
 
 const props = defineProps<{ houses: House[]; highlightId?: number | null; height?: string }>();
@@ -26,14 +26,12 @@ function clusterSizeClass(count: number): string {
   return 'cluster-sm';
 }
 
-const HOME_SVG = `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`;
-
 function pinIcon(house: House, highlighted: boolean): DivIcon {
-  const tier = competitionTier(house.queuePoints);
+  const tier = house.queuePoints != null ? competitionTier(house.queuePoints) : 'neutral';
   const classes = ['pin', tier, highlighted ? 'highlight' : ''].filter(Boolean).join(' ');
   return L.divIcon({
     className: classes,
-    html: HOME_SVG,
+    html: typeSvgIcon(house.type),
     iconSize: [40, 40],
     iconAnchor: [20, 20],
   });
@@ -239,6 +237,12 @@ watch(
 
 .leaflet-marker-icon.pin.unknown {
   background: rgba(20, 17, 13, 0.65);
+  color: var(--white);
+  border-color: var(--surface-2);
+}
+
+.leaflet-marker-icon.pin.neutral {
+  background: var(--ink-soft);
   color: var(--white);
   border-color: var(--surface-2);
 }
