@@ -73,3 +73,49 @@ export function imageCount(house: House): number {
 export function shortHeadline(house: House): string {
   return house.displayName ?? house.address ?? house.completeAddress ?? `Listing ${house.id}`;
 }
+
+export function typeIcon(typeId: string | null | undefined): string {
+  switch ((typeId ?? '').toLowerCase()) {
+    case 'parking': return 'P';
+    case 'student': return 'S';
+    case 'trygghetsboende': return 'T';
+    case 'residential': return '⌂';
+    default: return '⌂';
+  }
+}
+
+export function typeSvgIcon(typeId: string | null | undefined): string {
+  const t = (typeId ?? '').toLowerCase();
+  if (t === 'parking') {
+    return `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M13 3H6v18h4v-6h3c3.31 0 6-2.69 6-6s-2.69-6-6-6zm.2 8H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>`;
+  }
+  return `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>`;
+}
+
+export function competitionDisplay(house: Pick<House, 'queuePoints' | 'nrApplications'>): string | null {
+  if (house.queuePoints != null) {
+    return `${Math.round(house.queuePoints).toLocaleString('sv-SE')} pts`;
+  }
+  if (house.nrApplications != null) {
+    return `${house.nrApplications.toLocaleString('sv-SE')} sökande`;
+  }
+  return null;
+}
+
+export function parseAmenities(includedJson: string | null | undefined): string[] {
+  if (!includedJson) return [];
+  try {
+    const parsed = JSON.parse(includedJson);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item: unknown) => {
+        if (typeof item === 'object' && item !== null && 'displayName' in item) {
+          return String((item as { displayName: unknown }).displayName);
+        }
+        return '';
+      })
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
