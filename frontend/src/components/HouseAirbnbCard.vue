@@ -4,15 +4,21 @@ import { RouterLink } from 'vue-router';
 import type { House } from '@/types/house';
 import Carousel from './Carousel.vue';
 import SaveButton from './SaveButton.vue';
-import { competitionTier, galleryImages, locationLabel, shortHeadline } from '@/lib/derived';
+import { competitionTier, competitionDisplay, galleryImages, locationLabel, shortHeadline } from '@/lib/derived';
 import { formatArea, formatRent, formatRooms } from '@/lib/format';
+import parkingPlaceholder from '@/assets/parking-placeholder.png';
 
 const props = defineProps<{
   house: House;
   highlighted?: boolean;
 }>();
 
-const images = computed(() => galleryImages(props.house));
+const images = computed(() => {
+  const imgs = galleryImages(props.house);
+  if (imgs.length > 0) return imgs;
+  if ((props.house.type ?? '').toLowerCase() === 'parking') return [parkingPlaceholder];
+  return imgs;
+});
 const headline = computed(() => shortHeadline(props.house));
 const location = computed(() => locationLabel(props.house));
 const tier = computed(() => competitionTier(props.house.queuePoints));
@@ -20,18 +26,27 @@ const detailRoute = computed(() => ({
   name: 'detail' as const,
   params: { internalId: String(props.house.internalId) },
 }));
-const queueLabel = computed(() =>
-  props.house.queuePoints != null
-    ? `${Math.round(props.house.queuePoints).toLocaleString('sv-SE')} pts`
-    : null,
-);
+const competitionChip = computed(() => competitionDisplay(props.house));
+const typeLabel = computed(() => {
+  const t = props.house.type ?? '';
+  if (t.toLowerCase() === 'residential' || t === '') return null;
+  return props.house.rentalObjectType ?? t;
+});
+const metaLine = computed(() => {
+  const parts: string[] = [];
+  if (props.house.rent != null) parts.push(formatRent(props.house.rent));
+  if (props.house.rooms != null) parts.push(formatRooms(props.house.rooms));
+  if (props.house.area != null) parts.push(formatArea(props.house.area));
+  return parts.join(' · ') || '—';
+});
 </script>
 
 <template>
   <RouterLink :to="detailRoute" class="airbnb-card" :class="{ highlighted }">
     <div class="media">
       <Carousel :images="images" :alt="headline" cover />
-      <span v-if="queueLabel" :class="['queue-chip', tier]">{{ queueLabel }}</span>
+      <span v-if="competitionChip" :class="['queue-chip', tier]">{{ competitionChip }}</span>
+      <span v-if="typeLabel" class="type-badge">{{ typeLabel }}</span>
       <div class="save-wrap">
         <SaveButton :internal-id="house.internalId" :label="headline" />
       </div>
@@ -39,7 +54,7 @@ const queueLabel = computed(() =>
     <div class="body">
       <h3 class="title">{{ headline }}</h3>
       <p class="loc">{{ location }}</p>
-      <p class="meta">{{ formatRent(house.rent) }} · {{ formatRooms(house.rooms) }} · {{ formatArea(house.area) }}</p>
+      <p class="meta">{{ metaLine }}</p>
     </div>
   </RouterLink>
 </template>
@@ -151,5 +166,20 @@ const queueLabel = computed(() =>
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-soft);
+}
+
+.type-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, 0.62);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
 }
 </style>
