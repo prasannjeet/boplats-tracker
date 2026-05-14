@@ -4,14 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseAvailability;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseDetail;
+import com.prasannjeet.vaxjobostader.client.dto.house.HouseIncluded;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseListItem;
 import com.prasannjeet.vaxjobostader.client.dto.house.HousePricing;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseSize;
+import com.prasannjeet.vaxjobostader.client.dto.house.HouseThumbnail;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.jpa.HouseFloorplanRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseImageRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
+import com.prasannjeet.vaxjobostader.jpa.ObjectTypeRepository;
 import com.prasannjeet.vaxjobostader.service.geocoding.AddressGeocodeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,13 +51,14 @@ class HouseSyncServiceTest {
     @Mock HouseFloorplanRepository floorplanRepository;
     @Mock TaskScheduler taskScheduler;
     @Mock AddressGeocodeService addressGeocodeService;
+    @Mock ObjectTypeRepository objectTypeRepository;
 
     AppConfig appConfig;
 
     @InjectMocks HouseSyncService service;
 
     @BeforeEach
-    void setup() {
+    void setup() throws Exception {
         appConfig = new AppConfig();
         appConfig.setListApiCacheDurationHours(24);
         appConfig.setDetailRefreshIntervalHours(12);
@@ -63,8 +68,11 @@ class HouseSyncServiceTest {
         // re-create with the prepared appConfig
         service = new HouseSyncService(
             client, repository, imageRepository, floorplanRepository,
-            appConfig, taskScheduler, new ObjectMapper(), addressGeocodeService
+            appConfig, taskScheduler, new ObjectMapper(), addressGeocodeService,
+            objectTypeRepository
         );
+        // syncHouseList() always calls getTypeMetadata; return null by default to skip saving.
+        lenient().when(client.getTypeMetadata(any())).thenReturn(null);
     }
 
     // -------- Sticky queue points --------
@@ -244,6 +252,133 @@ class HouseSyncServiceTest {
         verify(repository, times(1)).markPastDeadlineEnded(any(LocalDate.class), any(Date.class));
     }
 
+    // -------- New fields from list item --------
+
+    @Test
+    void listSync_setsQueueTypeFromListItem() throws Exception {
+        Date avail = date(2026, 6, 1);
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItemWithQueueType("A", avail, "student")));
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
+
+        service.syncHouseList();
+
+        ArgumentCaptor<List<House>> saved = listCaptor();
+        verify(repository, atLeastOnce()).saveAll(saved.capture());
+        House inserted = saved.getAllValues().stream()
+            .flatMap(List::stream).filter(h -> "A".equals(h.getId())).findFirst().orElseThrow();
+        assertThat(inserted.getQueueType()).isEqualTo("student");
+    }
+
+    @Test
+    void listSync_setsRentalObjectTypeForParkingItem() throws Exception {
+        Date avail = date(2026, 6, 1);
+        when(client.getAllPropertiesList()).thenReturn(
+            List.of(listItemWithRentalObjectType("P1", avail, "parking", "Parkeringsplats"))
+        );
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
+
+        service.syncHouseList();
+
+        ArgumentCaptor<List<House>> saved = listCaptor();
+        verify(repository, atLeastOnce()).saveAll(saved.capture());
+        House inserted = saved.getAllValues().stream()
+            .flatMap(List::stream).filter(h -> "P1".equals(h.getId())).findFirst().orElseThrow();
+        assertThat(inserted.getRentalObjectType()).isEqualTo("Parkeringsplats");
+    }
+
+    @Test
+    void listSync_populatesThumbnailImageUrlWhenNotSet() throws Exception {
+        Date avail = date(2026, 6, 1);
+        appConfig.setVbUrl("https://example.com/api");
+        when(client.getAllPropertiesList()).thenReturn(
+            List.of(listItemWithThumbnail("T1", avail, "f-565812"))
+        );
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
+
+        service.syncHouseList();
+
+        ArgumentCaptor<List<House>> saved = listCaptor();
+        verify(repository, atLeastOnce()).saveAll(saved.capture());
+        House inserted = saved.getAllValues().stream()
+            .flatMap(List::stream).filter(h -> "T1".equals(h.getId())).findFirst().orElseThrow();
+        assertThat(inserted.getImageUrl()).isEqualTo("https://example.com/api/T1/images/565812");
+    }
+
+    @Test
+    void listSync_doesNotOverwriteExistingImageUrl() throws Exception {
+        Date avail = date(2026, 6, 1);
+        House existing = house("E1", avail);
+        existing.setImageUrl("https://existing-url.com/image.jpg");
+        when(client.getAllPropertiesList()).thenReturn(
+            List.of(listItemWithThumbnail("E1", avail, "f-999999"))
+        );
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of(existing));
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
+
+        service.syncHouseList();
+
+        assertThat(existing.getImageUrl()).isEqualTo("https://existing-url.com/image.jpg");
+    }
+
+    // -------- New fields from detail --------
+
+    @Test
+    void detailApply_setsQueueType() throws Exception {
+        House h = new House();
+        HouseDetail detail = detailWithNewFields("residential", "Parkeringsplats", 5, List.of());
+
+        invokeApplyDetail(h, detail);
+
+        assertThat(h.getQueueType()).isEqualTo("residential");
+    }
+
+    @Test
+    void detailApply_setsRentalObjectType() throws Exception {
+        House h = new House();
+        HouseDetail detail = detailWithNewFields("parking", "Centralgarage", 0, List.of());
+
+        invokeApplyDetail(h, detail);
+
+        assertThat(h.getRentalObjectType()).isEqualTo("Centralgarage");
+    }
+
+    @Test
+    void detailApply_setsNrApplications() throws Exception {
+        House h = new House();
+        HouseDetail detail = detailWithNewFields("residential", null, 42, List.of());
+
+        invokeApplyDetail(h, detail);
+
+        assertThat(h.getNrApplications()).isEqualTo(42);
+    }
+
+    @Test
+    void detailApply_setsIncludedJsonFromList() throws Exception {
+        House h = new House();
+        HouseDetail detail = detailWithNewFields("residential", null, 0,
+            List.of(new HouseIncluded("Balkong"), new HouseIncluded("Hiss")));
+
+        invokeApplyDetail(h, detail);
+
+        assertThat(h.getIncludedJson()).isNotBlank();
+        assertThat(h.getIncludedJson()).contains("Balkong").contains("Hiss");
+    }
+
+    @Test
+    void detailApply_setsIncludedJsonNullWhenListNull() throws Exception {
+        House h = new House();
+        h.setIncludedJson("[{\"displayName\":\"Balkong\"}]");
+        HouseDetail detail = detailWithNewFields("residential", null, 0, null);
+
+        invokeApplyDetail(h, detail);
+
+        // null included list results in null JSON (the field is fully replaced, not sticky)
+        assertThat(h.getIncludedJson()).isNull();
+    }
+
     // -------- Adaptive delay --------
 
     @Test
@@ -339,5 +474,50 @@ class HouseSyncServiceTest {
         Method m = HouseSyncService.class.getDeclaredMethod("applyDetailToHouse", House.class, HouseDetail.class);
         m.setAccessible(true);
         m.invoke(service, h, d);
+    }
+
+    private static HouseListItem listItemWithQueueType(String id, Date availableFrom, String queueType) {
+        return new HouseListItem(
+            id, "local-" + id, "display", "desc",
+            queueType, queueType, null,
+            new HousePricing(0.0), null,
+            availableFrom == null ? null : new HouseAvailability(availableFrom),
+            new HouseSize("1 rok", "1", 30.0),
+            null
+        );
+    }
+
+    private static HouseListItem listItemWithRentalObjectType(String id, Date availableFrom,
+                                                               String queueType, String rentalObjectType) {
+        return new HouseListItem(
+            id, "local-" + id, "display", "desc",
+            queueType, queueType, rentalObjectType,
+            null, null,
+            availableFrom == null ? null : new HouseAvailability(availableFrom),
+            null,
+            null
+        );
+    }
+
+    private static HouseListItem listItemWithThumbnail(String id, Date availableFrom, String version) {
+        return new HouseListItem(
+            id, "local-" + id, "display", "desc",
+            "residential", "residential", null,
+            new HousePricing(0.0), null,
+            availableFrom == null ? null : new HouseAvailability(availableFrom),
+            new HouseSize("1 rok", "1", 30.0),
+            new HouseThumbnail(true, "Bild", version)
+        );
+    }
+
+    private static HouseDetail detailWithNewFields(String queueType, String rentalObjectType,
+                                                    Integer nrApplications, List<HouseIncluded> included) {
+        return new HouseDetail(
+            null, null, null, null, null,
+            queueType, null, rentalObjectType, nrApplications,
+            null, null, null, null, null, null,
+            null,
+            included
+        );
     }
 }

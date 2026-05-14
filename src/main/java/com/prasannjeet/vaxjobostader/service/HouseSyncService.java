@@ -7,6 +7,7 @@ import com.prasannjeet.vaxjobostader.client.dto.house.HouseDetail;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseFiles;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseListItem;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseLocation;
+import com.prasannjeet.vaxjobostader.client.dto.house.ObjectTypeMetadata;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.jpa.HouseFloorplan;
@@ -14,8 +15,9 @@ import com.prasannjeet.vaxjobostader.jpa.HouseFloorplanRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseImage;
 import com.prasannjeet.vaxjobostader.jpa.HouseImageRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
+import com.prasannjeet.vaxjobostader.jpa.ObjectType;
+import com.prasannjeet.vaxjobostader.jpa.ObjectTypeRepository;
 import com.prasannjeet.vaxjobostader.service.geocoding.AddressGeocodeService;
-import com.prasannjeet.vaxjobostader.service.geocoding.Coordinates;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +41,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
+import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -57,6 +61,7 @@ public class HouseSyncService {
     private final TaskScheduler taskScheduler;
     private final ObjectMapper objectMapper;
     private final AddressGeocodeService addressGeocodeService;
+    private final ObjectTypeRepository objectTypeRepository;
 
     // Self-reference through the Spring proxy so @Transactional applies when
     // the scheduled tick calls back into the service. A plain this.method()
@@ -139,6 +144,18 @@ public class HouseSyncService {
                     house.setEndDate(null);
                     house.setType(item.type());
                     house.setDisplayName(item.displayName());
+                    house.setQueueType(item.queueType());
+                    house.setRentalObjectType(item.rentalObjectType());
+                    if (house.getImageUrl() == null
+                            && item.thumbnail() != null
+                            && item.thumbnail().exists()
+                            && item.thumbnail().version() != null
+                            && item.thumbnail().version().startsWith("f-")) {
+                        house.setImageUrl(
+                            appConfig.getVbUrl() + "/" + item.id() + "/images/"
+                                + item.thumbnail().version().substring(2)
+                        );
+                    }
 
                     if (item.location() != null && item.location().area() != null) {
                         house.setAreaName(item.location().area().displayName());
@@ -160,6 +177,12 @@ public class HouseSyncService {
                 }
 
                 houseRepository.saveAll(toSave);
+
+                Set<String> uniqueTypes = apiItems.stream()
+                    .map(HouseListItem::type)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+                syncTypeMetadata(uniqueTypes);
 
                 // Whatever remained in activeByKey is no longer in the API response → ended.
                 List<House> toEnd = new ArrayList<>(activeByKey.values());
@@ -310,6 +333,11 @@ public class HouseSyncService {
             house.setQueuePoints(incoming);
         }
 
+        if (detail.queueType() != null) house.setQueueType(detail.queueType());
+        if (detail.rentalObjectType() != null) house.setRentalObjectType(detail.rentalObjectType());
+        if (detail.nrApplications() != null) house.setNrApplications(detail.nrApplications());
+        house.setIncludedJson(toJsonOrNull(detail.included()));
+
         geocodeIfChanged(house);
     }
 
@@ -393,6 +421,38 @@ public class HouseSyncService {
             return Integer.parseInt(digits);
         } catch (NumberFormatException e) {
             return null;
+        }
+    }
+
+    private void syncTypeMetadata(Set<String> typeIds) {
+        List<ObjectType> toSave = new ArrayList<>();
+        for (String typeId : typeIds) {
+            try {
+                ObjectTypeMetadata meta = vaxjobostaderClient.getTypeMetadata(typeId);
+                if (meta == null) continue;
+                ObjectType entity = objectTypeRepository.findById(typeId)
+                    .orElseGet(() -> {
+                        ObjectType o = new ObjectType();
+                        o.setTypeId(typeId);
+                        return o;
+                    });
+                entity.setDisplayName(meta.displayName());
+                entity.setDescription(meta.description());
+                entity.setMinPrice(meta.minPrice());
+                entity.setMaxPrice(meta.maxPrice());
+                entity.setMinRooms(meta.minNumberOfRooms());
+                entity.setMaxRooms(meta.maxNumberOfRooms());
+                entity.setMinSize(meta.minSize());
+                entity.setMaxSize(meta.maxSize());
+                entity.setNumberOfMarketObjects(meta.numberOfMarketObjects());
+                entity.setLastSyncedAt(Instant.now());
+                toSave.add(entity);
+            } catch (Exception e) {
+                log.warn("Failed to sync metadata for type {}: {}", typeId, e.getMessage());
+            }
+        }
+        if (!toSave.isEmpty()) {
+            objectTypeRepository.saveAll(toSave);
         }
     }
 
