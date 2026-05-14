@@ -7,11 +7,17 @@ import HouseCard from '@/components/HouseCard.vue';
 import HouseFeatureCard from '@/components/HouseFeatureCard.vue';
 import { daysUntil, formatRelative } from '@/lib/format';
 import { filterHouses } from '@/composables/useFilters';
+import ObjectTypeCard from '@/components/ObjectTypeCard.vue';
+import { useObjectTypes } from '@/composables/useObjectTypes';
 
 const { houses, freshness, load, loading, error } = useHouses();
 const { filters } = useFilters();
+const { objectTypes, load: loadObjectTypes } = useObjectTypes();
 
-onMounted(() => load());
+onMounted(() => {
+  load();
+  loadObjectTypes();
+});
 
 const now = computed(() => Date.now());
 
@@ -50,6 +56,10 @@ const highestQueue = computed(() => {
     .sort((a, b) => (b.queuePoints as number) - (a.queuePoints as number))
     .slice(0, 3);
 });
+
+const browseTypes = computed(() =>
+  objectTypes.value.filter((ot) => (ot.numberOfMarketObjects ?? 0) > 0),
+);
 
 const lastFetched = computed(() => formatRelative(freshness.value?.toISOString() ?? null));
 </script>
@@ -146,6 +156,21 @@ const lastFetched = computed(() => formatRelative(freshness.value?.toISOString()
       </header>
       <div class="feature-row">
         <HouseFeatureCard v-for="h in highestQueue" :key="h.internalId" :house="h" emphasis="queue" />
+      </div>
+    </section>
+
+    <section v-if="browseTypes.length >= 2" class="section">
+      <header class="section-head">
+        <div>
+          <span class="kicker">Alla typer</span>
+          <h2 class="display section-title">
+            Bläddra efter<br />
+            typ<span class="dot"></span>
+          </h2>
+        </div>
+      </header>
+      <div class="type-grid">
+        <ObjectTypeCard v-for="ot in browseTypes" :key="ot.typeId" :object-type="ot" />
       </div>
     </section>
 
@@ -347,6 +372,12 @@ const lastFetched = computed(() => formatRelative(freshness.value?.toISOString()
 
 .state-pad.error {
   color: var(--accent);
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
 }
 
 @media (max-width: 960px) {
