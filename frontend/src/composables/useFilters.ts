@@ -38,6 +38,7 @@ export interface Filters {
   view: ViewMode;
   sort: SortKey;
   preset: QuickPreset;
+  types: string[];
 }
 
 export const defaultFilters: Filters = {
@@ -59,6 +60,7 @@ export const defaultFilters: Filters = {
   view: 'split',
   sort: 'deadline',
   preset: 'all',
+  types: ['residential'],
 };
 
 function getString(v: unknown, fallback: string): string {
@@ -106,6 +108,7 @@ function parseFilters(query: Record<string, unknown>): Filters {
     view: (getString(query.view, defaultFilters.view) as ViewMode) ?? defaultFilters.view,
     sort: (getString(query.sort, defaultFilters.sort) as SortKey) ?? defaultFilters.sort,
     preset: (getString(query.preset, defaultFilters.preset) as QuickPreset) ?? defaultFilters.preset,
+    types: query.types !== undefined ? getList(query.types) : defaultFilters.types,
   };
 }
 
@@ -129,6 +132,8 @@ function serializeFilters(f: Filters): LocationQueryRaw {
   if (f.view !== defaultFilters.view) out.view = f.view;
   if (f.sort !== defaultFilters.sort) out.sort = f.sort;
   if (f.preset !== defaultFilters.preset) out.preset = f.preset;
+  const isDefaultTypes = f.types.length === 1 && f.types[0] === 'residential';
+  if (!isDefaultTypes) out.types = f.types.join(',');
   return out;
 }
 
@@ -193,6 +198,7 @@ function cityKey(value: string | null | undefined): string {
 export function filterHouses(houses: House[], f: Filters, now = Date.now()): House[] {
   const deadlineDays = deadlineWindowDays(f.deadline);
   return houses.filter((h) => {
+    if (f.types.length && !f.types.includes(h.type ?? '')) return false;
     if (!matchesText(h, f.q)) return false;
     if (f.cities.length && !f.cities.includes(cityKey(h.city))) return false;
     if (f.rooms.length && (h.rooms == null || !f.rooms.includes(h.rooms))) return false;
@@ -306,6 +312,8 @@ export function useFilters() {
     if (f.minImages != null) n++;
     if (f.hasDescription) n++;
     if (f.preset !== 'all') n++;
+    const isDefaultTypes = f.types.length === 1 && f.types[0] === 'residential';
+    if (!isDefaultTypes) n++;
     return n;
   });
 

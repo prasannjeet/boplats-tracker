@@ -41,6 +41,10 @@ export interface House {
 
   imageUrl: string | null;
   queuePoints: number | null;
+  queueType: string | null;
+  rentalObjectType: string | null;
+  nrApplications: number | null;
+  includedJson: string | null;
   lastDetailFetchedAt: string | null;
 
   floorDisplayName: string | null;

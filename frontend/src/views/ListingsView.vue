@@ -137,7 +137,7 @@ function setQuery(q: string) {
         <button
           type="button"
           class="btn ghost"
-          @click="update({ q: '', cities: [], rooms: [], areaMin: null, areaMax: null, rentMin: null, rentMax: null, queueMin: null, queueMax: null, deadline: 'all', hasFloorplan: false, minImages: null, hasDescription: false, preset: 'all' })"
+          @click="update({ q: '', cities: [], rooms: [], areaMin: null, areaMax: null, rentMin: null, rentMax: null, queueMin: null, queueMax: null, deadline: 'all', hasFloorplan: false, minImages: null, hasDescription: false, preset: 'all', types: ['residential'] })"
         >
           Clear filters
         </button>
