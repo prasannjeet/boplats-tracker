@@ -10,8 +10,11 @@ import HouseAirbnbCard from '@/components/HouseAirbnbCard.vue';
 import HouseMap from '@/components/HouseMap.vue';
 import FilterSheet from '@/components/FilterSheet.vue';
 import { formatRelative } from '@/lib/format';
+import TypeSelectorRow from '@/components/TypeSelectorRow.vue';
+import { useObjectTypes } from '@/composables/useObjectTypes';
 
 const { houses, freshness, load, loading, error } = useHouses();
+const { load: loadObjectTypes } = useObjectTypes();
 const { filters, update, activeCount } = useFilters();
 
 const sheetOpen = ref(false);
@@ -23,6 +26,7 @@ let sentinelObserver: IntersectionObserver | null = null;
 
 onMounted(() => {
   load();
+  loadObjectTypes();
   sentinelObserver = new IntersectionObserver(
     (entries) => {
       if (entries[0]?.isIntersecting) visibleCount.value += 20;
@@ -95,6 +99,7 @@ function setQuery(q: string) {
       </header>
 
       <SearchBar :model-value="filters.q" @update:model-value="setQuery" @open-filters="sheetOpen = true" />
+      <TypeSelectorRow />
       <QuickFilters :value="filters.preset" @update="(v) => update({ preset: v })" />
 
       <div class="bar">

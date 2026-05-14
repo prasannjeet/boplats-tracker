@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed, watch, onBeforeUnmount } from 'vue';
+import { computed, watch, onBeforeUnmount, onMounted } from 'vue';
 import { defaultFilters, useFilters, type DeadlinePreset, type SortKey } from '@/composables/useFilters';
 import { useHouses } from '@/composables/useHouses';
+import { useObjectTypes } from '@/composables/useObjectTypes';
 
 const props = defineProps<{ open: boolean; matchCount: number }>();
 const emit = defineEmits<{ (e: 'close'): void }>();
 
 const { filters, update, reset, toggleArray, activeCount } = useFilters();
 const { cities } = useHouses();
+const { objectTypes, load: loadObjectTypes } = useObjectTypes();
+onMounted(() => loadObjectTypes());
 
 const roomChoices = [1, 2, 3, 4, 5];
 const deadlinePresets: Array<{ key: DeadlinePreset; label: string }> = [
@@ -81,6 +84,27 @@ onBeforeUnmount(() => {
       </header>
 
       <div class="scroll">
+        <section class="group">
+          <h3>Typ</h3>
+          <div class="pill-row">
+            <button
+              type="button"
+              :class="['pill', { active: filters.types.length === 0 }]"
+              @click="update({ types: [] })"
+            >
+              Alla typer
+            </button>
+            <button
+              v-for="ot in objectTypes"
+              :key="ot.typeId"
+              type="button"
+              :class="['pill', { active: filters.types.length > 0 && filters.types.includes(ot.typeId) }]"
+              @click="update({ types: filters.types.includes(ot.typeId) ? filters.types.filter(t => t !== ot.typeId) : [...filters.types, ot.typeId] })"
+            >
+              {{ ot.displayName ?? ot.typeId }}
+            </button>
+          </div>
+        </section>
         <section class="group">
           <h3>Location</h3>
           <div class="pill-row">
