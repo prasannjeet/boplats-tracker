@@ -11,6 +11,7 @@ import {
   galleryImages,
   hasFloorplan,
   locationLabel,
+  parseAmenities,
   shortHeadline,
 } from '@/lib/derived';
 import {
@@ -121,6 +122,9 @@ const nearby = computed(() => {
     .filter((h) => h.internalId !== id.value && h.endDate == null && h.city?.toLocaleLowerCase('sv-SE') === city)
     .slice(0, 4);
 });
+
+const amenities = computed(() => parseAmenities(house.value?.includedJson));
+const nrApplications = computed(() => house.value?.nrApplications ?? null);
 
 const lastFetched = computed(() => formatRelative(house.value?.lastDetailFetchedAt));
 
@@ -318,6 +322,17 @@ function goBack() {
         <div class="fact"><b>{{ house.areaName ?? '—' }}</b><span>area name</span></div>
         <div v-if="hasFloorplan(house)" class="fact"><b>Yes</b><span>floor plan</span></div>
         <div class="fact"><b>{{ photos.length }}</b><span>images</span></div>
+        <div v-if="nrApplications != null" class="fact">
+          <b>{{ nrApplications.toLocaleString('sv-SE') }}</b>
+          <span>sökande</span>
+        </div>
+      </div>
+    </section>
+
+    <section v-if="amenities.length > 0" class="panel">
+      <h2 class="panel-title">Ingår i hyran</h2>
+      <div class="amenities">
+        <span v-for="a in amenities" :key="a" class="amenity-chip">{{ a }}</span>
       </div>
     </section>
 
@@ -839,6 +854,24 @@ function goBack() {
 .provenance .copy {
   color: var(--muted);
   font-size: 13px;
+}
+
+.amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.amenity-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
 }
 
 @media (max-width: 960px) {
