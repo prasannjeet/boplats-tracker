@@ -27,6 +27,10 @@ class HouseDtoTest {
             assertThat(firstItem.availability().availableFrom()).isNotNull();
             assertThat(firstItem.size().roomsDisplayName()).isEqualTo("2 rum och kök");
             assertThat(firstItem.size().area()).isEqualTo(51.0000);
+            assertThat(firstItem.queueType()).isEqualTo("residential");
+            assertThat(firstItem.thumbnail()).isNotNull();
+            assertThat(firstItem.thumbnail().exists()).isTrue();
+            assertThat(firstItem.thumbnail().version()).isEqualTo("f-565812");
         }
     }
 

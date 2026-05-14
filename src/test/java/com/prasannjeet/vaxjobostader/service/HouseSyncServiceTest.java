@@ -312,11 +312,14 @@ class HouseSyncServiceTest {
             "local-" + id,
             "display",
             "desc",
-            "type",
+            "residential",
+            "residential",
+            null,
             new HousePricing(price),
             null,
             availableFrom == null ? null : new HouseAvailability(availableFrom),
-            new HouseSize("1 rok", "1", 30.0)
+            new HouseSize("1 rok", "1", 30.0),
+            null
         );
     }
 
