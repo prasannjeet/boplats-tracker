@@ -52,6 +52,11 @@ class HouseDtoTest {
             assertThat(detail.files().floorplan()).hasSize(1);
             assertThat(detail.files().floorplan().get(0).displayName()).isEqualTo("033-001.pdf");
             assertThat(detail.queuePointsCurrentPositionX()).isNull(); // not present in fixture = null
+            assertThat(detail.queueType()).isEqualTo("residential");
+            assertThat(detail.queueTypeDisplayName()).isEqualTo("Bostad");
+            assertThat(detail.nrApplications()).isEqualTo(0);
+            assertThat(detail.included()).hasSize(5);
+            assertThat(detail.included().get(0).displayName()).isEqualTo("Bredband finns");
         }
     }
 }

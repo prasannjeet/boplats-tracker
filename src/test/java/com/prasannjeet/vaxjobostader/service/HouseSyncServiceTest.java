@@ -332,7 +332,11 @@ class HouseSyncServiceTest {
 
     private static HouseDetail detailWithQueuePoints(Double qp) {
         return new HouseDetail(
-            null, null, null, null, null, null, null, null, null, null, null, qp
+            null, null, null, null, null,
+            null, null, null, null,
+            null, null, null, null, null, null,
+            qp,
+            null
         );
     }
 
