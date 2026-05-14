@@ -9,11 +9,13 @@ import com.prasannjeet.vaxjobostader.client.dto.house.HouseListItem;
 import com.prasannjeet.vaxjobostader.client.dto.house.HousePricing;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseSize;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseThumbnail;
+import com.prasannjeet.vaxjobostader.client.dto.house.ObjectTypeMetadata;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
 import com.prasannjeet.vaxjobostader.jpa.HouseFloorplanRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseImageRepository;
 import com.prasannjeet.vaxjobostader.jpa.HouseRepository;
+import com.prasannjeet.vaxjobostader.jpa.ObjectType;
 import com.prasannjeet.vaxjobostader.jpa.ObjectTypeRepository;
 import com.prasannjeet.vaxjobostader.service.geocoding.AddressGeocodeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -321,6 +324,30 @@ class HouseSyncServiceTest {
         service.syncHouseList();
 
         assertThat(existing.getImageUrl()).isEqualTo("https://existing-url.com/image.jpg");
+    }
+
+    @Test
+    void listSync_syncsTypeMetadataForUniqueTypes() throws Exception {
+        Date avail = date(2026, 6, 1);
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail)));
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of());
+        ObjectTypeMetadata meta = new ObjectTypeMetadata(
+            "Bostad", "Standard apartments", null, null, null,
+            null, null, null, null, 169
+        );
+        when(client.getTypeMetadata("residential")).thenReturn(meta);
+        when(objectTypeRepository.findById("residential")).thenReturn(Optional.empty());
+
+        service.syncHouseList();
+
+        ArgumentCaptor<List<ObjectType>> savedTypes = ArgumentCaptor.forClass(List.class);
+        verify(objectTypeRepository).saveAll(savedTypes.capture());
+        assertThat(savedTypes.getValue()).hasSize(1);
+        ObjectType saved = savedTypes.getValue().get(0);
+        assertThat(saved.getTypeId()).isEqualTo("residential");
+        assertThat(saved.getDisplayName()).isEqualTo("Bostad");
+        assertThat(saved.getNumberOfMarketObjects()).isEqualTo(169);
     }
 
     // -------- New fields from detail --------
