@@ -110,7 +110,8 @@ export function parseAmenities(includedJson: string | null | undefined): string[
     return parsed
       .map((item: unknown) => {
         if (typeof item === 'object' && item !== null && 'displayName' in item) {
-          return String((item as { displayName: unknown }).displayName);
+          const name = (item as { displayName: unknown }).displayName;
+          return typeof name === 'string' ? name : '';
         }
         return '';
       })

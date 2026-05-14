@@ -10,9 +10,11 @@ const priceRange = computed(() => {
   const { minPrice, maxPrice } = props.objectType;
   if (minPrice == null && maxPrice == null) return null;
   const fmt = (n: number) => Math.round(n).toLocaleString('sv-SE');
-  if (minPrice != null && maxPrice != null && minPrice !== maxPrice) {
+  if (minPrice != null && maxPrice != null) {
+    if (minPrice === maxPrice) return `${fmt(minPrice)} kr/mån`;
     return `${fmt(minPrice)}–${fmt(maxPrice)} kr/mån`;
   }
+  if (minPrice != null) return `från ${fmt(minPrice)} kr/mån`;
   if (maxPrice != null && maxPrice > 0) return `upp till ${fmt(maxPrice)} kr/mån`;
   return null;
 });
