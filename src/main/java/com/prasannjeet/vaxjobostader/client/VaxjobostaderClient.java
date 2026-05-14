@@ -62,6 +62,7 @@ public class VaxjobostaderClient {
                 .header("Accept", "application/json, text/plain, */*");
     }
 
+    /** Fetches ALL property types (no type filter) via paginated limit/offset. */
     public List<HouseListItem> getAllPropertiesList() throws IOException, InterruptedException {
         List<HouseListItem> all = new ArrayList<>();
         int offset = 0;
@@ -79,7 +80,12 @@ public class VaxjobostaderClient {
             List<HouseListItem> items = page.items() != null ? page.items() : List.of();
             all.addAll(items);
             if (total == Integer.MAX_VALUE) {
-                total = page.count() != null ? page.count() : 0;
+                if (page.count() != null) {
+                    total = page.count();
+                } else {
+                    log.warn("API returned null count at offset={}; treating current page as final page", offset);
+                    total = offset + items.size();
+                }
             }
             offset += PAGE_SIZE;
             if (!items.isEmpty() && offset < total) {
