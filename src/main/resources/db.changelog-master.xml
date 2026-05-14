@@ -18,5 +18,7 @@
     <include file="db/changelog/house/create-house-table.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/house/house-images-floorplans-tables.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/house/house-geocode-columns-and-cache.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/house/house-type-columns.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/house/object-type-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

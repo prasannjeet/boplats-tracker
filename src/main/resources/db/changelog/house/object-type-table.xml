@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-object-type-table" author="prasannjeet">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="object_type"/></not>
+        </preConditions>
+        <createTable tableName="object_type">
+            <column name="type_id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="display_name" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="min_price" type="DOUBLE"/>
+            <column name="max_price" type="DOUBLE"/>
+            <column name="min_rooms" type="INT"/>
+            <column name="max_rooms" type="INT"/>
+            <column name="min_size" type="DOUBLE"/>
+            <column name="max_size" type="DOUBLE"/>
+            <column name="number_of_market_objects" type="INT"/>
+            <column name="last_synced_at" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
