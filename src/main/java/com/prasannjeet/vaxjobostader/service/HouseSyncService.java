@@ -6,7 +6,6 @@ import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseDetail;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseFiles;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseListItem;
-import com.prasannjeet.vaxjobostader.client.dto.house.HouseListResponse;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseLocation;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
 import com.prasannjeet.vaxjobostader.jpa.House;
@@ -87,7 +86,7 @@ public class HouseSyncService {
         Date now = new Date();
         LocalDate today = LocalDate.now();
         try {
-            HouseListResponse response = vaxjobostaderClient.getPropertiesList();
+            List<HouseListItem> apiItems = vaxjobostaderClient.getAllPropertiesList();
 
             int inserted = 0;
             int updated = 0;
@@ -96,8 +95,7 @@ public class HouseSyncService {
 
             // Reconcile only when the API response is healthy. Otherwise we'd
             // mark every active house ended just because the API hiccupped.
-            if (response != null && response.items() != null && !response.items().isEmpty()) {
-                List<HouseListItem> apiItems = response.items();
+            if (!apiItems.isEmpty()) {
                 List<House> active = houseRepository.findAllByEndDateIsNull();
                 Map<HouseKey, House> activeByKey = new HashMap<>(active.size());
                 for (House h : active) {

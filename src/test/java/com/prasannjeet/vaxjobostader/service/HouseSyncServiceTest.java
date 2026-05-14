@@ -5,7 +5,6 @@ import com.prasannjeet.vaxjobostader.client.VaxjobostaderClient;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseAvailability;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseDetail;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseListItem;
-import com.prasannjeet.vaxjobostader.client.dto.house.HouseListResponse;
 import com.prasannjeet.vaxjobostader.client.dto.house.HousePricing;
 import com.prasannjeet.vaxjobostader.client.dto.house.HouseSize;
 import com.prasannjeet.vaxjobostader.config.AppConfig;
@@ -117,9 +116,7 @@ class HouseSyncServiceTest {
     @Test
     void reconcile_insertsNewListing() throws Exception {
         Date avail = date(2026, 6, 1);
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(1, List.of(listItem("A", avail)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
         when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
@@ -140,9 +137,7 @@ class HouseSyncServiceTest {
         House existing = house("A", avail);
         existing.setRent(100.0);
 
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(1, List.of(listItem("A", avail, 250.0)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail, 250.0)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of(existing));
         when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
 
@@ -159,9 +154,7 @@ class HouseSyncServiceTest {
         existing.setEndDate(date(2026, 6, 2));
         existing.setRent(100.0);
 
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(1, List.of(listItem("A", avail, 250.0)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail, 250.0)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
         when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
 
@@ -181,9 +174,7 @@ class HouseSyncServiceTest {
         Date avail = date(2026, 6, 1);
         House gone = house("GONE", avail);
 
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(0, List.of(listItem("OTHER", avail)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("OTHER", avail)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of(gone));
         when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
@@ -198,9 +189,7 @@ class HouseSyncServiceTest {
         Date newAvail = date(2026, 6, 1);
         House existingActive = house("A", oldAvail);
 
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(1, List.of(listItem("A", newAvail)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", newAvail)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of(existingActive));
         when(repository.findAllByExternalIds(any())).thenReturn(List.of(existingActive));
 
@@ -221,9 +210,7 @@ class HouseSyncServiceTest {
 
     @Test
     void reconcile_skipsItemsWithNullAvailableFrom() throws Exception {
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(1, List.of(listItem("BAD", null)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("BAD", null)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
         when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
@@ -236,9 +223,7 @@ class HouseSyncServiceTest {
     @Test
     void reconcile_invokesPastDeadlineSweep() throws Exception {
         Date avail = date(2026, 6, 1);
-        when(client.getPropertiesList()).thenReturn(
-            new HouseListResponse(1, List.of(listItem("A", avail)))
-        );
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail)));
         when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
         when(repository.findAllByExternalIds(any())).thenReturn(List.of());
 
@@ -249,7 +234,7 @@ class HouseSyncServiceTest {
 
     @Test
     void reconcile_runsDeadlineSweepEvenWhenApiResponseEmpty() throws Exception {
-        when(client.getPropertiesList()).thenReturn(new HouseListResponse(0, List.of()));
+        when(client.getAllPropertiesList()).thenReturn(List.of());
 
         service.syncHouseList();
 
