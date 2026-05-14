@@ -5,6 +5,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/listings', name: 'listings', component: () => import('@/views/ListingsView.vue') },
   { path: '/listings/:internalId', name: 'detail', component: () => import('@/views/DetailView.vue'), props: true },
   { path: '/saved', name: 'saved', component: () => import('@/views/SavedView.vue') },
+  { path: '/types/:typeId', name: 'type-detail', component: () => import('@/views/TypeDetailView.vue'), props: true },
   { path: '/:catchAll(.*)', redirect: '/' },
 ];
 
