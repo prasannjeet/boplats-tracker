@@ -4,8 +4,9 @@ import { RouterLink } from 'vue-router';
 import type { House } from '@/types/house';
 import Carousel from './Carousel.vue';
 import SaveButton from './SaveButton.vue';
-import { competitionLabel, competitionTier, galleryImages, hasFloorplan, locationLabel, shortHeadline } from '@/lib/derived';
+import { competitionDisplay, competitionLabel, competitionTier, galleryImages, hasFloorplan, locationLabel, shortHeadline } from '@/lib/derived';
 import { daysUntil, formatArea, formatCostPerM2, formatCountdown, formatRent, formatRooms, formatShortDate } from '@/lib/format';
+import parkingPlaceholder from '@/assets/parking-placeholder.png';
 
 const props = defineProps<{ house: House; highlighted?: boolean }>();
 
@@ -13,7 +14,12 @@ const headline = computed(() => shortHeadline(props.house));
 const location = computed(() => locationLabel(props.house));
 const tier = computed(() => competitionTier(props.house.queuePoints));
 const tierLabel = computed(() => competitionLabel(tier.value));
-const images = computed(() => galleryImages(props.house));
+const images = computed(() => {
+  const imgs = galleryImages(props.house);
+  if (imgs.length > 0) return imgs;
+  if ((props.house.type ?? '').toLowerCase() === 'parking') return [parkingPlaceholder];
+  return imgs;
+});
 const imageLabels = computed(() => images.value.map((_, i) => `${i + 1} / ${images.value.length}`));
 const days = computed(() => daysUntil(props.house.applicationDeadline));
 const countdownClass = computed(() => {
@@ -23,9 +29,11 @@ const countdownClass = computed(() => {
   return '';
 });
 const detailRoute = computed(() => ({ name: 'detail' as const, params: { internalId: String(props.house.internalId) } }));
-const queueLabel = computed(() => {
-  if (props.house.queuePoints == null) return '— pts';
-  return `${Math.round(props.house.queuePoints).toLocaleString('sv-SE')} pts`;
+const queueLabel = computed(() => competitionDisplay(props.house) ?? '—');
+const typeLabel = computed(() => {
+  const t = props.house.type ?? '';
+  if (t.toLowerCase() === 'residential' || t === '') return null;
+  return props.house.rentalObjectType ?? t;
 });
 const floorplanHint = computed(() => (hasFloorplan(props.house) ? 'floor plan included' : null));
 const moveIn = computed(() => formatShortDate(props.house.availableFrom));
@@ -33,7 +41,10 @@ const moveIn = computed(() => formatShortDate(props.house.availableFrom));
 
 <template>
   <RouterLink :to="detailRoute" class="house-card" :class="{ highlighted }">
-    <Carousel :images="images" :labels="imageLabels" :alt="headline" />
+    <div class="card-media">
+      <Carousel :images="images" :labels="imageLabels" :alt="headline" />
+      <span v-if="typeLabel" class="card-type-badge">{{ typeLabel }}</span>
+    </div>
     <div class="body">
       <header>
         <div class="title-block">
@@ -177,6 +188,26 @@ footer {
   background: transparent;
   color: var(--muted);
   border: 1px dashed var(--line-strong);
+}
+
+.card-media {
+  position: relative;
+}
+
+.card-type-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, 0.62);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 1;
 }
 
 @media (max-width: 720px) {

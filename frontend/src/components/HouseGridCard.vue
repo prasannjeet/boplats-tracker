@@ -5,6 +5,7 @@ import type { House } from '@/types/house';
 import SaveButton from './SaveButton.vue';
 import Carousel from './Carousel.vue';
 import { galleryImages, locationLabel, shortHeadline } from '@/lib/derived';
+import parkingPlaceholder from '@/assets/parking-placeholder.png';
 import { daysUntil, formatArea, formatCountdown, formatRent, formatRooms } from '@/lib/format';
 
 const props = defineProps<{ house: House }>();
@@ -12,7 +13,17 @@ const props = defineProps<{ house: House }>();
 const headline = computed(() => shortHeadline(props.house));
 const location = computed(() => locationLabel(props.house));
 const detailRoute = computed(() => ({ name: 'detail' as const, params: { internalId: String(props.house.internalId) } }));
-const images = computed(() => galleryImages(props.house));
+const images = computed(() => {
+  const imgs = galleryImages(props.house);
+  if (imgs.length > 0) return imgs;
+  if ((props.house.type ?? '').toLowerCase() === 'parking') return [parkingPlaceholder];
+  return imgs;
+});
+const typeLabel = computed(() => {
+  const t = props.house.type ?? '';
+  if (t.toLowerCase() === 'residential' || t === '') return null;
+  return props.house.rentalObjectType ?? t;
+});
 const days = computed(() => daysUntil(props.house.applicationDeadline));
 const countdownClass = computed(() => {
   if (days.value == null) return '';
@@ -26,6 +37,7 @@ const countdownClass = computed(() => {
   <RouterLink :to="detailRoute" class="grid-card">
     <div class="media">
       <Carousel :images="images" :alt="headline" :cover="false" />
+      <span v-if="typeLabel" class="type-badge">{{ typeLabel }}</span>
       <div class="save-overlay">
         <SaveButton :internal-id="house.internalId" :label="headline" />
       </div>
@@ -123,5 +135,20 @@ const countdownClass = computed(() => {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.01em;
+}
+
+.type-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, 0.62);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
 }
 </style>
