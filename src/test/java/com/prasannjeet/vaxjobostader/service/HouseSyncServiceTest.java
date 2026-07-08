@@ -34,6 +34,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -178,6 +179,45 @@ class HouseSyncServiceTest {
         verify(repository, atLeastOnce()).saveAll(saved.capture());
         assertThat(saved.getAllValues().stream().flatMap(List::stream))
             .contains(existing);
+    }
+
+    @Test
+    void reconcile_doesNotRevivePastDeadlineEndedRow() throws Exception {
+        Date avail = date(2026, 6, 1);
+        Date pastDeadline = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(30));
+        Date originalEnd = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(29));
+        House existing = house("A", avail);
+        existing.setApplicationDeadline(pastDeadline);
+        existing.setEndDate(originalEnd);
+        existing.setRent(100.0);
+
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail, 250.0)));
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
+
+        service.syncHouseList();
+
+        // Fields are still refreshed from the API...
+        assertThat(existing.getRent()).isEqualTo(250.0);
+        // ...but the historical end date must NOT be reset.
+        assertThat(existing.getEndDate()).isEqualTo(originalEnd);
+    }
+
+    @Test
+    void reconcile_revivesEndedRowWhoseDeadlineIsStillOpen() throws Exception {
+        Date avail = date(2026, 6, 1);
+        Date futureDeadline = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30));
+        House existing = house("A", avail);
+        existing.setApplicationDeadline(futureDeadline);
+        existing.setEndDate(new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1)));
+
+        when(client.getAllPropertiesList()).thenReturn(List.of(listItem("A", avail, 250.0)));
+        when(repository.findAllByEndDateIsNull()).thenReturn(List.of());
+        when(repository.findAllByExternalIds(any())).thenReturn(List.of(existing));
+
+        service.syncHouseList();
+
+        assertThat(existing.getEndDate()).isNull();
     }
 
     @Test

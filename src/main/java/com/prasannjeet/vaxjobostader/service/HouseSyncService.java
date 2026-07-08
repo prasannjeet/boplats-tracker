@@ -141,7 +141,16 @@ public class HouseSyncService {
                     house.setLocalId(item.localId());
                     house.setDescription(item.description());
                     house.setAvailableFrom(availableFrom);
-                    house.setEndDate(null);
+                    // Revive an ended row only while its stored deadline is still open.
+                    // The API keeps returning listings long past their deadline; reviving
+                    // them made the sweep re-end them with a fresh end_date every day,
+                    // destroying the historical end date (confirmed in prod: 1438 rows
+                    // had drifted). New rows and rows without a fetched deadline are
+                    // unaffected (deadline == null).
+                    Date deadline = house.getApplicationDeadline();
+                    if (deadline == null || deadline.after(now)) {
+                        house.setEndDate(null);
+                    }
                     house.setType(item.type());
                     house.setDisplayName(item.displayName());
                     house.setQueueType(item.queueType());
