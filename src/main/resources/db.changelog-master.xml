@@ -20,5 +20,6 @@
     <include file="db/changelog/house/house-geocode-columns-and-cache.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/house/house-type-columns.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/house/object-type-table.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/house/repair-end-date-drift.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

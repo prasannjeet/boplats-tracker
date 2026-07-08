@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- One-time data repair. Before the reconcile guard (see
+         HouseSyncService.syncHouseList), every daily sync revived rows the
+         API still returned past their deadline, and the sweep re-ended them
+         with the current date. end_date therefore kept sliding forward for
+         dead listings. The application deadline is the best available
+         approximation of when those listings actually ended. -->
+    <changeSet id="repair-end-date-drift" author="prasannjeet" dbms="mysql, mariadb">
+        <sql>
+            UPDATE house
+            SET end_date = DATE(application_deadline)
+            WHERE end_date IS NOT NULL
+              AND application_deadline IS NOT NULL
+              AND end_date &gt; DATE(application_deadline);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
