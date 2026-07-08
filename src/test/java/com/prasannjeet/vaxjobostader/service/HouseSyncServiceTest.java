@@ -520,7 +520,7 @@ class HouseSyncServiceTest {
     private static HouseDetail detailWithQueuePoints(Double qp) {
         return new HouseDetail(
             null, null, null, null, null,
-            null, null, null, null,
+            null, null, null,
             null, null, null, null, null, null,
             qp,
             null
@@ -581,7 +581,7 @@ class HouseSyncServiceTest {
                                                     Integer nrApplications, List<HouseIncluded> included) {
         return new HouseDetail(
             null, null, null, null, null,
-            queueType, null, rentalObjectType, nrApplications,
+            queueType, rentalObjectType, nrApplications,
             null, null, null, null, null, null,
             null,
             included

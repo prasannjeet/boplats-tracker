@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public interface HouseRepository extends JpaRepository<House, Long> {
 
@@ -30,8 +29,6 @@ public interface HouseRepository extends JpaRepository<House, Long> {
         WHERE h.id IN :externalIds
         """)
     List<House> findAllByExternalIds(@Param("externalIds") Collection<String> externalIds);
-
-    Optional<House> findByIdAndAvailableFromAndEndDateIsNull(String id, Date availableFrom);
 
     long countByEndDateIsNull();
 

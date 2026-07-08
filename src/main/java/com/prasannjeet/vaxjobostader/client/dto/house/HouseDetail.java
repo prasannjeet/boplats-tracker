@@ -11,7 +11,6 @@ public record HouseDetail(
     String displayName,
     String type,
     String queueType,
-    String queueTypeDisplayName,
     String rentalObjectType,
     Integer nrApplications,
     HousePricing pricing,

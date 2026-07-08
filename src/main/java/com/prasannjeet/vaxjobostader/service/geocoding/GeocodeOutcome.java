@@ -1,7 +1,5 @@
 package com.prasannjeet.vaxjobostader.service.geocoding;
 
-import java.util.Optional;
-
 /**
  * Result of a geocoding attempt.
  *
@@ -26,9 +24,5 @@ public record GeocodeOutcome(Status status, Coordinates coordinates) {
 
     public static GeocodeOutcome failed() {
         return new GeocodeOutcome(Status.FAILED, null);
-    }
-
-    public Optional<Coordinates> coordinatesOptional() {
-        return Optional.ofNullable(coordinates);
     }
 }
