@@ -3,11 +3,12 @@ package com.prasannjeet.vaxjobostader.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import static com.prasannjeet.vaxjobostader.util.StaticUtils.getMapper;
 
@@ -18,27 +19,20 @@ public class SlackClient {
   private static final ObjectMapper mapper = getMapper();
   private final String slackUrl;
 
-  public void sendSlackMessage(String message) throws IOException {
-    HttpClient client = new HttpClient();
-    PostMethod post = new PostMethod(slackUrl);
-    post.addRequestHeader(getHeader());
-    post.setRequestBody(getBody(message));
-    client.executeMethod(post);
-    post.getResponseBodyAsString();
+  public void sendSlackMessage(String message) throws IOException, InterruptedException {
+    HttpClient client = HttpClient.newHttpClient();
+    HttpRequest request = HttpRequest.newBuilder(URI.create(slackUrl))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(getBody(message)))
+        .build();
+    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-    log.info("Slack Message Sent. Response: {}", post.getResponseBodyAsString());
+    log.info("Slack Message Sent. Response: {}", response.body());
 
-    if (!post.getResponseBodyAsString().contains("ok")) {
+    if (!response.body().contains("ok")) {
       throw new RuntimeException(
-          "Failed response received from slack. Response: " + post.getResponseBodyAsString());
+          "Failed response received from slack. Response: " + response.body());
     }
-  }
-
-  Header getHeader() {
-    Header mtHeader = new Header();
-    mtHeader.setName("Content-Type");
-    mtHeader.setValue("application/json");
-    return mtHeader;
   }
 
   String getBody(String message) {

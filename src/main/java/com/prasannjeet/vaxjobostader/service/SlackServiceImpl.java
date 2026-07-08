@@ -18,7 +18,6 @@ import java.util.*;
 import static com.prasannjeet.vaxjobostader.service.HomeUtil.filterHomes;
 import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.collections4.SetUtils.difference;
 
 @RequiredArgsConstructor
 @Transactional
@@ -84,9 +83,9 @@ public class SlackServiceImpl implements SlackService {
   }
 
   private Set<String> getNewHomesObjectNos(List<House> preferredHomes, UserSelectedHomes userSelectedHomes) {
-    Set<String> preferredHomesObjectNos = getObjectNos(preferredHomes);
-    Set<String> lastObjects = new HashSet<>(userSelectedHomes.getPreferredObjects());
-    return difference(preferredHomesObjectNos, lastObjects).toSet();
+    Set<String> newObjectNos = new HashSet<>(getObjectNos(preferredHomes));
+    newObjectNos.removeAll(userSelectedHomes.getPreferredObjects());
+    return newObjectNos;
   }
 
   private void updatePreferredHomesRecord(UserSelectedHomes userSelectedHomes, List<House> currentPreferredHomes) {
@@ -124,7 +123,7 @@ public class SlackServiceImpl implements SlackService {
     homes.forEach(home -> sb.append(getHomeMessage(home)).append("\n"));
   }
 
-  private void sendSlackNotification(String webHook, String message) throws IOException {
+  private void sendSlackNotification(String webHook, String message) throws IOException, InterruptedException {
     SlackClient slackClient = new SlackClient(webHook);
     slackClient.sendSlackMessage(message);
     log.info("Slack message sent. Message: {}", message);
