@@ -265,7 +265,10 @@ public class HouseSyncService {
                 applyDetailToHouse(house, detail);
             }
         } catch (Exception e) {
-            log.error("Failed to fetch detail for house {}.", house.getId(), e);
+            // Transient and self-healing: the finally block advances the
+            // timestamp, so this house simply retries next cycle. Not an ERROR.
+            log.warn("Detail fetch failed for house {}, will retry next cycle: {}",
+                house.getId(), e.getMessage());
         } finally {
             // Always advance the timestamp so a single problematic house cannot
             // block the queue by being picked first repeatedly.

@@ -113,8 +113,8 @@ public class VaxjobostaderClient {
         HttpRequest request = getBaseRequestBuilder(detailUri).GET().build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
-            log.error("Failed to fetch detail for ID: {}. Status: {}", id, response.statusCode());
-            throw new IOException("Failed to fetch detail from Momentum API");
+            throw new IOException(
+                "Detail fetch for " + id + " returned HTTP " + response.statusCode());
         }
         return mapper.readValue(response.body(), HouseDetail.class);
     }
