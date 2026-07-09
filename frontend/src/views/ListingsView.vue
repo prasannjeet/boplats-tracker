@@ -50,6 +50,10 @@ const filtered = computed(() => {
   return sortHouses(matched, filters.value.sort, now);
 });
 
+watch(filtered, () => {
+  visibleCount.value = 20;
+});
+
 const visibleHouses = computed(() => filtered.value.slice(0, visibleCount.value));
 
 const summaryParts = computed(() => {
@@ -149,17 +153,19 @@ function setQuery(q: string) {
 
       <section v-else-if="view === 'list'" class="list-stack">
         <HouseCard
-          v-for="h in filtered"
+          v-for="h in visibleHouses"
           :key="h.internalId"
           :house="h"
           :highlighted="hoverId === h.internalId"
           @mouseenter="hoverId = h.internalId"
           @mouseleave="hoverId = null"
         />
+        <div ref="sentinel" class="sentinel" aria-hidden="true" />
       </section>
 
       <section v-else-if="view === 'grid'" class="grid-stack">
-        <HouseGridCard v-for="h in filtered" :key="h.internalId" :house="h" />
+        <HouseGridCard v-for="h in visibleHouses" :key="h.internalId" :house="h" />
+        <div ref="sentinel" class="sentinel" aria-hidden="true" />
       </section>
 
       <div v-if="loading && houses.length === 0" class="state-pad">Loading listings…</div>
