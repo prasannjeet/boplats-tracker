@@ -76,6 +76,16 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- Spring Boot 4 split MockMvc test auto-configuration (AutoConfigureMockMvc,
+         @WebMvcTest, etc.) out of spring-boot-test-autoconfigure into this
+         dedicated Maven artifact; spring-boot-starter-test alone no longer
+         pulls it in. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+      <version>${springboot.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
