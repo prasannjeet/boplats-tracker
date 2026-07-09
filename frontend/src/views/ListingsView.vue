@@ -43,12 +43,11 @@ watch(sentinel, (el) => {
   if (el && sentinelObserver) sentinelObserver.observe(el);
 });
 
-const now = computed(() => Date.now());
-
 const filtered = computed(() => {
+  const now = Date.now();
   const base = houses.value.filter((h) => h.endDate == null);
-  const matched = filterHouses(base, filters.value, now.value);
-  return sortHouses(matched, filters.value.sort, now.value);
+  const matched = filterHouses(base, filters.value, now);
+  return sortHouses(matched, filters.value.sort, now);
 });
 
 const visibleHouses = computed(() => filtered.value.slice(0, visibleCount.value));

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
 import { useSaved } from '@/composables/useSaved';
 
@@ -19,8 +18,6 @@ const isActive = (linkName: string) => {
   return false;
 };
 
-const navHash = computed(() => Date.now()); // unused, keeps reactive references aligned
-void navHash;
 </script>
 
 <template>

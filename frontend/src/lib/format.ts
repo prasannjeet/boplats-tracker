@@ -78,9 +78,3 @@ export function formatRelative(iso: string | null | undefined, ref: Date = new D
   return `${d}d ago`;
 }
 
-export function titleCase(value: string | null | undefined): string {
-  if (!value) return '';
-  return value
-    .toLocaleLowerCase('sv-SE')
-    .replace(/(^|\s|-)([\p{L}])/gu, (_m, sep, c) => sep + c.toLocaleUpperCase('sv-SE'));
-}

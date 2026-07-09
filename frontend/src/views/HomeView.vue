@@ -19,13 +19,11 @@ onMounted(() => {
   loadObjectTypes();
 });
 
-const now = computed(() => Date.now());
-
 const active = computed(() => houses.value.filter((h) => h.endDate == null));
 
 const stats = computed(() => {
   const all = active.value;
-  const matched = filterHouses(all, filters.value, now.value);
+  const matched = filterHouses(all, filters.value, Date.now());
   const cities = new Set<string>();
   let withCoords = 0;
   for (const h of all) {
@@ -43,7 +41,7 @@ const stats = computed(() => {
 const endingSoon = computed(() => {
   return active.value
     .filter((h) => {
-      const d = daysUntil(h.applicationDeadline, new Date(now.value));
+      const d = daysUntil(h.applicationDeadline, new Date());
       return d != null && d >= 0 && d <= 7;
     })
     .sort((a, b) => new Date(a.applicationDeadline as string).getTime() - new Date(b.applicationDeadline as string).getTime())
