@@ -123,9 +123,13 @@ const moveInDelta = computed(() => {
   return `${d} days`;
 });
 
-const externalLink = computed(() => {
+// Vidingehem's application portal. The section segment mirrors the
+// listing's queueType (residential | student | parking); residential is
+// the fallback for the handful of rows without one.
+const applyLink = computed(() => {
   if (!house.value?.id) return null;
-  return `https://vidingehem.se/lediga-objekt/${house.value.id}`;
+  const section = house.value.queueType ?? 'residential';
+  return `https://minasidor.vidingehem.se/market/${section}/${house.value.id}`;
 });
 
 const googleMapsLink = computed(() => {
@@ -293,8 +297,8 @@ function goBack() {
           This listing ended on {{ formatLongDate(house.endDate) }}. Historical data only.
         </div>
 
-        <a v-if="externalLink" :href="externalLink" target="_blank" rel="noreferrer noopener" class="btn solid apply">
-          How to apply
+        <a v-if="applyLink" :href="applyLink" target="_blank" rel="noreferrer noopener" class="btn solid apply">
+          Apply
           <svg viewBox="0 0 24 24"><path d="M7 17 17 7" /><path d="M7 7h10v10" /></svg>
         </a>
       </div>
