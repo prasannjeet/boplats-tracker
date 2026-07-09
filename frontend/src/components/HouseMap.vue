@@ -2,6 +2,7 @@
 import { onMounted, onBeforeUnmount, ref, watch, computed } from 'vue';
 import { createApp, type App as VueApp } from 'vue';
 import L, { type Map as LMap, type Marker, type DivIcon, type MarkerClusterGroup } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import router from '@/router';
