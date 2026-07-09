@@ -227,7 +227,7 @@ function goBack() {
               </a>
             </div>
           </object>
-          <img v-else :src="currentItem.src" :alt="`${headline} — ${currentItem.label}`" />
+          <img v-else :src="currentItem.src" :alt="`${headline} – ${currentItem.label}`" />
 
           <span class="hero-label">{{ currentItem.label }}</span>
 
@@ -320,7 +320,7 @@ function goBack() {
           <strong>Move-in window</strong>
           <p class="sub">Available from {{ formatLongDate(house.availableFrom) }}</p>
         </div>
-        <span class="big mono">{{ moveInDelta ?? '—' }}</span>
+        <span class="big mono">{{ moveInDelta ?? '–' }}</span>
       </article>
 
       <article class="status-card">
@@ -340,8 +340,8 @@ function goBack() {
         <div class="fact"><b>{{ formatArea(house.area) }}</b><span>living area</span></div>
         <div class="fact"><b>{{ formatRooms(house.rooms) }}</b><span>layout</span></div>
         <div class="fact"><b>{{ formatCostPerM2(house.rent, house.area) }}</b><span>per m²</span></div>
-        <div class="fact"><b>{{ house.floorDisplayName ?? '—' }}</b><span>floor</span></div>
-        <div class="fact"><b>{{ house.areaName ?? '—' }}</b><span>area name</span></div>
+        <div class="fact"><b>{{ house.floorDisplayName ?? '–' }}</b><span>floor</span></div>
+        <div class="fact"><b>{{ house.areaName ?? '–' }}</b><span>area name</span></div>
         <div v-if="hasFloorplan(house)" class="fact"><b>Yes</b><span>floor plan</span></div>
         <div class="fact"><b>{{ photos.length }}</b><span>images</span></div>
         <div v-if="nrApplications != null" class="fact">
@@ -390,7 +390,7 @@ function goBack() {
     <section class="panel provenance">
       <h2 class="panel-title">Data provenance</h2>
       <p class="copy">
-        Source: Vidingehem · Momentum API. Last detail fetch: {{ lastFetched }} ({{ formatRelative(house.lastDetailFetchedAt) }}).
+        Source: Vidingehem · Momentum API. Last detail fetch: {{ formatDeadlineTimestamp(house.lastDetailFetchedAt) }} ({{ lastFetched }}).
         Listing instance <span class="mono">internalId={{ house.internalId }}</span> · external id <span class="mono">{{ house.id }}</span>.
       </p>
     </section>

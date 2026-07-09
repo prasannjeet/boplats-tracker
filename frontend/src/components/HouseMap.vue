@@ -281,7 +281,7 @@ watch(
   transition: transform 0.3s ease-out, opacity 0.3s ease-in;
 }
 
-/* Rich popup — zero inner margin so MapPopupCard controls layout */
+/* Rich popup – zero inner margin so MapPopupCard controls layout */
 .house-popup-wrapper .leaflet-popup-content {
   margin: 0;
   padding: 0;

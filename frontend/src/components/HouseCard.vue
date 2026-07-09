@@ -29,7 +29,7 @@ const countdownClass = computed(() => {
   return '';
 });
 const detailRoute = computed(() => ({ name: 'detail' as const, params: { internalId: String(props.house.internalId) } }));
-const queueLabel = computed(() => competitionDisplay(props.house) ?? '—');
+const queueLabel = computed(() => competitionDisplay(props.house) ?? '–');
 const typeLabel = computed(() => {
   const t = props.house.type ?? '';
   if (t.toLowerCase() === 'residential' || t === '') return null;

@@ -37,7 +37,7 @@ const metaLine = computed(() => {
   if (props.house.rent != null) parts.push(formatRent(props.house.rent));
   if (props.house.rooms != null) parts.push(formatRooms(props.house.rooms));
   if (props.house.area != null) parts.push(formatArea(props.house.area));
-  return parts.join(' · ') || '—';
+  return parts.join(' · ') || '–';
 });
 </script>
 

@@ -13,9 +13,9 @@ const image = computed(() => primaryImage(props.house));
 const headlineMetric = computed(() => {
   switch (props.emphasis) {
     case 'queue':
-      return props.house.queuePoints != null ? `${formatNumber(props.house.queuePoints)} pts` : '— pts';
+      return props.house.queuePoints != null ? `${formatNumber(props.house.queuePoints)} pts` : '– pts';
     default:
-      return props.house.queuePoints != null ? `${formatNumber(props.house.queuePoints)} pts` : '— pts';
+      return props.house.queuePoints != null ? `${formatNumber(props.house.queuePoints)} pts` : '– pts';
   }
 });
 

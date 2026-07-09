@@ -167,7 +167,7 @@ function setQuery(q: string) {
       <div v-if="error" class="state-pad error">Couldn't load listings: {{ error }}</div>
     </div>
 
-    <!-- Split view — full-width, outside page-inner -->
+    <!-- Split view – full-width, outside page-inner -->
     <section v-if="view === 'split' && filtered.length > 0" class="split-airbnb">
       <div class="split-left">
         <HouseAirbnbCard

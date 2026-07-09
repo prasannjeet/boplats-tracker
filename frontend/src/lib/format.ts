@@ -1,37 +1,37 @@
 export function formatRent(value: number | null | undefined): string {
-  if (value == null) return '—';
+  if (value == null) return '–';
   return `${Math.round(value).toLocaleString('sv-SE')} kr`;
 }
 
 export function formatArea(value: number | null | undefined): string {
-  if (value == null) return '—';
+  if (value == null) return '–';
   const rounded = Math.round(value * 10) / 10;
   return `${rounded.toLocaleString('sv-SE')} m²`;
 }
 
 export function formatCostPerM2(rent: number | null | undefined, area: number | null | undefined): string {
-  if (rent == null || area == null || area <= 0) return '—';
+  if (rent == null || area == null || area <= 0) return '–';
   return `${Math.round(rent / area)} kr/m²`;
 }
 
 export function formatRooms(rooms: number | null | undefined): string {
-  if (rooms == null) return '—';
+  if (rooms == null) return '–';
   return rooms === 1 ? '1 room' : `${rooms} rooms`;
 }
 
 export function formatNumber(value: number | null | undefined): string {
-  if (value == null) return '—';
+  if (value == null) return '–';
   return Math.round(value).toLocaleString('sv-SE');
 }
 
 export function formatShortDate(iso: string | null | undefined): string {
-  if (!iso) return '—';
+  if (!iso) return '–';
   const d = new Date(iso);
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 }
 
 export function formatLongDate(iso: string | null | undefined): string {
-  if (!iso) return '—';
+  if (!iso) return '–';
   return new Date(iso).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -40,7 +40,7 @@ export function formatLongDate(iso: string | null | undefined): string {
 }
 
 export function formatDeadlineTimestamp(iso: string | null | undefined): string {
-  if (!iso) return '—';
+  if (!iso) return '–';
   const d = new Date(iso);
   return `${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} · ${d
     .toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
@@ -59,7 +59,7 @@ function startOfLocalDay(date: Date): Date {
 
 export function formatCountdown(iso: string | null | undefined, ref: Date = new Date()): string {
   const d = daysUntil(iso, ref);
-  if (d == null) return '—';
+  if (d == null) return '–';
   if (d < 0) return 'Closed';
   if (d === 0) return 'Today';
   if (d === 1) return '1 day left';
@@ -67,7 +67,7 @@ export function formatCountdown(iso: string | null | undefined, ref: Date = new 
 }
 
 export function formatRelative(iso: string | null | undefined, ref: Date = new Date()): string {
-  if (!iso) return '—';
+  if (!iso) return '–';
   const diff = Math.max(0, ref.getTime() - new Date(iso).getTime());
   const m = Math.floor(diff / 60000);
   if (m < 1) return 'just now';
