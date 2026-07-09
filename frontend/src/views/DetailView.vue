@@ -3,6 +3,8 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useHouses } from '@/composables/useHouses';
 import { useSaved } from '@/composables/useSaved';
+import { fetchHouses } from '@/services/houses';
+import type { House } from '@/types/house';
 import HouseMap from '@/components/HouseMap.vue';
 import HouseMiniCard from '@/components/HouseMiniCard.vue';
 import {
@@ -36,10 +38,26 @@ const tab = ref<'photos' | 'plans'>('photos');
 const photoIndex = ref(0);
 const planIndex = ref(0);
 
-onMounted(() => load());
+// Ended listings are excluded from the default /api/houses response, so a
+// deep link to one falls back to a single includeEnded fetch.
+const fallbackHouse = ref<House | null>(null);
+const resolved = ref(false);
+
+onMounted(async () => {
+  await load();
+  if (!houses.value.some((h) => h.internalId === Number(props.internalId))) {
+    try {
+      const all = await fetchHouses(true);
+      fallbackHouse.value = all.find((h) => h.internalId === Number(props.internalId)) ?? null;
+    } catch {
+      // fall through to the not-found state
+    }
+  }
+  resolved.value = true;
+});
 
 const id = computed(() => Number(props.internalId));
-const house = computed(() => houses.value.find((h) => h.internalId === id.value) ?? null);
+const house = computed(() => houses.value.find((h) => h.internalId === id.value) ?? fallbackHouse.value);
 
 interface HeroItem {
   src: string;
@@ -374,7 +392,7 @@ function goBack() {
     </section>
   </div>
 
-  <div v-else-if="loading" class="detail page state">Loading listing…</div>
+  <div v-else-if="loading || !resolved" class="detail page state">Loading listing…</div>
   <div v-else class="detail page state">
     <h2>Listing not found.</h2>
     <p>It may have ended or never existed under this id.</p>
